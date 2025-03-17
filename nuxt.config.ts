@@ -3,7 +3,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   devServer: {
-    https: {
+    https:
+    {
       key: './keys/localhost-key.pem',
       cert: './keys/localhost.pem'
     }
