@@ -1,1 +1,4 @@
-@import 'hero', 'buttons', 'breadcrumbs', 'forms';
+@use 'hero';
+@use 'buttons';
+@use 'breadcrumbs';
+@use 'forms';

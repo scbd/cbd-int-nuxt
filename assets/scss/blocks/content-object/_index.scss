@@ -1,14 +1,11 @@
-@import 'gbf-target', 'update', 'search-item';
+@use 'gbf-target';
+@use 'update';
+@use 'search-item';
 
 .content-row {
     padding: 0 2rem 2rem;
     row-gap: 1rem;
     box-shadow: 0 2px var(--bs-secondary-bg);
-    // Moved to styles.scss
-    // &:last-of-type {
-    //     padding-bottom: 0;
-    //     box-shadow: none;
-    // }
     
     .row-title {
         font-size: 1.33rem;
@@ -72,12 +69,16 @@
             color: var(--cc_body-grey);
             box-shadow: .3rem 0 inset var(--cbd-content-accent);    
             .source:not(:empty){
+                text-transform: capitalize;
                 margin-right: 0.5rem;
                 padding-right: 0.5rem;
                 box-shadow: 
                 0 .2rem inset var(--bs-body-bg),
                 0 -.2rem inset var(--bs-body-bg),
                 -2px 0 inset var(--bs-tertiary-bg);                            
+            }
+            .type {
+                text-transform: capitalize;
             }
         }                
     }

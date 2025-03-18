@@ -1,4 +1,9 @@
-@import 'cus-main','cus-serp','cus-footer','navigation','content-object','aside';
+@use 'cus-main';
+@use 'cus-serp';
+@use 'cus-footer';
+@use 'navigation';
+@use 'content-object';
+@use 'aside';
 
 .cus-header,
 .cus-main,
