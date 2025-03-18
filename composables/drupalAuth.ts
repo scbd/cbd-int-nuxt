@@ -15,6 +15,7 @@ export const getDrupalToken = async () => {
 
     if (response.ok) {
         const data = await response.json()
+        data.timeout = Date.now() + (data.expires_in * 1000)
         return data
     } else {
         throw new Error(`Error: ${response.status}`)
@@ -41,53 +42,4 @@ export const checkDrupalToken = async (token: string | null) => {
       } else {
         throw new Error(`Error: ${response.status}`)
       }
-}
-
-export const useDrupalToken = () => {
-    const token = useState<drupalToken | null>('drupal_token', () => null)
-  
-    const isTokenValid = computed(() => {
-      if (!token.value || !token.value.expires_at) return false
-       const bufferTime = 1 * 60 * 1000
-      return Date.now() < token.value.expires_at - bufferTime
-    })
-  
-    const fetchAndStoreToken = async () => {
-      try {
-        const newToken = await getDrupalToken()
-        
-         const expiresAt = Date.now() + (newToken.expires_in * 1000)
-        
-         token.value = {
-          ...newToken,
-          expires_at: expiresAt
-        }
-        
-        return token.value
-      } catch (error) {
-        console.error('Failed to fetch Drupal token:', error)
-        token.value = null
-        throw error
-      }
-    }
-  
-    const getValidToken = async () => {
-      if (isTokenValid.value && token.value) {
-        try {
-           await checkDrupalToken(token.value.access_token)
-          return token.value
-        } catch (error) {
-          console.error('Token validation failed:', error)
-           return fetchAndStoreToken()
-        }
-      } else {
-         return fetchAndStoreToken()
-      }
-    }
-  
-    return {
-      token,
-      isTokenValid,
-      getValidToken
-    }
 }
