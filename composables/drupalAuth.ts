@@ -44,13 +44,7 @@ export const checkDrupalToken = async (token: string | null) => {
 }
 
 export const useDrupalToken = () => {
-    const token = useState<{
-      access_token: string;
-      expires_in: number;
-      token_type: string;
-      scope: string;
-      expires_at?: number;
-    } | null>('drupal_token', () => null)
+    const token = useState<drupalToken | null>('drupal_token', () => null)
   
     const isTokenValid = computed(() => {
       if (!token.value || !token.value.expires_at) return false
