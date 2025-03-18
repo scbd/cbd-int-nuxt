@@ -5,7 +5,7 @@ export const getDrupalToken = async () => {
     params.append('client_secret', process.env.DRUPAL_CLIENT_SECRET as string)
     params.append('scope', process.env.DRUPAL_SCOPE as string)
 
-    const response = await fetch(`${process.env.DRUPAL_URL}/oauth2/token`, {
+    const response = await fetch(`${process.env.DRUPAL_URL}/oauth/token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -25,7 +25,7 @@ export const checkDrupalToken = async (token: string | null) => {
     if(!token) return 'invalid'
 
     const credentials = Buffer.from(`${process.env.DRUPAL_CLIENT_ID}:${process.env.DRUPAL_CLIENT_SECRET}`).toString('base64');
-    const response = await fetch(`${process.env.DRUPAL_URL}/oauth2/tokens/${token}`, {
+    const response = await fetch(`${process.env.DRUPAL_URL}/oauth/tokens/${token}`, {
         method: 'GET',
         headers: {
           'Authorization': `Basic ${credentials}`
