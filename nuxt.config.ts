@@ -9,10 +9,7 @@ export default defineNuxtConfig({
       cert: './keys/localhost.pem'
     }
   },
-  modules: [
-    '@pinia/nuxt',
-    '@nuxtjs/i18n'
-  ],
+  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/image'],
   runtimeConfig: {
     DRUPAL_CLIENT_SECRET: process.env.DRUPAL_CLIENT_SECRET,
     public: {
