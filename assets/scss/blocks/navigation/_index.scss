@@ -1,3 +1,8 @@
+@use 'tbm-mega-menu';
+@use 'cus-options'; 
+@use 'cus-mega-menu'; 
+@use 'protocol-subnavigation';
+
 .cus-navigation {
     width: 100%;
     .navbar {
@@ -17,5 +22,3 @@
         box-shadow: none;
     }
 }
-
-@import 'tbm-mega-menu','cus-options', 'cus-mega-menu', 'protocol-subnavigation';
