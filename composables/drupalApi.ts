@@ -1,5 +1,6 @@
 import type { drupalLanguage } from "~/interfaces/drupalLanguages";
 import type { drupalToken } from "~/interfaces/drupalAuth";
+import type { drupalMenu } from "~/interfaces/drupalMenu";
 import type { userSettings } from "~/interfaces/userSettings";
 
 export const getDrupalLanguages = async (language: string | null) => { 
@@ -67,8 +68,8 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
             
             if (data.data && data.data.length > 0) {
                 processedMenu.langcode = data.data[0].attributes.langcode || '';
-                const rootItems = data.data.filter(item => item.attributes.parent === null);
-                processedMenu.menu = rootItems.map(item => {
+                const rootItems = data.data.filter((item: { attributes: { parent: null; }; }) => item.attributes.parent === null);
+                processedMenu.menu = rootItems.map((item: drupalMenu) => {
                     const menuItem = {
                         id: item.id,
                         title: item.attributes.title,
@@ -76,13 +77,13 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
                         children: []
                     };
                     
-                    const children = data.data.filter(child => {
+                    const children = data.data.filter((child: { attributes: { parent: string; }; }) => {
                         return child.attributes.parent && 
                                child.attributes.parent.replace('menu_link_content:', '') === item.id;
                     });
                     
                     if (children.length > 0) {
-                        menuItem.children = children.map(child => {
+                        menuItem.children = children.map((child: drupalMenu) => {
                             const childItem = {
                                 id: child.id,
                                 title: child.attributes.title,
@@ -90,13 +91,13 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
                                 children: []
                             };
                             
-                            const grandchildren = data.data.filter(grandchild => {
+                            const grandchildren = data.data.filter((grandchild: drupalMenu) => {
                                 return grandchild.attributes.parent && 
                                        grandchild.attributes.parent.replace('menu_link_content:', '') === child.id;
                             });
                             
                             if (grandchildren.length > 0) {
-                                childItem.children = grandchildren.map(grandchild => {
+                                childItem.children = grandchildren.map((grandchild: drupalMenu) => {
                                     return {
                                         id: grandchild.id,
                                         title: grandchild.attributes.title,
@@ -133,13 +134,12 @@ const cleanUri = (uri: string): string => {
 }
 
 export const setLanguage = async (language: string) => {
-    const user_settings = useState<userSettings>("user_settings", () => ({}));
+    const user_settings = useState<userSettings>("user_settings", () => ({
+        active_language: 'en'
+      }));
     const langCode = language && ['en', 'fr', 'es', 'ru', 'zh-hans', 'ar'].includes(language) ? language : 'en';
     const langDir = language && ['ar'].includes(language) ? 'rtl' : 'ltr';
     user_settings.value.active_language = langCode
-
-    console.log(langCode)
-    console.log(langDir)
 
     useHead({
       htmlAttrs: {

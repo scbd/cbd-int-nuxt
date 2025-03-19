@@ -1,3 +1,3 @@
 export interface userSettings {
-    active_language: string = 'en';
+    active_language: string;
 }
