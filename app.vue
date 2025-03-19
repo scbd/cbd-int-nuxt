@@ -1,5 +1,7 @@
+<script lang="ts"></script>
+
 <template>
-  <div>
-    <NuxtPage />
+  <div class="body-replace">
+    <NuxtLayout></NuxtLayout>  
   </div>
 </template>
