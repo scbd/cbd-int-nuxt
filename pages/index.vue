@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    definePageMeta({
-        layout: 'landing-home'
-    })
+definePageMeta({
+    layout: 'landing-home'
+})
 </script>
 
 <template>

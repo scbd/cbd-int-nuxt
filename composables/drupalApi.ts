@@ -8,6 +8,11 @@ export const getDrupalLanguages = async (language: string | null) => {
     const drupalToken = useState<drupalToken>("drupal_token").value;
     
     const config = useRuntimeConfig();    
+    
+    // Loader engages here for time being; remove later when with a better solution
+    const loader: Element | null = document.querySelector('.loader-wrapper');
+    loader?.classList.add('show-loader');
+    
     try {
         const response = await fetch(`${config.public.DRUPAL_URL}/${langCode}/jsonapi/configurable_language/configurable_language`, {
             method: 'GET',
