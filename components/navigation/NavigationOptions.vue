@@ -17,13 +17,12 @@ onMounted(() => {
     const drupal_languages: { langCode: string, label: string, direction: string }[] = [];
 
     
-    langChange(active_lang, drupal_languages, loader, current_lang_button, language_selector_dropdown);
+    languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
     
     const language_observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes') {
-                active_lang = document.querySelector('html')?.getAttribute('lang') || 'en';
-                langChange(active_lang, drupal_languages, loader, current_lang_button, language_selector_dropdown);
+                languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
             }
         })
     })
