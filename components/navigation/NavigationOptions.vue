@@ -12,10 +12,7 @@ onMounted(() => {
     // Loader
     const loader: Element | null = document.querySelector('.loader-wrapper');
 
-    // const nav_options_links: NodeList | null = document.querySelectorAll('[class^=nav-options-]');
-
     const drupal_languages: { langCode: string, label: string, direction: string }[] = [];
-
     
     langChange(active_lang, drupal_languages, loader, current_lang_button, language_selector_dropdown);
     
