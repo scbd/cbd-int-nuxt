@@ -8,7 +8,5 @@
     <main class="cus-main cus-landing-page d-flex flex-column" role="main">
         <NuxtPage />
     </main>
-    <footer class="cus-footer">
-        
-    </footer>
+    <Footer />
 </template>
