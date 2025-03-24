@@ -1,7 +1,11 @@
+import { type drupalToken } from "~/interfaces/drupalAuth"
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  const drupalToken = useState<drupalToken>('drupal_token', () => null)
-  
-  const tokenExpired = drupalToken && drupalToken.timeout && drupalToken.timeout <= Date.now()
+  const drupalToken = useState<drupalToken | null>('drupal_token', () => null)
+
+  const tokenExpired = drupalToken.value !== null && 
+    drupalToken.value.timeout && 
+    drupalToken.value.timeout <= Date.now()
 
   if (!drupalToken.value || tokenExpired) {
     try {

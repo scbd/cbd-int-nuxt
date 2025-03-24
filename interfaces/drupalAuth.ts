@@ -4,4 +4,5 @@ export interface drupalToken {
       token_type: string;
       scope: string;
       expires_at: number;
+      timeout: number;
 }
