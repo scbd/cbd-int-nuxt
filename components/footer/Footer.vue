@@ -1,8 +1,8 @@
 <script setup lang="ts">
     onMounted(() => {
 
-        // const logo = document.querySelector('.cus-logo');
-        const logo_unep = document.querySelector('.logo-footer-unep');
+        const logo = document.querySelectorAll('.cus-logo');
+        const logo_unep = document.querySelectorAll('.logo-footer-unep');
 
         const language_observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -10,8 +10,13 @@
                     const user_language_settings: { active_language: string } | null = useState('user_settings').value as { active_language: string };
                     let active_language: string = user_language_settings?.active_language || 'en';
                     
-                    // logo?.setAttribute('src', `/images/CBD-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.png`);
-                    logo_unep?.setAttribute('src', `/images/UNEP-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.png`);
+                    logo?.forEach((logo) => {
+                        logo.setAttribute('src', `/images/CBD-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.png`);
+                    });
+                    logo_unep?.forEach((logo) => {
+                        logo.setAttribute('src', `/images/UNEP-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.svg`);
+                    });
+                    
                 }
             })
         })
@@ -26,7 +31,7 @@
             <address>
                 <ul>
                     <li>
-                        <NuxtLink to="/" class="navbar-brand"><NuxtImg class="cus-logo" src="/images/UNEP-logo-EN.png" alt="Convention of Biological Diversity Logo" /></NuxtLink>
+                        <NuxtLink to="/" class="navbar-brand"><img class="cus-logo" src="/images/CBD-logo-EN.png" alt="Convention of Biological Diversity Logo" /></NuxtLink>
                         Secretariat of the Convention on Biological Diversity
                     </li>
                     <li>
@@ -67,7 +72,7 @@
                     <li>A Part Of</li>
                     <ul>
                         <li><NuxtLink to="//un.org" target="_blank" rel="noopener noreferrer"><NuxtImg src="/images/logo_un_negative.svg" class="logo-footer-un" alt="UN Logo" /></NuxtLink></li>
-                        <li><NuxtLink to="//unep.org" target="_blank" rel="noopener noreferrer"><NuxtImg src="/images/logo_unep_negative.svg" class="logo-footer-unep" alt="UNEP Logo" /></NuxtLink></li>
+                        <li><NuxtLink to="//unep.org" target="_blank" rel="noopener noreferrer"><img src="/images/UNEP-logo-EN.svg" class="logo-footer-unep" alt="UNEP Logo" /></NuxtLink></li>
                     </ul>
                 </ul>
             </nav>
