@@ -34,22 +34,22 @@ export const langChange = (
     language_selector_dropdown: Element | null
 ) => {
     getDrupalLanguages(current_language)
-        .then((languages) => {           
-            console.log('Getting Languages...')
+        .catch((error) => {
+            console.error(error);
+            loader?.classList.add('error-loader');
+        })
+        .then((languages) => {
             drupal_languages.splice(0, drupal_languages.length);
             drupal_languages.push(...languages);            
         })
-        .catch((error) => {
-            console.error(error);
-        })
         .finally(() => {
+            // Added pause to confirm loader is working
             setTimeout(() => {
                 language_selector_dropdown!.innerHTML = '';
                 drupal_languages.forEach((language, index) => {
                     langDropdownBuilder(language, current_language, current_lang_button, language_selector_dropdown);
                 })                
                 loader?.classList.remove('show-loader');
-                console.log('Languages Received!');
             }, 1000);
         })
 }
