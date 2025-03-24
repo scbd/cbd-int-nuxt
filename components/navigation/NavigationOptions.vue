@@ -1,11 +1,13 @@
 <script setup lang="ts">
 onMounted(() => {
-    let active_lang: string = document.querySelector('html')!.getAttribute('lang') || 'en';
+    // let active_lang: string = document.querySelector('html')!.getAttribute('lang') || 'en';
     
     // TODO: Consider detecting the user's browser language and matching it to available languages
     // If present, set language to browser, otherwise default lang attribute or a cookie
     const navigator_languages = navigator?.languages;
 
+    
+    
     const current_lang_button: Element | null = document.querySelector('.nav-options-current-lang-slot');
     const language_selector_dropdown: Element | null = document.querySelector('.language-selector-dropdown');
 
@@ -14,13 +16,12 @@ onMounted(() => {
 
     const drupal_languages: { langCode: string, label: string, direction: string }[] = [];
     
-    langChange(active_lang, drupal_languages, loader, current_lang_button, language_selector_dropdown);
+    languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
     
     const language_observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes') {
-                active_lang = document.querySelector('html')?.getAttribute('lang') || 'en';
-                langChange(active_lang, drupal_languages, loader, current_lang_button, language_selector_dropdown);
+                languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
             }
         })
     })
