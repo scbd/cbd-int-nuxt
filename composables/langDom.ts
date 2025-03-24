@@ -1,11 +1,11 @@
 const langDropdownBuilder = (
     language: { langCode: string, label: string, direction: string },
-    active_lang: string | 'en',
+    active_language: string | 'en',
     current_lang_button: Element | null,
     language_selector_dropdown: Element | null
 ) => {
         
-    if (language.langCode === active_lang) {
+    if (language.langCode === active_language) {
         current_lang_button!.innerHTML = language.label;
     } else {
         const list_item: Element | null = document.createElement('li');
@@ -16,7 +16,7 @@ const langDropdownBuilder = (
         anchor?.setAttribute('href', '#');
         anchor?.addEventListener('click', (event) => {
             setLanguage(language.langCode);
-            active_lang = language.langCode;
+            active_language = language.langCode;
             event.stopPropagation();
         });
         anchor!.innerHTML = language.label;                
@@ -26,30 +26,29 @@ const langDropdownBuilder = (
 }
 
 
-export const langChange = (
-    current_language: string, 
+export const languageChange = (
     drupal_languages: { langCode: string, label: string, direction: string }[],
     loader: Element | null,
     current_lang_button: Element | null,
     language_selector_dropdown: Element | null
 ) => {
-    getDrupalLanguages(current_language)
+    const user_language_settings: { active_language: string } | null = useState('user_settings').value as { active_language: string };
+    const user_language: string = user_language_settings?.active_language || 'en';
+    
+    getDrupalLanguages(user_language)
         .catch((error) => {
             console.error(error);
             loader?.classList.add('error-loader');
         })
         .then((languages) => {
             drupal_languages.splice(0, drupal_languages.length);
-            drupal_languages.push(...languages);            
+            drupal_languages.push(...languages);
+            loader?.classList.remove('show-loader');
         })
         .finally(() => {
-            // Added pause to confirm loader is working
-            setTimeout(() => {
-                language_selector_dropdown!.innerHTML = '';
-                drupal_languages.forEach((language, index) => {
-                    langDropdownBuilder(language, current_language, current_lang_button, language_selector_dropdown);
-                })                
-                loader?.classList.remove('show-loader');
-            }, 1000);
+            language_selector_dropdown!.innerHTML = '';
+            drupal_languages.forEach((language, index) => {
+                langDropdownBuilder(language, user_language, current_lang_button, language_selector_dropdown);
+            })
         })
 }
