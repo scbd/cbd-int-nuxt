@@ -1,14 +1,10 @@
-import type { userSettings } from "~/interfaces/userSettings";
-
 const langDropdownBuilder = (
     language: { langCode: string, label: string, direction: string },
-    active_language: string | 'en',
     active_language: string | 'en',
     current_lang_button: Element | null,
     language_selector_dropdown: Element | null
 ) => {
         
-    if (language.langCode === active_language) {
     if (language.langCode === active_language) {
         current_lang_button!.innerHTML = language.label;
     } else {
@@ -21,7 +17,6 @@ const langDropdownBuilder = (
         anchor?.addEventListener('click', (event) => {
             setLanguage(language.langCode);
             active_language = language.langCode;
-            active_language = language.langCode;
             event.stopPropagation();
         });
         anchor!.innerHTML = language.label;                
@@ -32,13 +27,12 @@ const langDropdownBuilder = (
 
 
 export const languageChange = (
-export const languageChange = (
     drupal_languages: { langCode: string, label: string, direction: string }[],
     loader: Element | null,
     current_lang_button: Element | null,
     language_selector_dropdown: Element | null
 ) => {
-    const user_language_settings: { active_language: string } = useState('user_settings').value as { active_language: string } 
+    const user_language_settings: { active_language: string } | null = useState('user_settings').value as { active_language: string };
     const user_language: string = user_language_settings?.active_language || 'en';
     
     getDrupalLanguages(user_language)
@@ -58,13 +52,3 @@ export const languageChange = (
             })
         })
 }
-
-// const language_listener = new Proxy(useState('user_settings').value as { active_language: string } ||
-//     useState<userSettings>("user_settings", () => ({
-//         active_language: 'en'
-//     })), {
-//     set(obj, prop: string, value): any {
-//         console.log(`Object ${obj}'s ${prop} set to ${value}`);
-//         return true;
-//     }
-// })
