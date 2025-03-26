@@ -1,27 +1,34 @@
 <script setup lang="ts">
     onMounted(() => {
 
-        const logo = document.querySelectorAll('.cus-logo');
-        const logo_unep = document.querySelectorAll('.logo-footer-unep');
+        // const logo = document.querySelectorAll('.cus-logo');
+        // const logo_unep = document.querySelectorAll('.logo-footer-unep');
 
-        const language_observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes') {                
-                    const user_language_settings: { active_language: string } | null = useState('user_settings').value as { active_language: string };
-                    let active_language: string = user_language_settings?.active_language || 'en';
+        // const language_observer = new MutationObserver((mutations) => {
+        //     mutations.forEach((mutation) => {
+        //         if (mutation.type === 'attributes') {                
+        //             const user_language_settings: { active_language: string } | null = useState('user_settings').value as { active_language: string };
+        //             let active_language: string = user_language_settings?.active_language || 'en';
                     
-                    logo?.forEach((logo) => {
-                        logo.setAttribute('src', `/images/CBD-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.png`);
-                    });
-                    logo_unep?.forEach((logo) => {
-                        logo.setAttribute('src', `/images/UNEP-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.svg`);
-                    });
+        //             logo?.forEach((logo) => {
+        //                 logo.setAttribute('src', `/images/CBD-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.png`);
+        //             });
+        //             logo_unep?.forEach((logo) => {
+        //                 logo.setAttribute('src', `/images/UNEP-logo-${active_language.includes('-') ? active_language.replace('-hans','').toLocaleUpperCase() : active_language.toLocaleUpperCase()}.svg`);
+        //             });
                     
-                }
-            })
+        //         }
+        //     })
+        // })
+
+        // language_observer.observe(document.querySelector('html')!, { attributes: true });
+
+        //const footer_data = getDrupalMenu('en', 'cbd-footer')
+        
+        getDrupalMenu('cbd-header','en').then((result) => {
+            console.log(result);
         })
-
-        language_observer.observe(document.querySelector('html')!, { attributes: true });
+        
     })
 </script>
 
