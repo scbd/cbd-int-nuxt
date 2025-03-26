@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 onMounted(() => {
     // let active_lang: string = document.querySelector('html')!.getAttribute('lang') || 'en';
     
@@ -7,26 +8,25 @@ onMounted(() => {
     const navigator_languages = navigator?.languages;
 
     
-    
-    const current_lang_button: Element | null = document.querySelector('.nav-options-current-lang-slot');
-    const language_selector_dropdown: Element | null = document.querySelector('.language-selector-dropdown');
+    // const current_lang_button: Element | null = document.querySelector('.nav-options-current-lang-slot');
+    // const language_selector_dropdown: Element | null = document.querySelector('.language-selector-dropdown');
 
-    // Loader
-    const loader: Element | null = document.querySelector('.loader-wrapper');
+    // // Loader
+    // const loader: Element | null = document.querySelector('.loader-wrapper');
 
-    const drupal_languages: { langCode: string, label: string, direction: string }[] = [];
+    // const drupal_languages: { langCode: string, label: string, direction: string }[] = [];
     
-    languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
+    // languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
     
-    const language_observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes') {
-                languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
-            }
-        })
-    })
+    // const language_observer = new MutationObserver((mutations) => {
+    //     mutations.forEach((mutation) => {
+    //         if (mutation.type === 'attributes') {
+    //             languageChange(drupal_languages, loader, current_lang_button, language_selector_dropdown);
+    //         }
+    //     })
+    // })
 
-    language_observer.observe(document.querySelector('html')!, { attributes: true });
+    // language_observer.observe(document.querySelector('html')!, { attributes: true });
     
     
     /*
@@ -94,7 +94,6 @@ onMounted(() => {
 
     */
 });
-
 </script>
 
 <template>
@@ -107,7 +106,7 @@ onMounted(() => {
                 </NuxtLink>
             </li>
             <li class="nav-item">
-                <NuxtLink to="#" class="nav-link current-lang" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <NuxtLink to="#" class="nav-link current-lang" role="button" data-bs-toggle="dropdown" aria-expanded="false" ref="current_lang">
                     <NuxtImg src="/images/icons/icon_nav-language_outline.svg" alt="Language Selection Icon" />
                     <span class="nav-options-current-lang-slot"></span>
                 </NuxtLink>
