@@ -2,6 +2,7 @@
 
 <template>
   <div class="body-replace">
-    <NuxtLayout></NuxtLayout>  
+    <NuxtRouteAnnouncer />
+    <NuxtLayout></NuxtLayout>
   </div>
 </template>
