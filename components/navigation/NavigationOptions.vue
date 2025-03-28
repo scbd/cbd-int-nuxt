@@ -1,22 +1,57 @@
-<script lang="ts"></script>
+<script setup lang="ts"></script>
 
 <template>
     <div class="cus-options container-fluid justify-content-end">
         <ul class="navbar-nav">
-            <li class="nav-item"><NuxtLink class="nav-link" to="#"><NuxtImg src="/images/icons/icon_nav-search_outline.svg" alt="Search Icon" /> Search</NuxtLink></li>
             <li class="nav-item">
-                <NuxtLink to="#" class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false"><NuxtImg src="/images/icons/icon_nav-language_outline.svg" alt="Language Selection Icon" /> English</NuxtLink>
+                <NuxtLink class="nav-link" to="#" role="button">
+                    <NuxtImg src="/images/icons/icon_nav-search_outline.svg" alt="Search Icon" />
+                    <span class="nav-options-search-slot">Search</span>
+                </NuxtLink>
+            </li>
+            <li class="nav-item">
+                <NuxtLink 
+                    v-for="language in languages"
+                    :key="language.langCode"
+                    v-show="active_language?.active_language === language.langCode"
+                    to="#" 
+                    class="nav-link current-lang" 
+                    role="button" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false">
+                    <NuxtImg src="/images/icons/icon_nav-language_outline.svg" alt="Language Selection Icon" />
+                        <span                        
+                            class="nav-options-current-lang-slot">
+                                {{ language.label }}
+                        </span>
+                </NuxtLink>
+                
                 <ul class="language-selector-dropdown dropdown-menu">
-                    <li><NuxtLink to="#" class="dropdown-item">عربي</NuxtLink></li>
-                    <li><NuxtLink to="#" class="dropdown-item">中国人</NuxtLink></li>
-                    <li><NuxtLink to="#" class="dropdown-item">Français</NuxtLink></li>
-                    <li><NuxtLink to="#" class="dropdown-item">Русский</NuxtLink></li>
-                    <li><NuxtLink to="#" class="dropdown-item">Español</NuxtLink></li>                    
+                    <li 
+                        v-for="language in languages" 
+                        :key="language.langCode"
+                        v-show="active_language?.active_language !== language.langCode">
+                        <NuxtLink 
+                            class="dropdown-item" 
+                            to="#" 
+                            @click.prevent="setActiveLanguage(language.langCode)">
+                                {{ language.label  }}
+                        </NuxtLink>
+                    </li>
                 </ul>
             </li>
-            <li class="nav-item"><NuxtLink class="nav-link" to="#"><NuxtImg src="/images/icons/icon_nav-account_outline.svg" alt="Login Icon" /> Login</NuxtLink></li>
-            <li class="nav-item"><NuxtLink class="nav-link" to="#"><NuxtImg src="/images/icons/icon_nav-settings_outline.svg" alt="Settings Icon" /> Settings</NuxtLink></li>
+            <li class="nav-item">
+                <NuxtLink class="nav-link" to="#" role="button">
+                    <NuxtImg src="/images/icons/icon_nav-account_outline.svg" alt="Login Icon" />
+                    <span class="nav-options-login-slot">Login</span>
+                </NuxtLink>
+            </li>
+            <li class="nav-item">
+                <NuxtLink class="nav-link" to="#" role="button">
+                    <NuxtImg src="/images/icons/icon_nav-settings_outline.svg" alt="Settings Icon" />
+                    <span class="nav-options-settings-slot">Settings</span>
+                </NuxtLink>
+            </li>
         </ul>
     </div>
 </template>
-

@@ -7,7 +7,8 @@ export const getDrupalLanguages = async (language: string | null) => {
     const langCode = language && ['fr', 'es', 'ru', 'zh-hans', 'ar'].includes(language) ? language : '';
     const drupalToken = useState<drupalToken>("drupal_token").value;
     
-    const config = useRuntimeConfig();    
+    const config = useRuntimeConfig();
+    
     try {
         const response = await fetch(`${config.public.DRUPAL_URL}/${langCode}/jsonapi/configurable_language/configurable_language`, {
             method: 'GET',
