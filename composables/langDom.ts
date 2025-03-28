@@ -1,6 +1,6 @@
 import type { drupalLanguage } from "~/interfaces/drupalLanguages";
-import type { drupalMenuItem } from "~/interfaces/drupalMenuItem";
-import type { footerMenu } from "~/interfaces/footerMenu";
+import type { drupalMenuItem } from "~/interfaces/drupalMenu";
+import type { footerMenu } from "~/interfaces/drupalMenu";
 import type { userSettings } from "~/interfaces/userSettings";
 
 

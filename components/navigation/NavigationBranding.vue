@@ -6,7 +6,7 @@
         class="navbar-brand">
         <img 
             class="cus-logo" 
-            :src="`/images/CBD-logo-${ active_language?.active_language.includes('-') ? active_language?.active_language.replace('-hans','').toUpperCase() : active_language?.active_language.toUpperCase() }.png`" 
+            :src="`/images/CBD-logo-${ active_language?.active_language.slice(0,2).toUpperCase() }.png`" 
             alt="Convention of Biological Diversity Logo" />
     </NuxtLink>
     </ClientOnly>
