@@ -57,4 +57,3 @@
         </ul>
     </div>
 </template>
-
