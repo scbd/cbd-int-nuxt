@@ -1,13 +1,11 @@
-<script setup lang="ts">
-
-// Handler
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <footer class="cus-footer d-flex flex-column">
         <client-only>
-        <div class="footer-row footer-navigation">
+        <div 
+            v-if="footer_menu_status.status === 'OK'"
+            class="footer-row footer-navigation">
             <ClientOnly>
             <nav
                 v-for="nav in footer_menu"
@@ -69,6 +67,11 @@
                 </ul>
             </nav>
         </div>
+
+        <Loader 
+            v-else-if="megamenu_status?.status === 'error'"
+            class="error-loader" />
+        <Loader v-else />
         </client-only>
 
         <!-- <div class="footer-row contact-and-legal">
