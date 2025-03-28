@@ -1,54 +1,46 @@
-const langDropdownBuilder = (
-    language: { langCode: string, label: string, direction: string },
-    active_language: string | 'en',
-    current_lang_button: Element | null,
-    language_selector_dropdown: Element | null
-) => {
-        
-    if (language.langCode === active_language) {
-        current_lang_button!.innerHTML = language.label;
-    } else {
-        const list_item: Element | null = document.createElement('li');
-        const anchor: Element | null = document.createElement('a');
+import type { drupalLanguage } from "~/interfaces/drupalLanguages";
+import type { drupalMenuItem } from "~/interfaces/drupalMenu";
+import type { footerMenu } from "~/interfaces/drupalMenu";
+import type { userSettings } from "~/interfaces/userSettings";
 
-        anchor?.classList.add('dropdown-item');
-        anchor?.setAttribute('data-lang-code', language.langCode);
-        anchor?.setAttribute('href', '#');
-        anchor?.addEventListener('click', (event) => {
-            setLanguage(language.langCode);
-            active_language = language.langCode;
-            event.stopPropagation();
-        });
-        anchor!.innerHTML = language.label;                
-        list_item?.appendChild(anchor);
-        language_selector_dropdown?.appendChild(list_item);
+
+
+export const languages = ref<drupalLanguage[]>([]);
+export const active_language = ref<userSettings>();
+export const footer_menu = ref<drupalMenuItem[]>();
+
+export const getLanguages = async () => {
+    const userSettings = useState<userSettings>("user_settings", () => ({
+        active_language: "en",
+    }));
+
+    active_language.value = userSettings.value;
+
+    try {
+        const languageData = await getDrupalLanguages(
+            userSettings.value.active_language
+        );
+        const footerData: footerMenu | unknown = await getDrupalMenu(
+            'cbd-footer',
+            userSettings.value.active_language
+        )
+        languages.value = languageData;
+
+        const footer_temp = footerData as footerMenu;
+        footer_menu.value = footer_temp.menu;
+    } 
+    catch (error) {
+        console.error(error);
     }
 }
 
-
-export const languageChange = (
-    drupal_languages: { langCode: string, label: string, direction: string }[],
-    loader: Element | null,
-    current_lang_button: Element | null,
-    language_selector_dropdown: Element | null
-) => {
-    const user_language_settings: { active_language: string } | null = useState('user_settings').value as { active_language: string };
-    const user_language: string = user_language_settings?.active_language || 'en';
-    
-    getDrupalLanguages(user_language)
-        .catch((error) => {
-            console.error(error);
-            loader?.classList.add('error-loader');
-        })
-        .then((languages) => {
-            drupal_languages.splice(0, drupal_languages.length);
-            drupal_languages.push(...languages);
-            loader?.classList.remove('show-loader');
-        })
-        .finally(() => {
-            language_selector_dropdown!.innerHTML = '';
-            drupal_languages.forEach((language, index) => {
-                langDropdownBuilder(language, user_language, current_lang_button, language_selector_dropdown);
-            })
-        })
+export const setActiveLanguage = async (langCode: string) => {
+    try {
+        await setLanguage(langCode);
+        await getLanguages();
+        active_language.value = { active_language: langCode };
+    } 
+    catch (error) {
+        console.error(error);
+    }
 }
