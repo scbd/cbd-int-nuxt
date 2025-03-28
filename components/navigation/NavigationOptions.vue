@@ -27,7 +27,6 @@
                 </NuxtLink>
                 
                 <ul class="language-selector-dropdown dropdown-menu">
-                    <ClientOnly>
                     <li 
                         v-for="language in languages" 
                         :key="language.langCode"
@@ -39,7 +38,6 @@
                                 {{ language.label  }}
                         </NuxtLink>
                     </li>
-                    </ClientOnly>
                 </ul>
             </li>
             <li class="nav-item">
