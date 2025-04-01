@@ -107,41 +107,9 @@
                         aria-expanded="false">
                             {{ level1_item.title }}
                     </NuxtLink>
+
+                    <NavigationMegamenuDrawer :parent="level1_item" />
                     
-                    <div class="mega-menu-drawer dropdown-menu container-fluid">
-                    
-                        <ul class="mega-menu-drawer-internal nav">
-                            <li class="sections-header">Sections</li>
-                            <li class="level-1-item nav-item">
-                                <NuxtLink class="nav-link" to="#">
-                                    {{ level1_item.title }}
-                                </NuxtLink>
-                            </li>
-
-                            <div 
-                                v-if="level1_item.children.length > 0"
-                                v-for="level2_item in level1_item.children"
-                                class="level-2-items">
-                                
-                                <NuxtLink class="nav-link" :to="level2_item.link">
-                                    {{ level2_item.title }}
-                                </NuxtLink>
-                                <ul 
-                                    v-if="level2_item.children.length > 0"
-                                    v-for="level3_item in level2_item.children"
-                                    class="level-3-items nav">
-                                    <li class="nav-item">
-                                        <NuxtLink class="nav-link" :to="level3_item.link">
-                                            {{ level3_item.title }}
-                                        </NuxtLink>
-                                    </li>
-                                </ul>
-                            </div>
-                        </ul>
-
-                        <NavigationSocialmediafollow />
-
-                    </div>                    
                 </li>                
             </ul>
         </div>
