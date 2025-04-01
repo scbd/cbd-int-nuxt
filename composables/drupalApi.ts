@@ -1,7 +1,7 @@
-import type { drupalLanguage } from "~/interfaces/drupalLanguages";
-import type { drupalToken } from "~/interfaces/drupalAuth";
-import type { drupalMenu } from "~/interfaces/drupalMenu";
-import type { userSettings } from "~/interfaces/userSettings";
+import type { drupalLanguage } from "~/types/drupalLanguages";
+import type { drupalToken } from "~/types/drupalAuth";
+import type { drupalMenu } from "~/types/drupalMenu";
+import type { userSettings } from "~/types/userSettings";
 
 export const getDrupalLanguages = async (language: string | null) => { 
     const langCode = language && ['fr', 'es', 'ru', 'zh-hans', 'ar'].includes(language) ? language : '';

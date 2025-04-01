@@ -1,4 +1,4 @@
-import { type drupalToken } from "~/interfaces/drupalAuth"
+import { type drupalToken } from "~/types/drupalAuth"
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const drupalToken = useState<drupalToken | null>('drupal_token', () => null)
