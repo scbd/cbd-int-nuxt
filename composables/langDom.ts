@@ -1,9 +1,7 @@
-import type { drupalLanguage } from "~/interfaces/drupalLanguages";
-import type { drupalMenuItem } from "~/interfaces/drupalMenu";
-import type { footerMenu } from "~/interfaces/drupalMenu";
-import type { userSettings } from "~/interfaces/userSettings";
-
-
+import type { componentStatus } from "~/types/componentStatus";
+import type { drupalLanguage } from "~/types/drupalLanguages";
+import type { fetchedMenu, fetchedMenuItem } from "~/types/drupalMenu";
+import type { userSettings } from "~/types/userSettings";
 
 export const languages = ref<drupalLanguage[]>([]);
 export const active_language = ref<userSettings>();
