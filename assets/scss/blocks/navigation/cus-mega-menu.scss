@@ -24,8 +24,7 @@
     }
     
     .nav-link {
-        // padding-top: 1.25rem;
-        // padding-bottom: 1.25rem;
+        padding: 1.25rem var(--bs-navbar-nav-link-padding-x);
         color: var(--bs-primary);
         border-radius: .5rem;
         &.show,
