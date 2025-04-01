@@ -2,11 +2,11 @@
 
 <template>
     <footer class="cus-footer d-flex flex-column">
-        <client-only>
+        <ClientOnly>
         <div 
             v-if="footer_menu_status.status === 'OK'"
             class="footer-row footer-navigation">
-            <ClientOnly>
+            
             <nav
                 v-for="nav in footer_menu"
                 :key="nav.title">
@@ -47,8 +47,6 @@
                     </li>
                 </ul>
             </nav>
-            </ClientOnly>
-
             
             <nav class="a-part-of">
                 <div class="nav-title">A Part Of</div>
@@ -72,7 +70,7 @@
             v-else-if="megamenu_status?.status === 'error'"
             class="error-loader" />
         <Loader v-else />
-        </client-only>
+        </ClientOnly>
 
         <!-- <div class="footer-row contact-and-legal">
             <ul>
