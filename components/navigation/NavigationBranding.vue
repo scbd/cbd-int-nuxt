@@ -3,7 +3,7 @@
 <template>
     <ClientOnly>
     <NuxtLink 
-        v-if="language_status?.status === 'OK'"
+        v-if="language_status.status === 'OK'"
         to="/" 
         class="navbar-brand">
         <img 
@@ -12,7 +12,7 @@
             alt="Convention of Biological Diversity Logo" />
     </NuxtLink>
     <Loader 
-        v-else-if="language_status?.status === 'error'"
+        v-else-if="language_status.status === 'error'"
         class="error-loader" />
     <Loader v-else />
     </ClientOnly>

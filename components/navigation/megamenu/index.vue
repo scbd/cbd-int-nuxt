@@ -102,7 +102,7 @@
                     
                     <NuxtLink 
                         class="nav-link dropdown-toggle" 
-                        to="#" 
+                        :to="level1_item.link" 
                         data-bs-toggle="dropdown" 
                         aria-expanded="false">
                             {{ level1_item.title }}
@@ -114,7 +114,7 @@
             </ul>
         </div>
         <Loader 
-            v-else-if="megamenu_status?.status === 'error'"
+            v-else-if="megamenu_status.status === 'error'"
             class="error-loader" />
         <Loader v-else />
     </div>

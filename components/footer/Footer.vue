@@ -67,7 +67,7 @@
         </div>
 
         <Loader 
-            v-else-if="megamenu_status?.status === 'error'"
+            v-else-if="footer_menu_status.status === 'error'"
             class="error-loader" />
         <Loader v-else />
         </ClientOnly>

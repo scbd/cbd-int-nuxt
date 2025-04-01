@@ -14,7 +14,7 @@
         <ul class="mega-menu-drawer-internal nav">
             <li class="sections-header">Sections</li>
             <li class="level-1-item nav-item">
-                <NuxtLink class="nav-link" to="#">
+                <NuxtLink class="nav-link" :to="props.parent.link">
                     {{ props.parent.title }}
                 </NuxtLink>
             </li>
