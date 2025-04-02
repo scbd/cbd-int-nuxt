@@ -5,6 +5,11 @@ export interface drupalMenu {
         title: string;
         link: {
             uri: string;
+            options: {
+                "component"?: string;
+                "submenu"?: string;
+                "icon"?: string;
+            }
         };
     };
 }
