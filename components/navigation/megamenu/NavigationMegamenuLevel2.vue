@@ -11,7 +11,8 @@
 <template>
     <li 
         v-for="level2_item in props.parent.children"
-        class="level-2-item nav-item">
+        class="level-2-item nav-item"
+        :class="level2_item.children.length > 8 ? 'level-3-items-2-col' : ''">
         <NuxtLink class="nav-link" :to="level2_item.link">
             {{ level2_item.title }}
         </NuxtLink>
