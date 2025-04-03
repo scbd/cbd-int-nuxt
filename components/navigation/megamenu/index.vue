@@ -10,21 +10,13 @@
         </button>
         
         <div 
-            v-if="megamenu_status?.status === 'OK'"
+            v-if="megamenu_status.status === 'OK'"
             class="offcanvas offcanvas-end" 
             tabindex="-1" 
             id="mainNavigation">
             
             <div class="offcanvas-header">
-                <ClientOnly>
-                <NuxtLink to="/" 
-                    class="navbar-brand">
-                    <img 
-                        class="cus-logo" 
-                        :src="`/images/CBD-logo-${ active_language?.active_language.slice(0,2).toUpperCase() }.png`" 
-                        alt="Convention of Biological Diversity Logo" />
-                </NuxtLink>
-                </ClientOnly>
+                <NavigationBranding />
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>                        
 
@@ -113,9 +105,8 @@
                 </li>                
             </ul>
         </div>
-        <Loader 
-            v-else-if="megamenu_status.status === 'error'"
-            class="error-loader" />
-        <Loader v-else />
+        <ClientOnly v-else>
+            <Loader :class="megamenu_status.status === 'error' ? 'error-loader' : ''" />
+        </ClientOnly>
     </div>
 </template>

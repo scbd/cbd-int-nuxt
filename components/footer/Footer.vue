@@ -66,21 +66,8 @@
             </nav>
         </div>
 
-        <Loader 
-            v-else-if="footer_menu_status.status === 'error'"
-            class="error-loader" />
-        <Loader v-else />
+        <Loader v-else :class="footer_menu_status.status === 'error' ? 'error-loader' : ''" />
         </ClientOnly>
-
-        <!-- <div class="footer-row contact-and-legal">
-            <ul>
-                <li>&copy; 2025 Secretariat of the Convention on Biological Diversity</li>
-                <li><NuxtLink to="#">Terms of Use</NuxtLink></li>
-                <li><NuxtLink to="#">Privacy Policy</NuxtLink></li>
-                <li><NuxtLink to="#">Contact Us</NuxtLink></li>
-                <li><NuxtLink to="#">Credits</NuxtLink></li>
-            </ul>
-        </div> -->
 
     </footer>
 </template>
