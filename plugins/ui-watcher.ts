@@ -17,5 +17,14 @@ export default defineNuxtPlugin({
             
             setActiveLanguage(active_language.value.active_language);
         },
+        'page:loading:end'() {
+            useHead({
+                script: [{
+                  src: '/bootstrap/js/bootstrap.bundle.min.js',
+                  type: 'text/javascript',
+                  tagPosition: 'bodyClose'
+                }]
+              })
+        }
     }
 })
