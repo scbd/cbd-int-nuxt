@@ -24,5 +24,12 @@ export interface fetchedMenuItem {
     id: string,
     title: string,
     link: string,
+    options?: {
+        attributes?: {
+            component?: string,
+            submenu?: string,
+            icon?: string
+        }
+    },
     children: fetchedMenuItem[]
 }

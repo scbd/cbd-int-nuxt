@@ -20,7 +20,16 @@
             v-if="level2_item.children.length > 0"
             class="level-3-items nav">
 
-            <NavigationMegamenuLevel3 :parent="level2_item" />
+            <NavigationMegamenuLevel3Dynamic
+                v-if="level2_item.options?.attributes?.component"
+                :parent="level2_item" />
+            
+            <NavigationMegamenuLevel3 v-else :parent="level2_item" />
+        </ul>
+        <ul 
+            v-else
+            class="level-3-items nav">
+            <NavigationMegamenuLevel3Dynamic :parent="level2_item" />
         </ul>
     </li>
 </template>

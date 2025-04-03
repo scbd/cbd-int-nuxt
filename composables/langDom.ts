@@ -62,7 +62,7 @@ const handlerHeaderNavigation = async () => {
         const menu_temp = menuData as fetchedMenu;        
         
         for (const menu_item of menu_temp.menu as fetchedMenuItem[]) {
-            const machine_name = String(`cbd-header-${menu_item.title.replaceAll(' ', '-').toLowerCase()}`).slice(0,32);
+            const machine_name = menu_item.options!.attributes!.submenu!.slice(0,32);
             
             try {
                 const submenuData: fetchedMenu | unknown = await getDrupalMenu(
