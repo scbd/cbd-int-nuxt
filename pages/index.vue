@@ -6,11 +6,13 @@ definePageMeta({
 
 <template>
     <div></div>
-    <!--
-    <HeroSinglefeature />
+    
+    <!-- <HeroSinglefeature /> -->
     <article class="cus-article container-xxl d-flex flex-column">
-        <ContentobjectRow object-type="update" />
-        <ContentobjectRow object-type="meeting" />
+        <!-- <ContentobjectRow object-type="update" /> -->
+        <ClientOnly>
+            <ContentobjectRow object-type="meeting" :objects="meetings!" />
+        </ClientOnly>
     </article>
-    -->
+   
 </template>

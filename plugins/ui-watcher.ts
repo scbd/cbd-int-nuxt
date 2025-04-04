@@ -16,6 +16,8 @@ export default defineNuxtPlugin({
             active_language.value = userSettings.value;
             
             setActiveLanguage(active_language.value.active_language);
+
+            getMeetings('EN', 4, undefined, {params: ''}, null);
         },
         'page:loading:end'() {
             useHead({
@@ -24,7 +26,7 @@ export default defineNuxtPlugin({
                   type: 'text/javascript',
                   tagPosition: 'bodyClose'
                 }]
-              })
+            })
         }
     }
 })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
     defineProps<{
-        objectType?: string,
-        objectTitle?: string,
+        objectType: string,
+        objectTitle: string,
         objectDate?: Date,
         objectSubjects?: string[],
         objectLocation?: string,
@@ -42,7 +42,7 @@
                 <div class="source">{{ objectInfo?.source }}</div>
                 <div class="type">{{ objectInfo?.type }}</div>
             </div>
-            <div class="date">{{ objectDate?.toLocaleDateString() }}</div>
+            <div class="date">{{ Intl.DateTimeFormat('fr', {year: 'numeric', month: 'short', day: 'numeric'}).format(objectDate) }}</div>
         </div>
         <div class="title">{{ objectTitle }}</div>
         <div class="description">{{ objectDescription }}</div>
@@ -54,7 +54,7 @@
         class="content-object"
         :class="objectType"
         >
-        <div class="date">{{ objectDate }}</div>
+        <div class="date">{{ Intl.DateTimeFormat('fr', {year: 'numeric', month: 'short', day: 'numeric'}).format(objectDate) }}</div>
         <div class="title">{{ objectTitle }}</div>
         <div v-show="objectLocation" class="location">{{ objectLocation }}</div>
         <div v-show="objectActionrequired" class="action-required">{{ objectActionrequired }}</div>

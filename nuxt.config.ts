@@ -15,7 +15,8 @@ export default defineNuxtConfig({
     public: {
       DRUPAL_URL: process.env.DRUPAL_URL,
       DRUPAL_CLIENT_ID: process.env.DRUPAL_CLIENT_ID,
-      DRUPAL_SCOPE: process.env.DRUPAL_SCOPE
+      DRUPAL_SCOPE: process.env.DRUPAL_SCOPE,
+      SOLR_QUERY: process.env.SOLR_QUERY
     }
   },
   css: ['~/assets/scss/styles.scss'],
