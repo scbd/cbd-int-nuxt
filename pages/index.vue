@@ -13,8 +13,6 @@ definePageMeta({
 </script>
 
 <template>
-  <div></div>
-
   <!-- <HeroSinglefeature /> -->
   <article class="cus-article container-xxl d-flex flex-column">
     <!-- <ContentobjectRow object-type="update" /> -->

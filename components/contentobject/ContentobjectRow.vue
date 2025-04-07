@@ -16,7 +16,8 @@ const props = defineProps<{
           v-for="content_object in objects?.meetings"
           :object-type="props.objectType"
           :object-title="content_object.title[active_language!.active_language]"
-          :object-date="content_object.start_date"
+          :object-start-date="content_object.start_date"
+          :object-end-date="content_object.end_date"
           :object-event-city="
             content_object.event_city[active_language!.active_language]
           "

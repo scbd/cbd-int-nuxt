@@ -2,7 +2,8 @@
 defineProps<{
   objectType: string;
   objectTitle: string;
-  objectDate?: Date;
+  objectStartDate?: Date;
+  objectEndDate?: Date;
   objectSubjects?: string[];
   objectEventCity?: string;
   objectEventCountry?: string;
@@ -62,11 +63,11 @@ const objectLocation = (
       </div>
       <div class="date">
         {{
-          Intl.DateTimeFormat("fr", {
+          Intl.DateTimeFormat(active_language!.active_language, {
             year: "numeric",
             month: "short",
             day: "numeric",
-          }).format(objectDate)
+          }).format(objectStartDate)
         }}
       </div>
     </div>
@@ -95,8 +96,18 @@ const objectLocation = (
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(objectDate)
+          }).format(objectStartDate)
         }}
+        <template v-if="objectEndDate">
+          &nbsp;&ndash;&nbsp;
+          {{
+            Intl.DateTimeFormat(active_language!.active_language, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(objectEndDate)
+          }}
+        </template>
       </div>
       <div class="title">{{ objectTitle }}</div>
       <div v-show="objectLocation" class="location">
