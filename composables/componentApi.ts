@@ -2,6 +2,8 @@ import type {
   componentRequest,
   componentMeeting,
   componentMeetingRaw,
+  componentNotification,
+  componentNotificationRaw,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
 import type { userSettings } from "~/types/userSettings";
@@ -13,6 +15,14 @@ export const meetings = ref<componentRequest>({
   meetings: [],
 });
 export const meetings_status = ref<componentStatus>({ status: "pending" });
+
+export const notifications = ref<componentRequest>({
+  numFound: 0,
+  start: 0,
+  docs: [],
+  notifications: [],
+});
+export const notifications_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const getMeetings = async (
@@ -40,18 +50,27 @@ export default function getComponents() {
 
     meetings_status.value.status = "pending";
 
-    /**
-     * @param SOLR_QUERY = SOLR_QUERY="https://api.cbddev.xyz/api/v2013/index?q=schema_s:"
-     */
-    const query = `${config.public.SOLR_QUERY}meeting&fl=${field_list?.toString()}&sort=${sort?.params ?? "abs(ms(startDate_dt,NOW))"}${sort?.direction ?? "abs(ms(startDate_dt,NOW))asc"}&rows=${rows ?? 4}`;
+    const params = new URLSearchParams({
+      q: "schema_s:meeting",
+      fl: field_list?.toString() || "",
+      sort: sort?.params
+        ? `${sort.params} ${sort?.direction || "asc"}`
+        : "abs(ms(startDate_dt,NOW)) asc",
+      rows: (rows || 4).toString(),
+    });
+
+    // const query = `${config.public.SOLR_QUERY}meeting&fl=${field_list?.toString()}&sort=${sort?.params ?? "abs(ms(startDate_dt,NOW))"}${sort?.direction ?? "abs(ms(startDate_dt,NOW))asc"}&rows=${rows ?? 4}`;
 
     try {
-      const response = await fetch(query, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const meetings_raw: { response: componentRequest } =
@@ -109,4 +128,78 @@ export default function getComponents() {
   return {
     getMeetings,
   };
+}
+
+export async function getComponentsTest(
+  component_type: string,
+  params: {} | null
+) {
+  notifications_status.value.status = "pending";
+
+  const query = `https://api.cbddev.xyz/api/v2013/index?q=schema_s:notification&sort=date_s%20desc&rows=4`;
+
+  if (component_type === "notifications") {
+    const response = (await fetch(query, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).catch((error) => {
+      console.error(error);
+      notifications_status.value.status = "error";
+    })) as Response;
+
+    const notifications_raw: { response: componentRequest } =
+      await response.json();
+
+    const data_docs_mapped = notifications_raw.response.docs!.map(
+      (raw_data: componentNotificationRaw): componentNotification => ({
+        symbol: raw_data.symbol_s,
+        date: new Date(raw_data.date_s),
+        action_date: raw_data.actionDate_s
+          ? new Date(raw_data.actionDate_s)
+          : undefined,
+        deadline_date: new Date(raw_data.deadline_s),
+        sender: raw_data.sender_s,
+        reference: raw_data.reference_s,
+        url: raw_data.url_ss[0],
+        recipient: raw_data.recipient_ss,
+        title: {
+          ar: raw_data.title_AR_s,
+          en: raw_data.title_EN_s,
+          es: raw_data.title_ES_s,
+          fr: raw_data.title_FR_s,
+          ru: raw_data.title_RU_s,
+          zh: raw_data.title_ZH_s,
+        },
+        themes: {
+          ar: raw_data.themes_AR_ss.join("، "),
+          en: raw_data.themes_EN_ss.join(", "),
+          es: raw_data.themes_ES_ss.join(", "),
+          fr: raw_data.themes_FR_ss.join(", "),
+          ru: raw_data.themes_RU_ss.join(", "),
+          zh: raw_data.themes_ZH_ss.join(", "),
+        },
+        fulltext: {
+          ar: raw_data.fulltext_AR_s,
+          en: raw_data.fulltext_EN_s,
+          es: raw_data.fulltext_ES_s,
+          fr: raw_data.fulltext_FR_s,
+          ru: raw_data.fulltext_RU_s,
+          zh: raw_data.fulltext_ZH_s,
+        },
+      })
+    );
+
+    const notification_list: componentRequest = {
+      numFound: notifications_raw.response.numFound,
+      start: notifications_raw.response.start,
+      notifications: data_docs_mapped,
+    };
+
+    notifications.value = notification_list;
+
+    notifications_status.value.status = "OK";
+    console.log(notification_list);
+  }
 }

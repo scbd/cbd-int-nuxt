@@ -4,10 +4,10 @@ defineProps<{
   objectTitle: string;
   objectStartDate?: Date;
   objectEndDate?: Date;
-  objectSubjects?: string[];
+  objectSubjects?: string;
   objectEventCity?: string;
   objectEventCountry?: string;
-  objectActionRequired?: string;
+  objectActionRequired?: Date;
   objectDescription?: string;
   objectLink?: string;
   objectImg?: {
@@ -32,11 +32,11 @@ const objectLocation = (
   country: string | undefined
 ) => {
   if (language === "ar") {
-    return `${city}، ${country}`;
+    return `${city ?? ""}، ${country ?? ""}`;
   } else if (language === "zh") {
-    return `${city}${country}`;
+    return `${city ?? ""}${country ?? ""}`;
   } else {
-    return `${city}, ${country}`;
+    return `${city ?? ""}, ${country ?? ""}`;
   }
 };
 </script>
@@ -110,7 +110,7 @@ const objectLocation = (
         </template>
       </div>
       <div class="title">{{ objectTitle }}</div>
-      <div v-show="objectLocation" class="location">
+      <div v-show="objectEventCity || objectEventCountry" class="location">
         {{
           objectLocation(
             active_language!.active_language,
@@ -120,12 +120,23 @@ const objectLocation = (
         }}
       </div>
       <div v-show="objectActionRequired" class="action-required">
-        {{ objectActionRequired }}
+        {{
+          `Action required: 
+          ${Intl.DateTimeFormat(active_language!.active_language, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectActionRequired)}`
+        }}
       </div>
-      <div v-show="objectSubjects" class="subjects">{{ objectSubjects }}</div>
+      <div v-show="objectSubjects" class="subjects">
+        {{ `Subject(s): ${objectSubjects}` }}
+      </div>
       <div class="description">{{ objectDescription }}</div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on">View Meeting</NuxtLink>
+        <NuxtLink :to="objectLink" class="read-on"
+          >View {{ objectType }}</NuxtLink
+        >
       </div>
     </div>
     <Loader
