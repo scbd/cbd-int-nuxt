@@ -59,8 +59,6 @@ export default function getComponents() {
       rows: (rows || 4).toString(),
     });
 
-    // const query = `${config.public.SOLR_QUERY}meeting&fl=${field_list?.toString()}&sort=${sort?.params ?? "abs(ms(startDate_dt,NOW))"}${sort?.direction ?? "abs(ms(startDate_dt,NOW))asc"}&rows=${rows ?? 4}`;
-
     try {
       const response = await fetch(
         `${config.public.SOLR_QUERY}?${params.toString()}`,
