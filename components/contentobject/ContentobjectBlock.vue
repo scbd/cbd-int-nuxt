@@ -32,11 +32,11 @@ const objectLocation = (
   country: string | undefined
 ) => {
   if (language === "ar") {
-    return `${city ?? ""}، ${country ?? ""}`;
-  } else if (language === "zh") {
+    return `${city ?? ""}${city && country ? "،" : ""} ${country ?? ""}`;
+  } else if (language === "zh-hans") {
     return `${city ?? ""}${country ?? ""}`;
   } else {
-    return `${city ?? ""}, ${country ?? ""}`;
+    return `${city}${city && country ? "," : ""} ${country ?? ""}`;
   }
 };
 </script>

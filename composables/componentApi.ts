@@ -24,44 +24,38 @@ export const notifications = ref<componentRequest>({
 });
 export const notifications_status = ref<componentStatus>({ status: "pending" });
 
-export default function getComponents() {
-  const getMeetings = async (
-    rows: number | null,
-    field_list: string[] = [
-      "startDate_dt",
-      "endDate_dt",
-      "EVT_CD",
-      "title_*_s",
-      "url_ss",
-      "symbol_s",
-      "eventCity_*_s",
-      "eventCountry_??_s",
-      "status_s",
-    ],
-    sort: {
-      params?: string;
-      direction?: string;
-    } | null,
-    optional: {
-      status: boolean;
-    } | null
-  ) => {
-    const config = useRuntimeConfig();
+export interface searchParams {
+  q: string;
+  fl?: string | string[];
+  sort?: {
+    params?: string;
+    direction?: string;
+  };
+  rows: string | number;
+  optional?: {
+    status?: string;
+  };
+}
 
+export default function getComponents() {
+  const config = useRuntimeConfig();
+
+  const getMeetings = async (search_parameters: searchParams) => {
     meetings_status.value.status = "pending";
 
     const params = new URLSearchParams({
       q: "schema_s:meeting",
-      fl: field_list?.toString() || "",
-      sort: sort?.params
-        ? `${sort.params} ${sort?.direction || "asc"}`
+      fl: search_parameters.fl?.toString() || "",
+      sort: search_parameters.sort?.params
+        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
         : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (rows || 4).toString(),
+      rows: (search_parameters.rows || 4).toString(),
     });
 
     try {
       const response = await fetch(
         `${config.public.SOLR_QUERY}?${params.toString()}`,
+        // "https://api.cbd.int/api/v2013/index?q=schema_s:meeting&fl=startDate_dt,endDate_dt,EVT_CD,title_*_s,url_ss,symbol_s,eventCity_*_s,eventCountry_??_s,status_s&sort=abs(ms(startDate_dt,NOW))asc&rows=4",
         {
           method: "GET",
           headers: {
@@ -123,26 +117,25 @@ export default function getComponents() {
     }
   };
 
-  return {
-    getMeetings,
-  };
-}
+  const getNotifications = async (search_parameters: searchParams) => {
+    const params = new URLSearchParams({
+      q: "schema_s:notification",
+      fl: search_parameters.fl?.toString() || "",
+      sort: search_parameters.sort?.params
+        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+        : "abs(ms(startDate_dt,NOW)) asc",
+      rows: (search_parameters.rows || 4).toString(),
+    });
 
-export async function getComponentsTest(
-  component_type: string,
-  params: {} | null
-) {
-  notifications_status.value.status = "pending";
-
-  const query = `https://api.cbddev.xyz/api/v2013/index?q=schema_s:notification&sort=date_s%20desc&rows=4`;
-
-  if (component_type === "notifications") {
-    const response = (await fetch(query, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).catch((error) => {
+    const response = (await fetch(
+      `${config.public.SOLR_QUERY}?${params.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).catch((error) => {
       console.error(error);
       notifications_status.value.status = "error";
     })) as Response;
@@ -198,6 +191,10 @@ export async function getComponentsTest(
     notifications.value = notification_list;
 
     notifications_status.value.status = "OK";
-    console.log(notification_list);
-  }
+  };
+
+  return {
+    getMeetings,
+    getNotifications,
+  };
 }
