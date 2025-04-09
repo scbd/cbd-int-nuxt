@@ -39,14 +39,16 @@ export default function getComponents() {
     const config = useRuntimeConfig();
 
     meetings_status.value.status = "pending";
-
-    /**
-     * @param SOLR_QUERY = SOLR_QUERY="https://api.cbddev.xyz/api/v2013/index?q=schema_s:"
-     */
-    const query = `${config.public.SOLR_QUERY}meeting&fl=${field_list?.toString()}&sort=${sort?.params ?? "abs(ms(startDate_dt,NOW))"}${sort?.direction ?? "abs(ms(startDate_dt,NOW))asc"}&rows=${rows ?? 4}`;
-
+    
+    const params = new URLSearchParams({
+      q: "schema_s:meeting",
+      fl: field_list?.toString() || "",
+      sort: sort?.params ? `${sort.params} ${sort?.direction || "asc"}` : "abs(ms(startDate_dt,NOW)) asc",
+      rows: (rows || 4).toString()
+    });
+    
     try {
-      const response = await fetch(query, {
+      const response = await fetch(`${config.public.SOLR_QUERY}?${params.toString()}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
