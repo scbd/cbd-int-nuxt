@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import getComponents, { type searchParams } from "~/composables/componentApi";
+import getComponents from "~/composables/componentApi";
+import type { searchParams } from "~/types/components";
 
 const { getMeetings, getNotifications } = getComponents();
 
