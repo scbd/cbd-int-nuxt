@@ -22,7 +22,6 @@ export interface searchParams {
 export interface componentMeeting {
   symbol: string;
   url: string;
-  title_test?: string;
   title: {
     [ar: string]: string;
     en: string;
@@ -31,7 +30,7 @@ export interface componentMeeting {
     ru: string;
     zh: string;
   };
-  event_city: {
+  event_city?: {
     [ar: string]: string;
     en: string;
     es: string;
@@ -39,7 +38,7 @@ export interface componentMeeting {
     ru: string;
     zh: string;
   };
-  event_country: {
+  event_country?: {
     [ar: string]: string;
     en: string;
     es: string;
@@ -48,19 +47,19 @@ export interface componentMeeting {
     zh: string;
   };
   status: string;
-  start_date: Date;
-  end_date: Date;
+  start_date?: Date;
+  end_date?: Date;
 }
 
 export interface componentNotification {
   symbol: string;
-  date: Date;
+  date?: Date;
   action_date?: Date;
-  deadline_date: Date;
-  sender: string;
-  reference: string;
+  deadline_date?: Date;
+  sender?: string;
+  reference?: string;
   url: string;
-  recipient: string[];
+  recipient?: string[];
   title: {
     [ar: string]: string;
     en: string;
@@ -69,7 +68,7 @@ export interface componentNotification {
     ru: string;
     zh: string;
   };
-  themes: {
+  themes?: {
     [ar: string]: string;
     en: string;
     es: string;
@@ -77,7 +76,7 @@ export interface componentNotification {
     ru: string;
     zh: string;
   };
-  fulltext: {
+  fulltext?: {
     [ar: string]: string;
     en: string;
     es: string;
@@ -90,7 +89,7 @@ export interface componentNotification {
 export interface componentNotificationRaw {
   symbol_s: string;
   date_s: string;
-  actionDate_s?: string | undefined;
+  actionDate_s?: string;
   deadline_s: string;
   sender_s: string;
   reference_s: string;
@@ -102,18 +101,18 @@ export interface componentNotificationRaw {
   title_FR_s: string;
   title_RU_s: string;
   title_ZH_s: string;
-  themes_AR_ss: string[];
-  themes_EN_ss: string[];
-  themes_ES_ss: string[];
-  themes_FR_ss: string[];
-  themes_RU_ss: string[];
-  themes_ZH_ss: string[];
-  fulltext_AR_s: string;
-  fulltext_EN_s: string;
-  fulltext_ES_s: string;
-  fulltext_FR_s: string;
-  fulltext_RU_s: string;
-  fulltext_ZH_s: string;
+  themes_AR_ss?: string[];
+  themes_EN_ss?: string[];
+  themes_ES_ss?: string[];
+  themes_FR_ss?: string[];
+  themes_RU_ss?: string[];
+  themes_ZH_ss?: string[];
+  fulltext_AR_s?: string;
+  fulltext_EN_s?: string;
+  fulltext_ES_s?: string;
+  fulltext_FR_s?: string;
+  fulltext_RU_s?: string;
+  fulltext_ZH_s?: string;
 }
 
 export interface componentMeetingRaw {

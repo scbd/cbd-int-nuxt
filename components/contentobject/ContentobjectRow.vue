@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { componentRequest, componentMeeting } from "~/types/components";
+import type { componentRequest } from "~/types/components";
 
 const props = defineProps<{
   objectType: string;
@@ -22,12 +22,12 @@ const props = defineProps<{
           :object-start-date="content_object.start_date"
           :object-end-date="content_object.end_date"
           :object-event-city="
-            content_object.event_city[
+            content_object.event_city?.[
               active_language!.active_language.slice(0, 2)
             ]
           "
           :object-event-country="
-            content_object.event_country[
+            content_object.event_country?.[
               active_language!.active_language.slice(0, 2)
             ]
           "
@@ -43,12 +43,14 @@ const props = defineProps<{
           :object-start-date="content_object.date"
           :object-action-required="content_object.action_date"
           :object-description="
-            content_object.fulltext[
+            content_object.fulltext?.[
               active_language!.active_language.slice(0, 2)
             ]
           "
           :object-subjects="
-            content_object.themes[active_language!.active_language.slice(0, 2)]
+            content_object.themes?.[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-link="content_object.url"
         />

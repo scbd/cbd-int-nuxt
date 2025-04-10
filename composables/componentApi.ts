@@ -7,7 +7,6 @@ import type {
   searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
-import type { userSettings } from "~/types/userSettings";
 
 export const meetings = ref<componentRequest>({
   numFound: 0,
@@ -58,8 +57,12 @@ export default function getComponents() {
         const data_docs_mapped = meetings_raw.response.docs!.map(
           (raw_data: componentMeetingRaw): componentMeeting => ({
             symbol: raw_data.symbol_s,
-            start_date: new Date(raw_data.startDate_dt),
-            end_date: new Date(raw_data.endDate_dt),
+            start_date: raw_data.startDate_dt
+              ? new Date(raw_data.startDate_dt)
+              : undefined,
+            end_date: raw_data.startDate_dt
+              ? new Date(raw_data?.endDate_dt)
+              : undefined,
             url: raw_data.url_ss[0],
             title: {
               ar: raw_data.title_AR_s,
@@ -133,7 +136,7 @@ export default function getComponents() {
     const data_docs_mapped = notifications_raw.response.docs!.map(
       (raw_data: componentNotificationRaw): componentNotification => ({
         symbol: raw_data.symbol_s,
-        date: new Date(raw_data.date_s),
+        date: raw_data.date_s ? new Date(raw_data.date_s) : undefined,
         action_date: raw_data.actionDate_s
           ? new Date(raw_data.actionDate_s)
           : undefined,
@@ -151,20 +154,20 @@ export default function getComponents() {
           zh: raw_data.title_ZH_s,
         },
         themes: {
-          ar: raw_data.themes_AR_ss.join("، "),
-          en: raw_data.themes_EN_ss.join(", "),
-          es: raw_data.themes_ES_ss.join(", "),
-          fr: raw_data.themes_FR_ss.join(", "),
-          ru: raw_data.themes_RU_ss.join(", "),
-          zh: raw_data.themes_ZH_ss.join(", "),
+          ar: raw_data.themes_AR_ss?.join("، ") ?? "",
+          en: raw_data.themes_EN_ss?.join(", ") ?? "",
+          es: raw_data.themes_ES_ss?.join(", ") ?? "",
+          fr: raw_data.themes_FR_ss?.join(", ") ?? "",
+          ru: raw_data.themes_RU_ss?.join(", ") ?? "",
+          zh: raw_data.themes_ZH_ss?.join(", ") ?? "",
         },
         fulltext: {
-          ar: raw_data.fulltext_AR_s,
-          en: raw_data.fulltext_EN_s,
-          es: raw_data.fulltext_ES_s,
-          fr: raw_data.fulltext_FR_s,
-          ru: raw_data.fulltext_RU_s,
-          zh: raw_data.fulltext_ZH_s,
+          ar: raw_data.fulltext_AR_s ?? "",
+          en: raw_data.fulltext_EN_s ?? "",
+          es: raw_data.fulltext_ES_s ?? "",
+          fr: raw_data.fulltext_FR_s ?? "",
+          ru: raw_data.fulltext_RU_s ?? "",
+          zh: raw_data.fulltext_ZH_s ?? "",
         },
       })
     );
