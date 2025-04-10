@@ -4,6 +4,7 @@ import type {
   componentMeetingRaw,
   componentNotification,
   componentNotificationRaw,
+  searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
 import type { userSettings } from "~/types/userSettings";
@@ -24,19 +25,6 @@ export const notifications = ref<componentRequest>({
 });
 export const notifications_status = ref<componentStatus>({ status: "pending" });
 
-export interface searchParams {
-  q: string;
-  fl?: string | string[];
-  sort?: {
-    params?: string;
-    direction?: string;
-  };
-  rows: string | number;
-  optional?: {
-    status?: string;
-  };
-}
-
 export default function getComponents() {
   const config = useRuntimeConfig();
 
@@ -55,7 +43,6 @@ export default function getComponents() {
     try {
       const response = await fetch(
         `${config.public.SOLR_QUERY}?${params.toString()}`,
-        // "https://api.cbd.int/api/v2013/index?q=schema_s:meeting&fl=startDate_dt,endDate_dt,EVT_CD,title_*_s,url_ss,symbol_s,eventCity_*_s,eventCountry_??_s,status_s&sort=abs(ms(startDate_dt,NOW))asc&rows=4",
         {
           method: "GET",
           headers: {

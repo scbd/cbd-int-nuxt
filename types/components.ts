@@ -6,6 +6,19 @@ export interface componentRequest {
   notifications?: componentNotification[];
 }
 
+export interface searchParams {
+  q: string;
+  fl?: string | string[];
+  sort?: {
+    params?: string;
+    direction?: string;
+  };
+  rows: string | number;
+  optional?: {
+    status?: string;
+  };
+}
+
 export interface componentMeeting {
   symbol: string;
   url: string;
