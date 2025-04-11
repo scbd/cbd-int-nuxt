@@ -58,15 +58,13 @@ if (component_component?.includes("Meetings")) {
     <li v-for="meeting in meetings.meetings" class="nav-item">
       <NuxtLink class="nav-link" :to="meeting.url">
         {{
-          `(${Intl.DateTimeFormat(
-            active_language!.active_language.slice(0, 2),
-            {
-              year: "2-digit",
-              month: "2-digit",
-              day: "2-digit",
-            }
-          ).format(meeting.start_date)})`
+          Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "2-digit",
+          }).format(meeting.start_date)
         }}
+        <br />
         {{ meeting.title[active_language!.active_language.slice(0, 2)] }}
       </NuxtLink>
     </li>
@@ -79,12 +77,13 @@ if (component_component?.includes("Meetings")) {
   >
     <NuxtLink class="nav-link" :to="notification.url">
       {{
-        `(${Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
-          year: "2-digit",
-          month: "2-digit",
+        Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+          year: "numeric",
+          month: "long",
           day: "2-digit",
-        }).format(notification.date)})`
+        }).format(notification.date)
       }}
+      <br />
       {{
         `${notification.symbol}: ${notification.title[active_language!.active_language.slice(0, 2)]}`
       }}
