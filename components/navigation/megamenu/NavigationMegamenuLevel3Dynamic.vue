@@ -37,7 +37,7 @@ if (component_component?.includes("Meetings")) {
     if (!notifications.value.notifications?.length) {
       const search_params: searchParams = {
         q: "schema_s:notification",
-        fl: ["title_*_s", "url_ss"],
+        fl: ["title_*_s", "symbol_s", "date_s", "url_ss"],
         sort: {
           params: "date_s",
           direction: "desc",
@@ -57,6 +57,16 @@ if (component_component?.includes("Meetings")) {
   <template v-if="component_object.type === 'meeting'">
     <li v-for="meeting in meetings.meetings" class="nav-item">
       <NuxtLink class="nav-link" :to="meeting.url">
+        {{
+          `(${Intl.DateTimeFormat(
+            active_language!.active_language.slice(0, 2),
+            {
+              year: "2-digit",
+              month: "2-digit",
+              day: "2-digit",
+            }
+          ).format(meeting.start_date)})`
+        }}
         {{ meeting.title[active_language!.active_language.slice(0, 2)] }}
       </NuxtLink>
     </li>
@@ -68,12 +78,17 @@ if (component_component?.includes("Meetings")) {
     class="nav-item"
   >
     <NuxtLink class="nav-link" :to="notification.url">
-      {{ notification.title[active_language!.active_language.slice(0, 2)] }}
+      {{
+        `(${Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+          year: "2-digit",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(notification.date)})`
+      }}
+      {{
+        `${notification.symbol}: ${notification.title[active_language!.active_language.slice(0, 2)]}`
+      }}
     </NuxtLink>
-  </li>
-
-  <li v-else>
-    {{ component_component }}
   </li>
 
   <li v-else v-for="i = 1 in 3" class="nav-item">

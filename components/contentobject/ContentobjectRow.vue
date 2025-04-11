@@ -40,6 +40,7 @@ const props = defineProps<{
           :object-title="
             content_object.title[active_language!.active_language.slice(0, 2)]
           "
+          :object-symbol="content_object.symbol"
           :object-start-date="content_object.date"
           :object-action-required="content_object.action_date"
           :object-description="
