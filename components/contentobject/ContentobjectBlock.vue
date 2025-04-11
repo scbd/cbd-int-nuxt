@@ -169,6 +169,11 @@ const objectLocation = (
         {{ `Subject(s): ${objectSubjects}` }}
       </div>
       <div class="description">{{ objectDescription }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on"
+          >View {{ objectType }}</NuxtLink
+        >
+      </div>
     </div>
     <Loader
       v-else
