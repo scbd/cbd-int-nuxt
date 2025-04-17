@@ -9,9 +9,22 @@ const props = defineProps<{
 
 <template>
   <ClientOnly>
-    <section class="content-row content-updates d-flex flex-column">
+    <section
+      class="content-row d-flex flex-column"
+      :class="objectType === 'update' ? 'recent-updates' : objectType"
+    >
       <div class="row-title">Recent {{ objectType }}s</div>
       <div class="content-wrapper d-flex">
+        <ContentobjectBlock
+          v-if="objects.articles && objects.articles.length > 0"
+          v-for="content_object in objects?.articles"
+          :object-type="props.objectType"
+          :object-title="content_object.title"
+          :object-start-date="content_object.date_created"
+          :object-img="{ imgSrc: content_object.image_cover }"
+          :object-link="content_object.url"
+        />
+
         <ContentobjectBlock
           v-if="objects.meetings && objects.meetings.length > 0"
           v-for="content_object in objects?.meetings"
@@ -19,8 +32,8 @@ const props = defineProps<{
           :object-title="
             content_object.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-start-date="content_object.start_date"
-          :object-end-date="content_object.end_date"
+          :object-start-date="content_object.date_start"
+          :object-end-date="content_object.date_end"
           :object-event-city="
             content_object.event_city[
               active_language!.active_language.slice(0, 2)
@@ -42,7 +55,7 @@ const props = defineProps<{
           "
           :object-symbol="content_object.symbol"
           :object-start-date="content_object.date"
-          :object-action-required="content_object.action_date"
+          :object-action-required="content_object.date_action"
           :object-description="
             content_object.fulltext[
               active_language!.active_language.slice(0, 2)

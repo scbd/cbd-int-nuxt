@@ -1,13 +1,20 @@
-import type {
-  componentRequest,
-  componentMeeting,
-  componentMeetingRaw,
-  componentNotification,
-  componentNotificationRaw,
-  searchParams,
+import {
+  type componentRequest,
+  type componentArticle,
+  type componentArticleRaw,
+  type componentMeeting,
+  type componentMeetingRaw,
+  type componentNotification,
+  type componentNotificationRaw,
+  type searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
 import type { userSettings } from "~/types/userSettings";
+
+export const articles = ref<componentRequest>({
+  data: [],
+});
+export const articles_status = ref<componentStatus>({ status: "pending" });
 
 export const meetings = ref<componentRequest>({
   numFound: 0,
@@ -27,6 +34,49 @@ export const notifications_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
+
+  const getArticles = async (search_parameters: searchParams) => {
+    articles_status.value.status = "pending";
+
+    const params = new URLSearchParams({});
+
+    try {
+      const response = await fetch(
+        // `https://cbd.int.ddev.site/jsonapi/node/article?${params.toString()}`,
+        `https://cbd.int.ddev.site/jsonapi/node/article`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const articles_raw: componentRequest = await response.json();
+
+        const data_mapped = articles_raw.data!.map(
+          (raw_data: componentArticleRaw): componentArticle => ({
+            title: raw_data.attributes.title,
+            url: raw_data.attributes.path.alias,
+            //image_cover: "",
+            date_created: new Date(raw_data.attributes.created),
+            date_edited: new Date(raw_data.attributes.changed),
+            content: raw_data.attributes.body.processed,
+          })
+        );
+
+        const articles_list: componentRequest = {
+          articles: data_mapped,
+        };
+
+        articles.value = articles_list;
+        articles_status.value.status = "OK";
+      }
+    } catch (error) {
+      console.error(error);
+      articles_status.value.status = "error";
+    }
+  };
 
   const getMeetings = async (search_parameters: searchParams) => {
     meetings_status.value.status = "pending";
@@ -58,8 +108,8 @@ export default function getComponents() {
         const data_docs_mapped = meetings_raw.response.docs!.map(
           (raw_data: componentMeetingRaw): componentMeeting => ({
             symbol: raw_data.symbol_s,
-            start_date: new Date(raw_data.startDate_dt),
-            end_date: new Date(raw_data.endDate_dt),
+            date_start: new Date(raw_data.startDate_dt),
+            date_end: new Date(raw_data.endDate_dt),
             url: raw_data.url_ss[0],
             title: {
               ar: raw_data.title_AR_s,
@@ -134,10 +184,10 @@ export default function getComponents() {
       (raw_data: componentNotificationRaw): componentNotification => ({
         symbol: raw_data.symbol_s,
         date: new Date(raw_data.date_s),
-        action_date: raw_data.actionDate_s
+        date_action: raw_data.actionDate_s
           ? new Date(raw_data.actionDate_s)
           : undefined,
-        deadline_date: new Date(raw_data.deadline_s),
+        date_deadline: new Date(raw_data.deadline_s),
         sender: raw_data.sender_s,
         reference: raw_data.reference_s,
         url: raw_data.url_ss[0],
@@ -181,6 +231,7 @@ export default function getComponents() {
   };
 
   return {
+    getArticles,
     getMeetings,
     getNotifications,
   };

@@ -1,7 +1,9 @@
 export interface componentRequest {
-  numFound: number;
-  start: number;
+  numFound?: number;
+  start?: number;
+  data?: [];
   docs?: [];
+  articles?: componentArticle[];
   meetings?: componentMeeting[];
   notifications?: componentNotification[];
 }
@@ -19,10 +21,9 @@ export interface searchParams {
   };
 }
 
-export interface componentMeeting {
+export interface componentGeneric {
   symbol: string;
   url: string;
-  title_test?: string;
   title: {
     [ar: string]: string;
     en: string;
@@ -31,6 +32,21 @@ export interface componentMeeting {
     ru: string;
     zh: string;
   };
+}
+
+export interface componentArticle {
+  title: string;
+  url: string;
+  image_cover?: string;
+  date_created: Date;
+  date_edited?: Date;
+  content: string;
+}
+
+export interface componentMeeting extends componentGeneric {
+  status: string;
+  date_start: Date;
+  date_end: Date;
   event_city: {
     [ar: string]: string;
     en: string;
@@ -47,28 +63,15 @@ export interface componentMeeting {
     ru: string;
     zh: string;
   };
-  status: string;
-  start_date: Date;
-  end_date: Date;
 }
 
-export interface componentNotification {
-  symbol: string;
+export interface componentNotification extends componentGeneric {
   date: Date;
-  action_date?: Date;
-  deadline_date: Date;
+  date_action?: Date;
+  date_deadline: Date;
   sender: string;
   reference: string;
-  url: string;
   recipient: string[];
-  title: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
   themes: {
     [ar: string]: string;
     en: string;
@@ -87,10 +90,30 @@ export interface componentNotification {
   };
 }
 
+export interface componentArticleRaw {
+  attributes: {
+    langcode: string;
+    status: boolean;
+    title: string;
+    created: string;
+    changed: string;
+    revision_timestamp: string;
+    promote: boolean;
+    sticky: boolean;
+    path: {
+      alias: string;
+      langcode: string;
+    };
+    body: {
+      processed: string;
+    };
+  };
+}
+
 export interface componentNotificationRaw {
   symbol_s: string;
   date_s: string;
-  actionDate_s?: string | undefined;
+  actionDate_s?: string;
   deadline_s: string;
   sender_s: string;
   reference_s: string;

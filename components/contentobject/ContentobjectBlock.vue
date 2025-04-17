@@ -43,41 +43,49 @@ const objectLocation = (
 </script>
 
 <template>
-  <div
-    v-if="objectType === 'update'"
-    class="content-object"
-    :class="[
-      objectType,
-      objectInfo?.source ? `accent-${objectInfo.source}` : '',
-    ]"
-  >
-    <img
-      v-show="objectImg"
-      :src="objectImg?.imgSrc"
-      :alt="objectImg?.imgDescription"
-      class="content-image"
+  <template v-if="objectType === 'update'">
+    <div
+      v-if="meetings_status.status === 'OK'"
+      class="content-object"
+      :class="[
+        objectType,
+        objectInfo?.source ? `accent-${objectInfo.source}` : 'accent-cbd',
+      ]"
+    >
+      <img
+        v-show="objectImg"
+        :src="objectImg?.imgSrc ?? '/images/update-1.jpg'"
+        :alt="objectImg?.imgDescription"
+        class="content-image"
+      />
+      <div class="information">
+        <div class="taxonomy">
+          <div class="source">{{ objectInfo?.source ?? "CBD" }}</div>
+          <div class="type">{{ objectInfo?.type ?? "Article" }}</div>
+        </div>
+        <div class="date">
+          {{
+            Intl.DateTimeFormat(active_language!.active_language, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }).format(objectStartDate)
+          }}
+        </div>
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="description">
+        {{ objectDescription ?? "Description Placeholder" }}
+      </div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on">Read on</NuxtLink>
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="meetings_status.status === 'error' ? 'error-loader' : ''"
     />
-    <div class="information">
-      <div class="taxonomy">
-        <div class="source">{{ objectInfo?.source }}</div>
-        <div class="type">{{ objectInfo?.type }}</div>
-      </div>
-      <div class="date">
-        {{
-          Intl.DateTimeFormat(active_language!.active_language, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          }).format(objectStartDate)
-        }}
-      </div>
-    </div>
-    <div class="title">{{ objectTitle }}</div>
-    <div class="description">{{ objectDescription }}</div>
-    <div class="read-on-wrapper">
-      <NuxtLink :to="objectLink" class="read-on">Read on</NuxtLink>
-    </div>
-  </div>
+  </template>
 
   <template v-else-if="objectType === 'meeting'">
     <div
