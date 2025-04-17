@@ -19,8 +19,8 @@ const props = defineProps<{
           :object-title="
             content_object.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-start-date="content_object.start_date"
-          :object-end-date="content_object.end_date"
+          :object-start-date="content_object.date"
+          :object-end-date="content_object.date_end"
           :object-event-city="
             content_object.event_city[
               active_language!.active_language.slice(0, 2)
@@ -42,7 +42,7 @@ const props = defineProps<{
           "
           :object-symbol="content_object.symbol"
           :object-start-date="content_object.date"
-          :object-action-required="content_object.action_date"
+          :object-action-required="content_object.date_action"
           :object-description="
             content_object.fulltext[
               active_language!.active_language.slice(0, 2)

@@ -4,6 +4,7 @@ export interface componentRequest {
   docs?: [];
   meetings?: componentMeeting[];
   notifications?: componentNotification[];
+  statements?: componentStatement[];
 }
 
 export interface searchParams {
@@ -19,10 +20,10 @@ export interface searchParams {
   };
 }
 
-export interface componentMeeting {
+interface componentGeneric {
   symbol: string;
+  date: Date;
   url: string;
-  title_test?: string;
   title: {
     [ar: string]: string;
     en: string;
@@ -31,6 +32,10 @@ export interface componentMeeting {
     ru: string;
     zh: string;
   };
+}
+
+export interface componentMeeting extends componentGeneric {
+  date_end: Date;
   event_city: {
     [ar: string]: string;
     en: string;
@@ -48,27 +53,14 @@ export interface componentMeeting {
     zh: string;
   };
   status: string;
-  start_date: Date;
-  end_date: Date;
 }
 
-export interface componentNotification {
-  symbol: string;
-  date: Date;
-  action_date?: Date;
-  deadline_date: Date;
+export interface componentNotification extends componentGeneric {
+  date_action?: Date;
+  date_deadline: Date;
   sender: string;
   reference: string;
-  url: string;
   recipient: string[];
-  title: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
   themes: {
     [ar: string]: string;
     en: string;
@@ -85,6 +77,37 @@ export interface componentNotification {
     ru: string;
     zh: string;
   };
+}
+
+export interface componentStatement extends componentGeneric {
+  // location: string;
+  // description: string;
+}
+
+export interface componentMeetingRaw {
+  status_s: string;
+  symbol_s: string;
+  title_AR_s: string;
+  title_EN_s: string;
+  title_ES_s: string;
+  title_FR_s: string;
+  title_RU_s: string;
+  title_ZH_s: string;
+  url_ss: string;
+  startDate_dt: Date;
+  endDate_dt: Date;
+  eventCity_AR_s: string;
+  eventCity_EN_s: string;
+  eventCity_ES_s: string;
+  eventCity_FR_s: string;
+  eventCity_RU_s: string;
+  eventCity_ZH_s: string;
+  eventCountry_AR_s: string;
+  eventCountry_EN_s: string;
+  eventCountry_ES_s: string;
+  eventCountry_FR_s: string;
+  eventCountry_RU_s: string;
+  eventCountry_ZH_s: string;
 }
 
 export interface componentNotificationRaw {
@@ -116,9 +139,9 @@ export interface componentNotificationRaw {
   fulltext_ZH_s: string;
 }
 
-export interface componentMeetingRaw {
-  status_s: string;
+export interface componentStatementRaw {
   symbol_s: string;
+  date_s: string;
   title_AR_s: string;
   title_EN_s: string;
   title_ES_s: string;
@@ -126,18 +149,4 @@ export interface componentMeetingRaw {
   title_RU_s: string;
   title_ZH_s: string;
   url_ss: string;
-  startDate_dt: Date;
-  endDate_dt: Date;
-  eventCity_AR_s: string;
-  eventCity_EN_s: string;
-  eventCity_ES_s: string;
-  eventCity_FR_s: string;
-  eventCity_RU_s: string;
-  eventCity_ZH_s: string;
-  eventCountry_AR_s: string;
-  eventCountry_EN_s: string;
-  eventCountry_ES_s: string;
-  eventCountry_FR_s: string;
-  eventCountry_RU_s: string;
-  eventCountry_ZH_s: string;
 }

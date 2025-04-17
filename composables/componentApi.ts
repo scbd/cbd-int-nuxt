@@ -4,6 +4,8 @@ import type {
   componentMeetingRaw,
   componentNotification,
   componentNotificationRaw,
+  componentStatement,
+  componentStatementRaw,
   searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
@@ -24,6 +26,14 @@ export const notifications = ref<componentRequest>({
   notifications: [],
 });
 export const notifications_status = ref<componentStatus>({ status: "pending" });
+
+export const statements = ref<componentRequest>({
+  numFound: 0,
+  start: 0,
+  docs: [],
+  statements: [],
+});
+export const statements_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
@@ -58,8 +68,8 @@ export default function getComponents() {
         const data_docs_mapped = meetings_raw.response.docs!.map(
           (raw_data: componentMeetingRaw): componentMeeting => ({
             symbol: raw_data.symbol_s,
-            start_date: new Date(raw_data.startDate_dt),
-            end_date: new Date(raw_data.endDate_dt),
+            date: new Date(raw_data.startDate_dt),
+            date_end: new Date(raw_data.endDate_dt),
             url: raw_data.url_ss[0],
             title: {
               ar: raw_data.title_AR_s,
@@ -134,10 +144,10 @@ export default function getComponents() {
       (raw_data: componentNotificationRaw): componentNotification => ({
         symbol: raw_data.symbol_s,
         date: new Date(raw_data.date_s),
-        action_date: raw_data.actionDate_s
+        date_action: raw_data.actionDate_s
           ? new Date(raw_data.actionDate_s)
           : undefined,
-        deadline_date: new Date(raw_data.deadline_s),
+        date_deadline: new Date(raw_data.deadline_s),
         sender: raw_data.sender_s,
         reference: raw_data.reference_s,
         url: raw_data.url_ss[0],
@@ -180,8 +190,67 @@ export default function getComponents() {
     notifications_status.value.status = "OK";
   };
 
+  const getStatements = async (search_parameters: searchParams) => {
+    statements_status.value.status = "pending";
+
+    const params = new URLSearchParams({
+      q: "schema_s:statement",
+      fl: search_parameters.fl?.toString() || "",
+      sort: search_parameters.sort?.params
+        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+        : "abs(ms(startDate_dt,NOW)) asc",
+      rows: (search_parameters.rows || 4).toString(),
+    });
+
+    try {
+      const response = await fetch(
+        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const statements_raw: { response: componentRequest } =
+          await response.json();
+
+        const data_docs_mapped = statements_raw.response.docs!.map(
+          (raw_data: componentStatementRaw): componentStatement => ({
+            symbol: raw_data.symbol_s,
+            date: new Date(raw_data.date_s),
+            url: raw_data.url_ss[0],
+            title: {
+              ar: raw_data.title_AR_s,
+              en: raw_data.title_EN_s,
+              es: raw_data.title_ES_s,
+              fr: raw_data.title_FR_s,
+              ru: raw_data.title_RU_s,
+              zh: raw_data.title_ZH_s,
+            },
+          })
+        );
+
+        const statement_list: componentRequest = {
+          numFound: statements_raw.response.numFound,
+          start: statements_raw.response.start,
+          statements: data_docs_mapped,
+        };
+
+        statements.value = statement_list;
+        statements_status.value.status = "OK";
+      }
+    } catch (error) {
+      console.error(error);
+      statements_status.value.status = "error";
+    }
+  };
+
   return {
     getMeetings,
     getNotifications,
+    getStatements,
   };
 }
