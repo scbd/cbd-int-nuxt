@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { componentRequest, componentMeeting } from "~/types/components";
+import type { componentRequest } from "~/types/components";
 
 const props = defineProps<{
   objectType: string;
@@ -9,51 +9,65 @@ const props = defineProps<{
 
 <template>
   <ClientOnly>
-    <section class="content-row content-updates d-flex flex-column">
+    <section
+      class="content-row d-flex flex-column"
+      :class="objectType === 'update' ? 'recent-updates' : objectType"
+    >
       <div class="row-title">Recent {{ objectType }}s</div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
           v-if="objects.meetings && objects.meetings.length > 0"
-          v-for="content_object in objects?.meetings"
-          :object-type="props.objectType"
+          v-for="meeting in objects?.meetings"
+          :object-type="objectType"
           :object-title="
-            content_object.title[active_language!.active_language.slice(0, 2)]
+            meeting.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-start-date="content_object.date"
-          :object-end-date="content_object.date_end"
+          :object-start-date="meeting.date"
+          :object-end-date="meeting.date_end"
           :object-event-city="
-            content_object.event_city[
-              active_language!.active_language.slice(0, 2)
-            ]
+            meeting.event_city[active_language!.active_language.slice(0, 2)]
           "
           :object-event-country="
-            content_object.event_country[
-              active_language!.active_language.slice(0, 2)
-            ]
+            meeting.event_country[active_language!.active_language.slice(0, 2)]
           "
-          :object-link="content_object.url"
+          :object-link="meeting.url"
         />
         <ContentobjectBlock
-          v-if="objects.notifications && objects.notifications.length > 0"
-          v-for="content_object in objects?.notifications"
-          :object-type="props.objectType"
+          v-else-if="objects.notifications && objects.notifications.length > 0"
+          v-for="notification in objects?.notifications"
+          :object-type="objectType"
           :object-title="
-            content_object.title[active_language!.active_language.slice(0, 2)]
+            notification.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-symbol="content_object.symbol"
-          :object-start-date="content_object.date"
-          :object-action-required="content_object.date_action"
+          :object-symbol="notification.symbol"
+          :object-start-date="notification.date"
+          :object-action-required="notification.date_action"
           :object-description="
-            content_object.fulltext[
-              active_language!.active_language.slice(0, 2)
-            ]
+            notification.fulltext[active_language!.active_language.slice(0, 2)]
           "
           :object-subjects="
-            content_object.themes[active_language!.active_language.slice(0, 2)]
+            notification.themes[active_language!.active_language.slice(0, 2)]
           "
-          :object-link="content_object.url"
+          :object-link="notification.url"
+        />
+        <ContentobjectBlock
+          v-else-if="objects.statements && objects.statements.length > 0"
+          v-for="statement in objects.statements"
+          :object-type="objectType"
+          :object-symbol="statement.symbol"
+          :object-title="
+            statement.title[active_language!.active_language.slice(0, 2)]
+          "
+          :object-start-date="statement.date"
+          :object-link="statement.url"
         />
       </div>
+      <NuxtLink
+        to="#"
+        class="btn cbd-btn cbd-btn-outline-more-content"
+        role="button"
+        >More {{ objectType }}</NuxtLink
+      >
     </section>
   </ClientOnly>
 </template>
