@@ -43,7 +43,7 @@ const objectLocation = (
 </script>
 
 <template>
-  <template v-if="objectType === 'update'">
+  <template v-if="objectType === 'article'">
     <div
       v-if="meetings_status.status === 'OK'"
       class="content-object"

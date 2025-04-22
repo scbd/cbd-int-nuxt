@@ -21,7 +21,7 @@ export interface searchParams {
   };
 }
 
-export interface componentGeneric {
+export interface componentBase {
   symbol: string;
   url: string;
   title: {
@@ -34,8 +34,76 @@ export interface componentGeneric {
   };
 }
 
+export interface componentSanitized {
+  type: string;
+  date: Date;
+  url: string;
+  title:
+    | string
+    | {
+        [ar: string]: string;
+        en: string;
+        es: string;
+        fr: string;
+        ru: string;
+        zh: string;
+      };
+  symbol?: string;
+  image_cover?: string;
+  date_edited?: Date;
+  content?: string;
+  status?: string;
+  date_end?: Date;
+  event_city?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
+  event_country?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
+  date_action?: Date;
+  date_deadline?: Date;
+  sender?: string;
+  reference?: string;
+  recipient?: string[];
+  themes?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
+  fulltext?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
+}
+
 export interface componentArticle {
-  title: string;
+  title:
+    | string
+    | {
+        [ar: string]: string;
+        en: string;
+        es: string;
+        fr: string;
+        ru: string;
+        zh: string;
+      };
   url: string;
   image_cover?: string;
   date_created: Date;
@@ -43,7 +111,7 @@ export interface componentArticle {
   content: string;
 }
 
-export interface componentMeeting extends componentGeneric {
+export interface componentMeeting extends componentBase {
   status: string;
   date_start: Date;
   date_end: Date;
@@ -65,7 +133,7 @@ export interface componentMeeting extends componentGeneric {
   };
 }
 
-export interface componentNotification extends componentGeneric {
+export interface componentNotification extends componentBase {
   date: Date;
   date_action?: Date;
   date_deadline: Date;

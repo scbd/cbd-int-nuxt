@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import getComponents from "~/composables/componentApi";
-import type { searchParams } from "~/types/components";
+import type {
+  searchParams,
+  componentArticle,
+  componentMeeting,
+  componentNotification,
+  componentSanitized,
+} from "~/types/components";
 
 const { getArticles, getMeetings, getNotifications } = getComponents();
 
@@ -51,11 +57,61 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
-onMounted(async () => {
-  await getArticles(articles_params);
-  await getMeetings(meetings_params);
-  await getNotifications(notifications_params);
-});
+await getArticles(articles_params);
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+
+const sanitizedArticles = articles.value.articles!.map(
+  (article: componentArticle): componentSanitized => ({
+    type: "article",
+    date: article.date_created,
+    url: article.url,
+    title: article.title,
+    date_edited: article.date_edited,
+    content: article.content,
+  })
+);
+
+const sanitizedMeetings = meetings.value.meetings!.map(
+  (meeting: componentMeeting): componentSanitized => ({
+    type: "meeting",
+    date: meeting.date_start,
+    url: meeting.url,
+    title: meeting.title,
+    date_end: meeting.date_end,
+    symbol: meeting.symbol,
+    event_city: meeting.event_city,
+    event_country: meeting.event_country,
+    status: meeting.status,
+  })
+);
+
+const sanitizedNotifications = notifications.value.notifications!.map(
+  (notification: componentNotification): componentSanitized => ({
+    type: "notification",
+    date: notification.date,
+    url: notification.url,
+    title: notification.title,
+    date_action: notification.date_action,
+    date_deadline: notification.date_deadline,
+    sender: notification.sender,
+    reference: notification.reference,
+    recipient: notification.recipient,
+    themes: notification.themes,
+    fulltext: notification.fulltext,
+  })
+);
+
+const santizied_updates: componentSanitized[] = [
+  sanitizedArticles,
+  sanitizedMeetings,
+  sanitizedNotifications,
+]
+  .flat()
+  .sort((a, b) => {
+    return b!.date.getTime() - a!.date.getTime();
+  })
+  .slice(0, 4);
 
 definePageMeta({
   layout: "landing-home",
@@ -65,7 +121,7 @@ definePageMeta({
 <template>
   <!-- <HeroSinglefeature /> -->
   <article class="cus-article container-xxl d-flex flex-column">
-    <ContentobjectRow object-type="update" :objects="articles" />
+    <ContentobjectRow object-type="update" :objects="santizied_updates" />
     <ContentobjectRow object-type="meeting" :objects="meetings" />
     <ContentobjectRow object-type="notification" :objects="notifications" />
   </article>

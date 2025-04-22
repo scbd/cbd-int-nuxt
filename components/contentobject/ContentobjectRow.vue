@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { componentRequest, componentMeeting } from "~/types/components";
+import type { componentRequest, componentSanitized } from "~/types/components";
 
 const props = defineProps<{
   objectType: string;
-  objects: componentRequest;
+  objects: componentRequest | componentSanitized[];
 }>();
 </script>
 
@@ -16,18 +16,34 @@ const props = defineProps<{
       <div class="row-title">Recent {{ objectType }}s</div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
-          v-if="objects.articles && objects.articles.length > 0"
-          v-for="content_object in objects?.articles"
-          :object-type="props.objectType"
-          :object-title="content_object.title"
-          :object-start-date="content_object.date_created"
-          :object-img="{ imgSrc: content_object.image_cover }"
-          :object-link="content_object.url"
+          v-if="(objects as componentSanitized[]).length > 0"
+          v-for="update in objects as componentSanitized[]"
+          :object-type="update.type"
+          :object-title="
+            typeof update.title === 'string'
+              ? <string>update.title
+              : update.title[active_language!.active_language.slice(0, 2)]
+          "
+          :object-start-date="update.date"
+          :object-img="{ imgSrc: update.image_cover }"
+          :object-link="update.url"
+          :object-end-date="update.date_end"
+          :object-action-required="update.date_action"
+          :object-symbol="update.symbol"
+          :object-event-city="
+            update.event_city?.[active_language!.active_language.slice(0, 2)]
+          "
+          :object-event-country="
+            update.event_country?.[active_language!.active_language.slice(0, 2)]
+          "
+          :object-description="
+            update.fulltext?.[active_language!.active_language.slice(0, 2)]
+          "
         />
 
         <ContentobjectBlock
-          v-if="objects.meetings && objects.meetings.length > 0"
-          v-for="content_object in objects?.meetings"
+          v-if="(objects as componentRequest).meetings"
+          v-for="content_object in (objects as componentRequest)?.meetings"
           :object-type="props.objectType"
           :object-title="
             content_object.title[active_language!.active_language.slice(0, 2)]
@@ -47,8 +63,8 @@ const props = defineProps<{
           :object-link="content_object.url"
         />
         <ContentobjectBlock
-          v-if="objects.notifications && objects.notifications.length > 0"
-          v-for="content_object in objects?.notifications"
+          v-if="(objects as componentRequest).notifications"
+          v-for="content_object in (objects as componentRequest).notifications"
           :object-type="props.objectType"
           :object-title="
             content_object.title[active_language!.active_language.slice(0, 2)]
