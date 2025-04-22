@@ -1,7 +1,11 @@
 @use "sass:color";
 
 $bd-primary: rgb(52, 131, 165);
+$bd-primary-hover: scale-color($bd-primary, $lightness: -20%);
+$bd-primary-active: scale-color($bd-primary, $lightness: -30%);
 $bd-secondary: rgb(240, 240, 240);
+$bd-secondary-hover: scale-color($bd-secondary, $lightness: -20%);
+$bd-secondary-active: scale-color($bd-secondary, $lightness: -30%);
 
 .cbd-btn {
   font-weight: 600;
@@ -63,18 +67,13 @@ $bd-secondary: rgb(240, 240, 240);
   --bs-btn-bg: transparent;
   --bs-btn-border-color: transparent;
   --bs-btn-color: var(--bs-primary);
-  --bs-btn-hover-color: #{shade-color($bd-primary, 10%)};
+  // --bs-btn-hover-color: #{shade-color($bd-primary, 10%)};
   --bs-btn-hover-bg: transparent;
-  --bs-btn-hover-border-color: #{shade-color($bd-primary, 10%)};
+  // --bs-btn-hover-border-color: #{shade-color($bd-primary, 10%)};
   --bs-btn-focus-shadow-rgb: transparent;
   --bs-btn-active-color: transparent;
-  --bs-btn-active-bg: #{shade-color($bd-primary, 20%)};
-  --bs-btn-active-border-color: #{shade-color($bd-primary, 20%)};
-
-  // Fix button CSS
-  &:hover {
-    border-color: scale-color($bd-primary, $lightness: -10%);
-  }
+  // --bs-btn-active-bg: #{shade-color($bd-primary, 20%)};
+  // --bs-btn-active-border-color: #{shade-color($bd-primary, 20%)};
 
   // padding: 0.5rem;
   display: flex;
@@ -85,6 +84,32 @@ $bd-secondary: rgb(240, 240, 240);
   &::after {
     content: url(/images/icons/icon_btn-arrow-circle-right_outline.svg);
     display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Fix button CSS
+  &:hover {
+    color: $bd-primary-hover;
+    border-color: $bd-primary-hover;
+    &::after {
+      filter: brightness(80%);
+    }
+  }
+  &:not(.btn-check):active {
+    color: $bd-primary-active;
+    border-color: $bd-primary-active;
+    &::after {
+      filter: brightness(70%);
+    }
+  }
+  &:focus {
+    color: $bd-primary-active;
+    background-color: $bd-secondary-hover;
+    border-color: $bd-primary-active;
+    &::after {
+      filter: brightness(70%);
+    }
   }
 }
 

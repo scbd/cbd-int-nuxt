@@ -66,7 +66,7 @@ const props = defineProps<{
         to="#"
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
-        >More {{ objectType }}</NuxtLink
+        >More {{ objectType }}s</NuxtLink
       >
     </section>
   </ClientOnly>
