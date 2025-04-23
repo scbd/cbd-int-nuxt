@@ -122,6 +122,7 @@ definePageMeta({
 
 <template>
   <!-- <HeroSinglefeature /> -->
+  <Hero :article="sanitizedArticles[0]" />
   <article class="cus-article container-xxl d-flex flex-column">
     <ContentobjectRow object-type="update" :objects="santizied_updates" />
     <ContentobjectRow object-type="meeting" :objects="meetings" />
