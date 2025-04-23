@@ -100,6 +100,7 @@ const sanitizedNotifications = notifications.value.notifications!.map(
     recipient: notification.recipient,
     themes: notification.themes,
     fulltext: notification.fulltext,
+    symbol: notification.symbol,
   })
 );
 
