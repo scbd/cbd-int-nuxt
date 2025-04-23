@@ -49,7 +49,15 @@ export interface componentSanitized {
         zh: string;
       };
   symbol?: string;
-  image_cover?: string;
+  image_cover?: {
+    url: string;
+    width: number;
+    height: number;
+    mime_type: string;
+    file_size: number;
+    title: string;
+    alt: string;
+  };
   date_edited?: Date;
   content?: string;
   status?: string;
@@ -105,7 +113,15 @@ export interface componentArticle {
         zh: string;
       };
   url: string;
-  image_cover?: string;
+  image_cover?: {
+    url: string;
+    width: number;
+    height: number;
+    mime_type: string;
+    file_size: number;
+    title: string;
+    alt: string;
+  };
   date_created: Date;
   date_edited?: Date;
   content: string;
@@ -174,6 +190,35 @@ export interface componentArticleRaw {
     };
     body: {
       processed: string;
+    };
+  };
+  relationships: {
+    field_image: {
+      data: {
+        meta: {
+          alt: string;
+          title: string;
+          width: number;
+          height: number;
+        };
+      };
+      links: {
+        related: {
+          href: string;
+        };
+      };
+    };
+  };
+}
+
+export interface componentArticleCoverImageRaw {
+  data: {
+    attributes: {
+      uri: {
+        url: string;
+      };
+      filemime: string;
+      filesize: number;
     };
   };
 }

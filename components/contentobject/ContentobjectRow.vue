@@ -25,7 +25,7 @@ const props = defineProps<{
               : update.title[active_language!.active_language.slice(0, 2)]
           "
           :object-start-date="update.date"
-          :object-img="{ imgSrc: update.image_cover }"
+          :object-img="update.image_cover"
           :object-link="update.url"
           :object-end-date="update.date_end"
           :object-action-required="update.date_action"

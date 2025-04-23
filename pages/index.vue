@@ -69,6 +69,7 @@ const sanitizedArticles = articles.value.articles!.map(
     title: article.title,
     date_edited: article.date_edited,
     content: article.content,
+    image_cover: article.image_cover,
   })
 );
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   objectType: string;
   objectTitle: string;
   objectSymbol?: string;
@@ -12,8 +12,13 @@ defineProps<{
   objectDescription?: string;
   objectLink?: string;
   objectImg?: {
-    imgSrc?: string;
-    imgDescription?: string;
+    url: string;
+    width: number;
+    height: number;
+    mime_type: string;
+    file_size: number;
+    title: string;
+    alt: string;
   };
   objectInfo?: {
     source?: string;
@@ -45,7 +50,7 @@ const objectLocation = (
 <template>
   <template v-if="objectType === 'article'">
     <div
-      v-if="meetings_status.status === 'OK'"
+      v-if="articles_status.status === 'OK'"
       class="content-object"
       :class="[
         objectType,
@@ -53,9 +58,9 @@ const objectLocation = (
       ]"
     >
       <img
-        v-show="objectImg"
-        :src="objectImg?.imgSrc ?? '/images/update-1.jpg'"
-        :alt="objectImg?.imgDescription"
+        :src="props.objectImg?.url ?? '/images/update-1.jpg'"
+        :alt="objectImg?.alt"
+        :title="objectImg?.title"
         class="content-image"
       />
       <div class="information">
@@ -83,7 +88,7 @@ const objectLocation = (
     </div>
     <Loader
       v-else
-      :class="meetings_status.status === 'error' ? 'error-loader' : ''"
+      :class="articles_status.status === 'error' ? 'error-loader' : ''"
     />
   </template>
 
@@ -218,8 +223,8 @@ const objectLocation = (
     <NuxtLink :to="objectLink" class="content-link">
       <img
         v-show="objectImg"
-        :src="objectImg?.imgSrc"
-        :alt="objectImg?.imgDescription"
+        :src="objectImg?.url"
+        :alt="objectImg?.alt"
         class="content-image"
       />
       <div class="title">{{ objectTitle }}</div>

@@ -2,6 +2,7 @@ import {
   type componentRequest,
   type componentArticle,
   type componentArticleRaw,
+  type componentArticleCoverImageRaw,
   type componentMeeting,
   type componentMeetingRaw,
   type componentNotification,
@@ -54,16 +55,59 @@ export default function getComponents() {
       if (response.ok) {
         const articles_raw: componentRequest = await response.json();
 
+        // Get Cover Image
+        const getArticleImage = async (cover_image_url: string) => {
+          const response = fetch(cover_image_url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((json) => {
+              return json.json();
+            })
+            .then((data: componentArticleCoverImageRaw) => {
+              return data;
+            });
+
+          return response;
+        };
+
         const data_mapped = articles_raw.data!.map(
           (raw_data: componentArticleRaw): componentArticle => ({
             title: raw_data.attributes.title,
             url: raw_data.attributes.path.alias,
-            //image_cover: "",
+            image_cover: {
+              url: raw_data.relationships.field_image.links.related.href,
+              mime_type: "",
+              file_size: 0,
+              title: raw_data.relationships.field_image.data.meta.title,
+              width: raw_data.relationships.field_image.data.meta.width,
+              height: raw_data.relationships.field_image.data.meta.height,
+              alt: raw_data.relationships.field_image.data.meta.alt,
+            },
             date_created: new Date(raw_data.attributes.created),
             date_edited: new Date(raw_data.attributes.changed),
             content: raw_data.attributes.body.processed,
           })
         );
+
+        for await (const article of data_mapped.flat()) {
+          if (article.image_cover?.url) {
+            try {
+              const image_cover = await getArticleImage(
+                article.image_cover.url
+              );
+              article.image_cover.mime_type =
+                image_cover.data.attributes.filemime;
+              article.image_cover.file_size =
+                image_cover.data.attributes.filesize;
+              article.image_cover.url = `${config.public.DRUPAL_URL}/${image_cover.data.attributes.uri.url}`;
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
 
         const articles_list: componentRequest = {
           articles: data_mapped,
