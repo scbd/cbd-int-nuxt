@@ -77,7 +77,7 @@ await getArticles(articles_params).then(() => {
           image_cover: article.image_cover,
         })
       )
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .sort((a, b) => b.date_edited!.getTime() - a.date_edited!.getTime())
   );
 });
 
