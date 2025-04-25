@@ -57,62 +57,90 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
-await getArticles(articles_params);
-await getMeetings(meetings_params);
-await getNotifications(notifications_params);
+const featured_articles: componentSanitized[] = [];
+const sanitized_articles: componentSanitized[] = [];
+const sanitized_meetings: componentSanitized[] = [];
+const sanitized_notifications: componentSanitized[] = [];
+const santizied_updates: componentSanitized[] = [];
 
-const sanitizedArticles = articles.value.articles!.map(
-  (article: componentArticle): componentSanitized => ({
-    type: "article",
-    date: article.date_created,
-    url: article.url,
-    title: article.title,
-    date_edited: article.date_edited,
-    content: article.content,
-    image_cover: article.image_cover,
-  })
+await getArticles(articles_params).then(() => {
+  featured_articles.push(
+    ...articles.value
+      .articles!.map(
+        (article: componentArticle): componentSanitized => ({
+          type: "article",
+          date: article.date_created,
+          url: article.url,
+          title: article.title,
+          date_edited: article.date_edited,
+          content: article.content,
+          image_cover: article.image_cover,
+        })
+      )
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+  );
+});
+
+await getArticles(articles_params).then(() => {
+  sanitized_articles.push(
+    ...articles.value.articles!.map(
+      (article: componentArticle): componentSanitized => ({
+        type: "article",
+        date: article.date_created,
+        url: article.url,
+        title: article.title,
+        date_edited: article.date_edited,
+        content: article.content,
+        image_cover: article.image_cover,
+      })
+    )
+  );
+});
+await getMeetings(meetings_params).then(() => {
+  sanitized_meetings.push(
+    ...meetings.value.meetings!.map(
+      (meeting: componentMeeting): componentSanitized => ({
+        type: "meeting",
+        date: meeting.date_start,
+        url: meeting.url,
+        title: meeting.title,
+        date_end: meeting.date_end,
+        symbol: meeting.symbol,
+        event_city: meeting.event_city,
+        event_country: meeting.event_country,
+        status: meeting.status,
+      })
+    )
+  );
+});
+await getNotifications(notifications_params).then(() => {
+  sanitized_notifications.push(
+    ...notifications.value.notifications!.map(
+      (notification: componentNotification): componentSanitized => ({
+        type: "notification",
+        date: notification.date,
+        url: notification.url,
+        title: notification.title,
+        date_action: notification.date_action,
+        date_deadline: notification.date_deadline,
+        sender: notification.sender,
+        reference: notification.reference,
+        recipient: notification.recipient,
+        themes: notification.themes,
+        fulltext: notification.fulltext,
+        symbol: notification.symbol,
+      })
+    )
+  );
+});
+
+santizied_updates.push(
+  ...sanitized_articles,
+  ...sanitized_meetings,
+  ...sanitized_notifications
 );
-
-const sanitizedMeetings = meetings.value.meetings!.map(
-  (meeting: componentMeeting): componentSanitized => ({
-    type: "meeting",
-    date: meeting.date_start,
-    url: meeting.url,
-    title: meeting.title,
-    date_end: meeting.date_end,
-    symbol: meeting.symbol,
-    event_city: meeting.event_city,
-    event_country: meeting.event_country,
-    status: meeting.status,
-  })
-);
-
-const sanitizedNotifications = notifications.value.notifications!.map(
-  (notification: componentNotification): componentSanitized => ({
-    type: "notification",
-    date: notification.date,
-    url: notification.url,
-    title: notification.title,
-    date_action: notification.date_action,
-    date_deadline: notification.date_deadline,
-    sender: notification.sender,
-    reference: notification.reference,
-    recipient: notification.recipient,
-    themes: notification.themes,
-    fulltext: notification.fulltext,
-    symbol: notification.symbol,
-  })
-);
-
-const santizied_updates: componentSanitized[] = [
-  sanitizedArticles,
-  sanitizedMeetings,
-  sanitizedNotifications,
-]
-  .flat()
-  .sort((a, b) => {
-    return b!.date.getTime() - a!.date.getTime();
-  })
+const sorted_santizied_updates = santizied_updates
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
 
 definePageMeta({
@@ -122,9 +150,12 @@ definePageMeta({
 
 <template>
   <!-- <HeroSinglefeature /> -->
-  <Hero :article="sanitizedArticles" />
+  <Hero :article="featured_articles" />
   <article class="cus-article container-xxl d-flex flex-column">
-    <ContentobjectRow object-type="update" :objects="santizied_updates" />
+    <ContentobjectRow
+      object-type="update"
+      :objects="sorted_santizied_updates"
+    />
     <ContentobjectRow object-type="meeting" :objects="meetings" />
     <ContentobjectRow object-type="notification" :objects="notifications" />
   </article>
