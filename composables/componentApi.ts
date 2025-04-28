@@ -1,3 +1,4 @@
+import type { drupalToken } from "~/types/drupalAuth";
 import {
   type componentRequest,
   type componentArticle,
@@ -36,6 +37,9 @@ export const notifications_status = ref<componentStatus>({ status: "pending" });
 export default function getComponents() {
   const config = useRuntimeConfig();
 
+  const drupalToken = useState<drupalToken>("drupal_token").value;
+  const lang_code = active_language.value?.active_language;
+
   const getArticles = async (search_parameters: searchParams) => {
     articles_status.value.status = "pending";
 
@@ -44,11 +48,12 @@ export default function getComponents() {
     try {
       const response = await fetch(
         // `https://cbd.int.ddev.site/jsonapi/node/article?${params.toString()}`,
-        `https://cbd.int.ddev.site/jsonapi/node/article`,
+        `${config.public.DRUPAL_URL}/${lang_code !== "en" ? (lang_code + "/").toString() : ""}jsonapi/node/article`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${drupalToken.token_type} ${drupalToken.access_token}`,
           },
         }
       );
