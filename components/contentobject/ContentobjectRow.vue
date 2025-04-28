@@ -61,6 +61,14 @@ const props = defineProps<{
           :object-start-date="statement.date"
           :object-link="statement.url"
         />
+        <ContentobjectBlock
+          v-else-if="objects.portals && objects.portals.length > 0"
+          v-for="portal in objects.portals"
+          :object-type="objectType"
+          :object-title="portal.title"
+          :object-link="portal.url"
+          :object-img="{ url: portal.image.url, alt: portal.image.alt }"
+        />
       </div>
       <NuxtLink
         to="#"

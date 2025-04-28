@@ -2,7 +2,8 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams } from "~/types/components";
 
-const { getMeetings, getNotifications, getStatements } = getComponents();
+const { getMeetings, getNotifications, getStatements, getPortals } =
+  getComponents();
 
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
@@ -60,6 +61,7 @@ onMounted(async () => {
   await getMeetings(meetings_params);
   await getNotifications(notifications_params);
   await getStatements(statements_params);
+  await getPortals();
 });
 
 definePageMeta({
@@ -74,5 +76,6 @@ definePageMeta({
     <ContentobjectRow object-type="meeting" :objects="meetings" />
     <ContentobjectRow object-type="notification" :objects="notifications" />
     <ContentobjectRow object-type="statement" :objects="statements" />
+    <ContentobjectRow object-type="portal" :objects="portals" />
   </article>
 </template>

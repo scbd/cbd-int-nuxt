@@ -1,10 +1,12 @@
 export interface componentRequest {
-  numFound: number;
-  start: number;
+  numFound?: number;
+  start?: number;
+  data?: [];
   docs?: [];
   meetings?: componentMeeting[];
   notifications?: componentNotification[];
   statements?: componentStatement[];
+  portals?: componentPortal[];
 }
 
 export interface searchParams {
@@ -84,6 +86,22 @@ export interface componentStatement extends componentGeneric {
   // description: string;
 }
 
+export interface componentPortal {
+  title: string;
+  url: string;
+  date: Date;
+  date_changed: Date;
+  image: {
+    url: string;
+    width?: number;
+    height?: number;
+    mime_type?: string;
+    file_size?: number;
+    title?: string;
+    alt: string;
+  };
+}
+
 export interface componentMeetingRaw {
   status_s: string;
   symbol_s: string;
@@ -149,4 +167,22 @@ export interface componentStatementRaw {
   title_RU_s: string;
   title_ZH_s: string;
   url_ss: string;
+}
+
+export interface componentPortalRaw {
+  attributes: {
+    title: string;
+    description: string;
+    revision_created: string;
+    changed: string;
+    link: {
+      uri: string;
+      title: string;
+      options: {
+        attributes: {
+          icon: string;
+        };
+      };
+    };
+  };
 }

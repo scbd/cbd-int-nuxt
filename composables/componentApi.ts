@@ -1,12 +1,15 @@
-import type {
-  componentRequest,
-  componentMeeting,
-  componentMeetingRaw,
-  componentNotification,
-  componentNotificationRaw,
-  componentStatement,
-  componentStatementRaw,
-  searchParams,
+import type { drupalToken } from "~/types/drupalAuth";
+import {
+  type componentRequest,
+  type componentMeeting,
+  type componentMeetingRaw,
+  type componentNotification,
+  type componentNotificationRaw,
+  type componentStatement,
+  type componentStatementRaw,
+  type componentPortal,
+  type componentPortalRaw,
+  type searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
 import type { userSettings } from "~/types/userSettings";
@@ -34,6 +37,12 @@ export const statements = ref<componentRequest>({
   statements: [],
 });
 export const statements_status = ref<componentStatus>({ status: "pending" });
+
+export const portals = ref<componentRequest>({
+  data: [],
+});
+
+export const portals_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
@@ -248,9 +257,59 @@ export default function getComponents() {
     }
   };
 
+  const getPortals = async () => {
+    portals_status.value.status = "pending";
+
+    const drupalToken = useState<drupalToken>("drupal_token").value;
+    const lang_code = active_language.value?.active_language;
+
+    try {
+      const response = await fetch(
+        `${config.public.DRUPAL_URL}/${lang_code !== "en" ? (lang_code + "/").toString() : ""}jsonapi/menu_link_content/cbd-portals`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${drupalToken.token_type} ${drupalToken.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const portals_raw: componentRequest = await response.json();
+
+        const data_mapped = portals_raw.data!.map(
+          (raw_data: componentPortalRaw): componentPortal => ({
+            title: raw_data.attributes.title,
+            url: raw_data.attributes.link.uri,
+            date: new Date(raw_data.attributes.revision_created),
+            date_changed: new Date(raw_data.attributes.changed),
+            image: {
+              url: `${config.public.DRUPAL_URL}/sites/default/files/${raw_data.attributes.link.options.attributes.icon}`,
+              alt: raw_data.attributes.title,
+            },
+          })
+        );
+
+        const portals_list: componentRequest = {
+          portals: data_mapped,
+        };
+
+        console.log(portals_list);
+
+        portals.value = portals_list;
+        portals_status.value.status = "OK";
+      }
+    } catch (error) {
+      console.error(error);
+      portals_status.value.status = "error";
+    }
+  };
+
   return {
     getMeetings,
     getNotifications,
     getStatements,
+    getPortals,
   };
 }

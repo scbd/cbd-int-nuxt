@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   objectType: string;
   objectTitle: string;
   objectSymbol?: string;
@@ -12,8 +12,13 @@ defineProps<{
   objectDescription?: string;
   objectLink?: string;
   objectImg?: {
-    imgSrc?: string;
-    imgDescription?: string;
+    url: string;
+    width?: number;
+    height?: number;
+    mime_type?: string;
+    file_size?: number;
+    title?: string;
+    alt: string;
   };
   objectInfo?: {
     source?: string;
@@ -43,42 +48,7 @@ const objectLocation = (
 </script>
 
 <template>
-  <template v-if="objectType === 'update'">
-    <div
-      class="content-object"
-      :class="[
-        objectType,
-        objectInfo?.source ? `accent-${objectInfo.source}` : '',
-      ]"
-    >
-      <img
-        v-show="objectImg"
-        :src="objectImg?.imgSrc"
-        :alt="objectImg?.imgDescription"
-        class="content-image"
-      />
-      <div class="information">
-        <div class="taxonomy">
-          <div class="source">{{ objectInfo?.source }}</div>
-          <div class="type">{{ objectInfo?.type }}</div>
-        </div>
-        <div class="date">
-          {{
-            Intl.DateTimeFormat(active_language!.active_language, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            }).format(objectStartDate)
-          }}
-        </div>
-      </div>
-      <div class="title">{{ objectTitle }}</div>
-      <div class="description">{{ objectDescription }}</div>
-      <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on">Read on</NuxtLink>
-      </div>
-    </div>
-  </template>
+  <template v-if="objectType === 'update'"> </template>
 
   <template v-else-if="objectType === 'meeting'">
     <div
@@ -214,33 +184,16 @@ const objectLocation = (
     v-else-if="objectType === 'gbf-target'"
     class="content-object"
     :class="`gbf-target-${objectGBFtarget?.number}`"
-  >
-    <div class="resources">
-      <div class="resource-title">Head line indicators</div>
-    </div>
-    <div class="links">
-      <NuxtLink to="#">Why is this target important?</NuxtLink>
-      <NuxtLink to="#">Target Explanation</NuxtLink>
-      <NuxtLink to="#">Guiding Questions</NuxtLink>
-      <NuxtLink to="#">Links to other elements</NuxtLink>
-      <NuxtLink to="#">Relevant Resources</NuxtLink>
-      <NuxtLink to="#">Indicators</NuxtLink>
-    </div>
-    <NuxtLink :to="objectLink" class="view-target">View Target</NuxtLink>
-  </div>
+  ></div>
 
   <div
-    v-else-if="
-      objectType === 'portals-resources' || objectType === 'submissions'
-    "
-    class="content-object"
-    :class="objectType"
+    v-else-if="objectType === 'portal'"
+    class="content-object portal-resource"
   >
     <NuxtLink :to="objectLink" class="content-link">
-      <img
-        v-show="objectImg"
-        :src="objectImg?.imgSrc"
-        :alt="objectImg?.imgDescription"
+      <NuxtImg
+        :src="objectImg?.url"
+        :alt="objectImg?.alt"
         class="content-image"
       />
       <div class="title">{{ objectTitle }}</div>
