@@ -257,11 +257,11 @@ export default function getComponents() {
     }
   };
 
-  const getPortals = async () => {
+  const getPortals = async (lang_code: string) => {
     portals_status.value.status = "pending";
 
     const drupalToken = useState<drupalToken>("drupal_token").value;
-    const lang_code = active_language.value?.active_language;
+    // const lang_code = active_language.value?.active_language;
 
     try {
       const response = await fetch(

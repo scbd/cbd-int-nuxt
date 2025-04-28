@@ -57,11 +57,13 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
+const lang_code = active_language.value?.active_language;
+
 onMounted(async () => {
   await getMeetings(meetings_params);
   await getNotifications(notifications_params);
   await getStatements(statements_params);
-  await getPortals();
+  await getPortals(lang_code ?? "en");
 });
 
 definePageMeta({
