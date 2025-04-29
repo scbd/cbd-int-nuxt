@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import getComponents from "~/composables/componentApi";
-import type {
-  searchParams,
-  componentArticle,
-  componentMeeting,
-  componentNotification,
-  componentSanitized,
-} from "~/types/components";
+import type { searchParams, componentSanitized } from "~/types/components";
 
 const { getArticles, getMeetings, getNotifications } = getComponents();
 
@@ -57,91 +51,21 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
-const featured_articles: componentSanitized[] = [];
-const sanitized_articles: componentSanitized[] = [];
-const sanitized_meetings: componentSanitized[] = [];
-const sanitized_notifications: componentSanitized[] = [];
-const santizied_updates: componentSanitized[] = [];
+const updates: componentSanitized[] = [];
 
-await getArticles(articles_params).then(() => {
-  featured_articles.push(
-    ...articles.value
-      .articles!.map(
-        (article: componentArticle): componentSanitized => ({
-          type: "article",
-          date: article.date_created,
-          url: article.url,
-          title: article.title,
-          date_edited: article.date_edited,
-          content: article.content,
-          image_cover: article.image_cover,
-        })
-      )
-      .sort((a, b) => b.date_edited!.getTime() - a.date_edited!.getTime())
-  );
-});
+const articles = (await getArticles(articles_params)) ?? [];
+// const featured_articles = (await getArticles(articles_params)) ?? [];
+const meetings = (await getMeetings(meetings_params)) ?? [];
+const notifications = (await getNotifications(notifications_params)) ?? [];
 
-await getArticles(articles_params).then(() => {
-  sanitized_articles.push(
-    ...articles.value.articles!.map(
-      (article: componentArticle): componentSanitized => ({
-        type: "article",
-        date: article.date_created,
-        url: article.url,
-        title: article.title,
-        date_edited: article.date_edited,
-        content: article.content,
-        image_cover: article.image_cover,
-      })
-    )
-  );
-});
-await getMeetings(meetings_params).then(() => {
-  sanitized_meetings.push(
-    ...meetings.value.meetings!.map(
-      (meeting: componentMeeting): componentSanitized => ({
-        type: "meeting",
-        date: meeting.date_start,
-        url: meeting.url,
-        title: meeting.title,
-        date_end: meeting.date_end,
-        symbol: meeting.symbol,
-        event_city: meeting.event_city,
-        event_country: meeting.event_country,
-        status: meeting.status,
-      })
-    )
-  );
-});
-await getNotifications(notifications_params).then(() => {
-  sanitized_notifications.push(
-    ...notifications.value.notifications!.map(
-      (notification: componentNotification): componentSanitized => ({
-        type: "notification",
-        date: notification.date,
-        url: notification.url,
-        title: notification.title,
-        date_action: notification.date_action,
-        date_deadline: notification.date_deadline,
-        sender: notification.sender,
-        reference: notification.reference,
-        recipient: notification.recipient,
-        themes: notification.themes,
-        fulltext: notification.fulltext,
-        symbol: notification.symbol,
-      })
-    )
-  );
-});
-
-santizied_updates.push(
-  ...sanitized_articles,
-  ...sanitized_meetings,
-  ...sanitized_notifications
-);
-const sorted_santizied_updates = santizied_updates
+updates.push(...articles, ...meetings, ...notifications);
+const sorted_updates = updates
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
+
+watch(active_language, async () => {
+  await getArticles(articles_params);
+});
 
 definePageMeta({
   layout: "landing-home",
@@ -149,14 +73,17 @@ definePageMeta({
 </script>
 
 <template>
-  <!-- <HeroSinglefeature /> -->
-  <Hero :article="featured_articles" />
+  <ClientOnly>
+    <Hero :article="referenced_articles" />
+  </ClientOnly>
   <article class="cus-article container-xxl d-flex flex-column">
-    <ContentobjectRow
-      object-type="update"
-      :objects="sorted_santizied_updates"
-    />
-    <ContentobjectRow object-type="meeting" :objects="meetings" />
-    <ContentobjectRow object-type="notification" :objects="notifications" />
+    <ClientOnly>
+      <ContentobjectRow object-type="update" :objects="sorted_updates" />
+      <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
+      <ContentobjectRow
+        object-type="notification"
+        :objects="referenced_notifications"
+      />
+    </ClientOnly>
   </article>
 </template>

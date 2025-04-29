@@ -3,9 +3,6 @@ export interface componentRequest {
   start?: number;
   data?: [];
   docs?: [];
-  articles?: componentArticle[];
-  meetings?: componentMeeting[];
-  notifications?: componentNotification[];
 }
 
 export interface searchParams {
@@ -21,23 +18,16 @@ export interface searchParams {
   };
 }
 
-export interface componentBase {
-  symbol: string;
-  url: string;
-  title: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
+export interface componentSanitized
+  extends componentArticle,
+    componentMeeting,
+    componentNotification {
+  type: string;
 }
 
-export interface componentSanitized {
-  type: string;
-  date: Date;
+export interface componentBase {
   url: string;
+  date: Date;
   title:
     | string
     | {
@@ -48,7 +38,9 @@ export interface componentSanitized {
         ru: string;
         zh: string;
       };
-  symbol?: string;
+}
+
+export interface componentArticle extends componentBase {
   image_cover?: {
     url: string;
     width: number;
@@ -60,6 +52,10 @@ export interface componentSanitized {
   };
   date_edited?: Date;
   content?: string;
+}
+
+export interface componentMeeting extends componentBase {
+  symbol?: string;
   status?: string;
   date_end?: Date;
   event_city?: {
@@ -78,6 +74,10 @@ export interface componentSanitized {
     ru: string;
     zh: string;
   };
+}
+
+export interface componentNotification extends componentBase {
+  symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
   sender?: string;
@@ -92,79 +92,6 @@ export interface componentSanitized {
     zh: string;
   };
   fulltext?: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-}
-
-export interface componentArticle {
-  title:
-    | string
-    | {
-        [ar: string]: string;
-        en: string;
-        es: string;
-        fr: string;
-        ru: string;
-        zh: string;
-      };
-  url: string;
-  image_cover?: {
-    url: string;
-    width: number;
-    height: number;
-    mime_type: string;
-    file_size: number;
-    title: string;
-    alt: string;
-  };
-  date_created: Date;
-  date_edited?: Date;
-  content: string;
-}
-
-export interface componentMeeting extends componentBase {
-  status: string;
-  date_start: Date;
-  date_end: Date;
-  event_city: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-  event_country: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-}
-
-export interface componentNotification extends componentBase {
-  date: Date;
-  date_action?: Date;
-  date_deadline: Date;
-  sender: string;
-  reference: string;
-  recipient: string[];
-  themes: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-  fulltext: {
     [ar: string]: string;
     en: string;
     es: string;
