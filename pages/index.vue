@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import getComponents, { referenced_articles } from "~/composables/componentApi";
+import getComponents from "~/composables/componentApi";
 import type { searchParams, componentSanitized } from "~/types/components";
 
 const { getArticles, getMeetings, getNotifications } = getComponents();
@@ -62,6 +62,10 @@ const sorted_updates = updates
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
 
+watch(active_language, async () => {
+  await getArticles(articles_params);
+});
+
 definePageMeta({
   layout: "landing-home",
 });
@@ -69,8 +73,13 @@ definePageMeta({
 
 <template>
   <article class="cus-article container-xxl d-flex flex-column">
-    <ContentobjectRow object-type="update" :objects="sorted_updates" />
-    <ContentobjectRow object-type="meeting" :objects="meetings" />
-    <ContentobjectRow object-type="notification" :objects="notifications" />
+    <ClientOnly>
+      <ContentobjectRow object-type="update" :objects="sorted_updates" />
+      <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
+      <ContentobjectRow
+        object-type="notification"
+        :objects="referenced_notifications"
+      />
+    </ClientOnly>
   </article>
 </template>
