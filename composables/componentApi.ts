@@ -23,10 +23,10 @@ export default function getComponents() {
   const config = useRuntimeConfig();
 
   const drupalToken = useState<drupalToken>("drupal_token").value;
-  const lang_code = active_language.value?.active_language;
 
   const getArticles = async (search_parameters: searchParams) => {
     articles_status.value.status = "pending";
+    const lang_code = active_language.value?.active_language;
 
     const params = new URLSearchParams({});
 
