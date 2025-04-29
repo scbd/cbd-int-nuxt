@@ -3,9 +3,6 @@ export interface componentRequest {
   start?: number;
   data?: [];
   docs?: [];
-  articles?: componentArticle[];
-  meetings?: componentMeeting[];
-  notifications?: componentNotification[];
 }
 
 export interface searchParams {

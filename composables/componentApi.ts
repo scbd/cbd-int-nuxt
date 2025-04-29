@@ -1,37 +1,22 @@
 import type { drupalToken } from "~/types/drupalAuth";
 import {
   type componentRequest,
-  type componentArticle,
   type componentArticleRaw,
   type componentArticleCoverImageRaw,
-  type componentMeeting,
   type componentMeetingRaw,
-  type componentNotification,
   type componentNotificationRaw,
+  type componentSanitized,
   type searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
-import type { userSettings } from "~/types/userSettings";
 
-export const articles = ref<componentRequest>({
-  data: [],
-});
+export const referenced_articles = ref<componentSanitized[]>([]);
 export const articles_status = ref<componentStatus>({ status: "pending" });
 
-export const meetings = ref<componentRequest>({
-  numFound: 0,
-  start: 0,
-  docs: [],
-  meetings: [],
-});
+export const referenced_meetings = ref<componentSanitized[]>([]);
 export const meetings_status = ref<componentStatus>({ status: "pending" });
 
-export const notifications = ref<componentRequest>({
-  numFound: 0,
-  start: 0,
-  docs: [],
-  notifications: [],
-});
+export const referenced_notifications = ref<componentSanitized[]>([]);
 export const notifications_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
@@ -47,7 +32,6 @@ export default function getComponents() {
 
     try {
       const response = await fetch(
-        // `https://cbd.int.ddev.site/jsonapi/node/article?${params.toString()}`,
         `${config.public.DRUPAL_URL}/${lang_code !== "en" ? (lang_code + "/").toString() : ""}jsonapi/node/article`,
         {
           method: "GET",
@@ -60,7 +44,6 @@ export default function getComponents() {
       if (response.ok) {
         const articles_raw: componentRequest = await response.json();
 
-        // Get Cover Image
         const getArticleImage = async (cover_image_url: string) => {
           const response = fetch(cover_image_url, {
             method: "GET",
@@ -79,7 +62,8 @@ export default function getComponents() {
         };
 
         const data_mapped = articles_raw.data!.map(
-          (raw_data: componentArticleRaw): componentArticle => ({
+          (raw_data: componentArticleRaw): componentSanitized => ({
+            type: "article",
             title: raw_data.attributes.title,
             url: raw_data.attributes.path.alias,
             image_cover: {
@@ -91,7 +75,7 @@ export default function getComponents() {
               height: raw_data.relationships.field_image.data.meta.height,
               alt: raw_data.relationships.field_image.data.meta.alt,
             },
-            date_created: new Date(raw_data.attributes.created),
+            date: new Date(raw_data.attributes.created),
             date_edited: new Date(raw_data.attributes.changed),
             content: raw_data.attributes.body.processed,
           })
@@ -114,12 +98,12 @@ export default function getComponents() {
           }
         }
 
-        const articles_list: componentRequest = {
-          articles: data_mapped,
-        };
+        const articles_list: componentSanitized[] = data_mapped;
 
-        articles.value = articles_list;
+        referenced_articles.value = articles_list;
         articles_status.value.status = "OK";
+
+        return articles_list;
       }
     } catch (error) {
       console.error(error);
@@ -155,9 +139,10 @@ export default function getComponents() {
           await response.json();
 
         const data_docs_mapped = meetings_raw.response.docs!.map(
-          (raw_data: componentMeetingRaw): componentMeeting => ({
+          (raw_data: componentMeetingRaw): componentSanitized => ({
+            type: "meeting",
             symbol: raw_data.symbol_s,
-            date_start: new Date(raw_data.startDate_dt),
+            date: new Date(raw_data.startDate_dt),
             date_end: new Date(raw_data.endDate_dt),
             url: raw_data.url_ss[0],
             title: {
@@ -188,14 +173,18 @@ export default function getComponents() {
           })
         );
 
-        const meeting_list: componentRequest = {
-          numFound: meetings_raw.response.numFound,
-          start: meetings_raw.response.start,
-          meetings: data_docs_mapped,
-        };
+        // const meeting_list: componentRequest = {
+        //   numFound: meetings_raw.response.numFound,
+        //   start: meetings_raw.response.start,
+        //   meetings: data_docs_mapped,
+        // };
 
-        meetings.value = meeting_list;
+        const meeting_list: componentSanitized[] = data_docs_mapped;
+
+        referenced_meetings.value = meeting_list;
         meetings_status.value.status = "OK";
+
+        return meeting_list;
       }
     } catch (error) {
       console.error(error);
@@ -230,7 +219,8 @@ export default function getComponents() {
       await response.json();
 
     const data_docs_mapped = notifications_raw.response.docs!.map(
-      (raw_data: componentNotificationRaw): componentNotification => ({
+      (raw_data: componentNotificationRaw): componentSanitized => ({
+        type: "notification",
         symbol: raw_data.symbol_s,
         date: new Date(raw_data.date_s),
         date_action: raw_data.actionDate_s
@@ -268,15 +258,18 @@ export default function getComponents() {
       })
     );
 
-    const notification_list: componentRequest = {
-      numFound: notifications_raw.response.numFound,
-      start: notifications_raw.response.start,
-      notifications: data_docs_mapped,
-    };
+    // const notification_list: componentRequest = {
+    //   numFound: notifications_raw.response.numFound,
+    //   start: notifications_raw.response.start,
+    //   notifications: data_docs_mapped,
+    // };
 
-    notifications.value = notification_list;
+    const notification_list: componentSanitized[] = data_docs_mapped;
 
+    referenced_notifications.value = notification_list;
     notifications_status.value.status = "OK";
+
+    return notification_list;
   };
 
   return {
