@@ -29,7 +29,14 @@ const props = defineProps<{
 
           <div class="featured-description">{{ article.title }}</div>
         </div>
-        <div class="featured-buttons d-flex container-fluid" role="group"></div>
+        <div class="featured-buttons d-flex container-fluid" role="group">
+          <NuxtLink
+            :to="article.url"
+            class="btn cbd-btn cbd-btn-primary btn-lg"
+            role="button"
+            >Read On</NuxtLink
+          >
+        </div>
       </NuxtLink>
     </div>
   </div>
@@ -60,7 +67,14 @@ const props = defineProps<{
 
           <div class="featured-description">{{ article[0].title }}</div>
         </div>
-        <div class="featured-buttons d-flex container-fluid" role="group"></div>
+        <div class="featured-buttons d-flex container-fluid" role="group">
+          <NuxtLink
+            :to="article[0].url"
+            class="btn cbd-btn cbd-btn-primary btn-lg"
+            role="button"
+            >Read On</NuxtLink
+          >
+        </div>
       </NuxtLink>
     </div>
   </div>
@@ -88,7 +102,14 @@ const props = defineProps<{
 
           <div class="featured-description">{{ article[0].title }}</div>
         </div>
-        <div class="featured-buttons d-flex container-fluid" role="group"></div>
+        <div class="featured-buttons d-flex container-fluid" role="group">
+          <NuxtLink
+            :to="article[0].url"
+            class="btn cbd-btn cbd-btn-primary btn-lg"
+            role="button"
+            >Read On</NuxtLink
+          >
+        </div>
       </NuxtLink>
     </div>
 
