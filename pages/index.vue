@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import getComponents from "~/composables/componentApi";
-import type { searchParams } from "~/types/components";
+import type { searchParams, componentSanitized } from "~/types/components";
 
-const { getMeetings, getNotifications, getStatements, getPortals } =
+const { getMeetings, getNotifications, getPortals, getStatements } =
   getComponents();
+
+const articles_params: searchParams = {
+  q: "article",
+  rows: 10,
+};
 
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
@@ -57,13 +62,16 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
-const lang_code = active_language.value?.active_language;
+// const meetings = (await getMeetings(meetings_params)) ?? [];
+// const notifications = (await getNotifications(notifications_params)) ?? [];
 
-onMounted(async () => {
-  await getMeetings(meetings_params);
-  await getNotifications(notifications_params);
-  await getStatements(statements_params);
-  await getPortals(lang_code ?? "en");
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+await getStatements(statements_params);
+await getPortals();
+
+watch(active_language, async () => {
+  await getPortals();
 });
 
 definePageMeta({
@@ -72,12 +80,18 @@ definePageMeta({
 </script>
 
 <template>
-  <!-- <HeroSinglefeature /> -->
   <article class="cus-article container-xxl d-flex flex-column">
-    <!-- <ContentobjectRow object-type="update" /> -->
-    <ContentobjectRow object-type="meeting" :objects="meetings" />
-    <ContentobjectRow object-type="notification" :objects="notifications" />
-    <ContentobjectRow object-type="statement" :objects="statements" />
-    <ContentobjectRow object-type="portal" :objects="portals" />
+    <ClientOnly>
+      <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
+      <ContentobjectRow
+        object-type="notification"
+        :objects="referenced_notifications"
+      />
+      <ContentobjectRow
+        object-type="statement"
+        :objects="referenced_statements"
+      />
+      <ContentobjectRow object-type="portal" :objects="referenced_portals" />
+    </ClientOnly>
   </article>
 </template>

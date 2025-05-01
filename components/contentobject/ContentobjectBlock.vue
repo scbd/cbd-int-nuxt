@@ -186,19 +186,25 @@ const objectLocation = (
     :class="`gbf-target-${objectGBFtarget?.number}`"
   ></div>
 
-  <div
-    v-else-if="objectType === 'portal'"
-    class="content-object portal-resource"
-  >
-    <NuxtLink :to="objectLink" class="content-link">
-      <NuxtImg
-        :src="objectImg?.url"
-        :alt="objectImg?.alt"
-        class="content-image"
-      />
-      <div class="title">{{ objectTitle }}</div>
-    </NuxtLink>
-  </div>
+  <template v-else-if="objectType === 'portal'">
+    <div
+      v-if="portals_status.status === 'OK'"
+      class="content-object portal-resource"
+    >
+      <NuxtLink :to="objectLink" class="content-link">
+        <NuxtImg
+          :src="objectImg?.url"
+          :alt="objectImg?.alt"
+          class="content-image"
+        />
+        <div class="title">{{ objectTitle }}</div>
+      </NuxtLink>
+    </div>
+    <Loader
+      v-else
+      :class="portals_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
 
   <Loader v-else class="error-loader" />
 </template>

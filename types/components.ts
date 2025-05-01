@@ -3,10 +3,15 @@ export interface componentRequest {
   start?: number;
   data?: [];
   docs?: [];
-  meetings?: componentMeeting[];
-  notifications?: componentNotification[];
-  statements?: componentStatement[];
-  portals?: componentPortal[];
+}
+
+export interface availableLanguages {
+  [ar: string]: string;
+  en: string;
+  es: string;
+  fr: string;
+  ru: string;
+  zh: string;
 }
 
 export interface searchParams {
@@ -22,76 +27,62 @@ export interface searchParams {
   };
 }
 
-interface componentGeneric {
-  symbol: string;
-  date: Date;
+export interface componentSanitized
+  extends componentArticle,
+    componentMeeting,
+    componentNotification,
+    componentPortal,
+    componentStatement {
+  type: string;
+}
+
+export interface componentBase {
   url: string;
-  title: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
+  date: Date;
+  title: string | availableLanguages;
 }
 
-export interface componentMeeting extends componentGeneric {
-  date_end: Date;
-  event_city: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
+export interface componentArticle extends componentBase {
+  image_cover?: {
+    url: string;
+    width: number;
+    height: number;
+    mime_type: string;
+    file_size: number;
+    title: string;
+    alt: string;
   };
-  event_country: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-  status: string;
+  date_edited?: Date;
+  content?: string;
 }
 
-export interface componentNotification extends componentGeneric {
+export interface componentMeeting extends componentBase {
+  symbol?: string;
+  status?: string;
+  date_end?: Date;
+  event_city?: availableLanguages;
+  event_country?: availableLanguages;
+}
+
+export interface componentNotification extends componentBase {
+  symbol?: string;
   date_action?: Date;
-  date_deadline: Date;
-  sender: string;
-  reference: string;
-  recipient: string[];
-  themes: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-  fulltext: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
+  date_deadline?: Date;
+  sender?: string;
+  reference?: string;
+  recipient?: string[];
+  themes?: availableLanguages;
+  fulltext?: availableLanguages;
 }
 
-export interface componentStatement extends componentGeneric {
+export interface componentStatement extends componentBase {
   // location: string;
   // description: string;
 }
 
-export interface componentPortal {
-  title: string;
-  url: string;
-  date: Date;
-  date_changed: Date;
-  image: {
+export interface componentPortal extends componentBase {
+  date_changed?: Date;
+  image?: {
     url: string;
     width?: number;
     height?: number;
@@ -100,6 +91,84 @@ export interface componentPortal {
     title?: string;
     alt: string;
   };
+}
+
+export interface componentArticleRaw {
+  attributes: {
+    langcode: string;
+    status: boolean;
+    title: string;
+    created: string;
+    changed: string;
+    revision_timestamp: string;
+    promote: boolean;
+    sticky: boolean;
+    path: {
+      alias: string;
+      langcode: string;
+    };
+    body: {
+      processed: string;
+    };
+  };
+  relationships: {
+    field_image: {
+      data: {
+        meta: {
+          alt: string;
+          title: string;
+          width: number;
+          height: number;
+        };
+      };
+      links: {
+        related: {
+          href: string;
+        };
+      };
+    };
+  };
+}
+
+export interface componentArticleCoverImageRaw {
+  data: {
+    attributes: {
+      uri: {
+        url: string;
+      };
+      filemime: string;
+      filesize: number;
+    };
+  };
+}
+
+export interface componentNotificationRaw {
+  symbol_s: string;
+  date_s: string;
+  actionDate_s?: string;
+  deadline_s: string;
+  sender_s: string;
+  reference_s: string;
+  url_ss: string;
+  recipient_ss: string[];
+  title_AR_s: string;
+  title_EN_s: string;
+  title_ES_s: string;
+  title_FR_s: string;
+  title_RU_s: string;
+  title_ZH_s: string;
+  themes_AR_ss: string[];
+  themes_EN_ss: string[];
+  themes_ES_ss: string[];
+  themes_FR_ss: string[];
+  themes_RU_ss: string[];
+  themes_ZH_ss: string[];
+  fulltext_AR_s: string;
+  fulltext_EN_s: string;
+  fulltext_ES_s: string;
+  fulltext_FR_s: string;
+  fulltext_RU_s: string;
+  fulltext_ZH_s: string;
 }
 
 export interface componentMeetingRaw {
@@ -126,35 +195,6 @@ export interface componentMeetingRaw {
   eventCountry_FR_s: string;
   eventCountry_RU_s: string;
   eventCountry_ZH_s: string;
-}
-
-export interface componentNotificationRaw {
-  symbol_s: string;
-  date_s: string;
-  actionDate_s?: string | undefined;
-  deadline_s: string;
-  sender_s: string;
-  reference_s: string;
-  url_ss: string;
-  recipient_ss: string[];
-  title_AR_s: string;
-  title_EN_s: string;
-  title_ES_s: string;
-  title_FR_s: string;
-  title_RU_s: string;
-  title_ZH_s: string;
-  themes_AR_ss: string[];
-  themes_EN_ss: string[];
-  themes_ES_ss: string[];
-  themes_FR_ss: string[];
-  themes_RU_ss: string[];
-  themes_ZH_ss: string[];
-  fulltext_AR_s: string;
-  fulltext_EN_s: string;
-  fulltext_ES_s: string;
-  fulltext_FR_s: string;
-  fulltext_RU_s: string;
-  fulltext_ZH_s: string;
 }
 
 export interface componentStatementRaw {
