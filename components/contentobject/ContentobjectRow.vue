@@ -90,13 +90,26 @@ const props = defineProps<{
           :object-link="portal.url"
           :object-img="portal.image"
         />
+        <ContentobjectBlock
+          v-else-if="objectType === 'nbsap'"
+          v-for="nbsap in objects"
+          :object-type="objectType"
+          :object-title="
+            (nbsap.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-start-date="nbsap.date"
+          :object-link="nbsap.url"
+        />
       </div>
       <NuxtLink
         to="#"
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
-        >More {{ objectType }}s</NuxtLink
       >
+        {{ objectType === "nbsap" ? "All submissions" : `More ${objectType}s` }}
+      </NuxtLink>
     </section>
   </ClientOnly>
 </template>

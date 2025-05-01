@@ -3,6 +3,7 @@ import {
   type componentRequest,
   type componentMeetingRaw,
   type componentNotificationRaw,
+  type componentNbsapRaw,
   type componentPortalRaw,
   type componentStatementRaw,
   type componentSanitized,
@@ -21,6 +22,9 @@ export const statements_status = ref<componentStatus>({ status: "pending" });
 
 export const referenced_portals = ref<componentSanitized[]>([]);
 export const portals_status = ref<componentStatus>({ status: "pending" });
+
+export const referenced_nbsaps = ref<componentSanitized[]>([]);
+export const nbsaps_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
@@ -280,10 +284,67 @@ export default function getComponents() {
     }
   };
 
+  const getNbsaps = async (search_parameters: searchParams) => {
+    nbsaps_status.value.status = "pending";
+
+    const params = new URLSearchParams({
+      q: "schema_s:nbsap",
+      fl: search_parameters.fl?.toString() || "",
+      sort: search_parameters.sort?.params
+        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+        : "abs(ms(submittedDate_s,NOW)) asc",
+      rows: (search_parameters.rows || 4).toString(),
+    });
+
+    try {
+      const response = await fetch(
+        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const nbsaps_raw: { response: componentRequest } =
+          await response.json();
+
+        const data_docs_mapped = nbsaps_raw.response.docs!.map(
+          (raw_data: componentNbsapRaw): componentSanitized => ({
+            type: "nbsap",
+            date: new Date(raw_data.submittedDate_s),
+            url: raw_data.url_ss[0],
+            title: {
+              ar: raw_data.title_AR_s,
+              en: raw_data.title_EN_s,
+              es: raw_data.title_ES_s,
+              fr: raw_data.title_FR_s,
+              ru: raw_data.title_RU_s,
+              zh: raw_data.title_ZH_s,
+            },
+          })
+        );
+
+        const nbsap_list: componentSanitized[] = data_docs_mapped;
+
+        referenced_nbsaps.value = nbsap_list;
+        nbsaps_status.value.status = "OK";
+
+        return nbsap_list;
+      }
+    } catch (error) {
+      console.error(error);
+      nbsaps_status.value.status = "error";
+    }
+  };
+
   return {
     getMeetings,
     getNotifications,
     getStatements,
     getPortals,
+    getNbsaps,
   };
 }

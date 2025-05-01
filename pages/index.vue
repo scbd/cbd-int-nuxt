@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import getComponents from "~/composables/componentApi";
+import getComponents, { referenced_nbsaps } from "~/composables/componentApi";
 import type { searchParams, componentSanitized } from "~/types/components";
 
-const { getMeetings, getNotifications, getPortals, getStatements } =
+const { getMeetings, getNotifications, getNbsaps, getPortals, getStatements } =
   getComponents();
 
 const articles_params: searchParams = {
@@ -62,6 +62,16 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
+const nbsaps_params: searchParams = {
+  q: "schema_s:nbsap",
+  fl: ["submittedDate_s", "url_ss", "title_??_s"],
+  sort: {
+    params: "submittedDate_s",
+    direction: "desc",
+  },
+  rows: 4,
+};
+
 // const meetings = (await getMeetings(meetings_params)) ?? [];
 // const notifications = (await getNotifications(notifications_params)) ?? [];
 
@@ -69,6 +79,7 @@ await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 await getStatements(statements_params);
 await getPortals();
+await getNbsaps(nbsaps_params);
 
 watch(active_language, async () => {
   await getPortals();
@@ -92,6 +103,7 @@ definePageMeta({
         :objects="referenced_statements"
       />
       <ContentobjectRow object-type="portal" :objects="referenced_portals" />
+      <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
     </ClientOnly>
   </article>
 </template>

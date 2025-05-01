@@ -32,17 +32,18 @@ export interface componentSanitized
     componentMeeting,
     componentNotification,
     componentPortal,
-    componentStatement {
+    componentStatement,
+    componentNbsap {
   type: string;
 }
 
-export interface componentBase {
+interface componentBase {
   url: string;
   date: Date;
   title: string | availableLanguages;
 }
 
-export interface componentArticle extends componentBase {
+interface componentArticle extends componentBase {
   image_cover?: {
     url: string;
     width: number;
@@ -56,7 +57,7 @@ export interface componentArticle extends componentBase {
   content?: string;
 }
 
-export interface componentMeeting extends componentBase {
+interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
   date_end?: Date;
@@ -64,7 +65,7 @@ export interface componentMeeting extends componentBase {
   event_country?: availableLanguages;
 }
 
-export interface componentNotification extends componentBase {
+interface componentNotification extends componentBase {
   symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
@@ -75,12 +76,12 @@ export interface componentNotification extends componentBase {
   fulltext?: availableLanguages;
 }
 
-export interface componentStatement extends componentBase {
+interface componentStatement extends componentBase {
   // location: string;
   // description: string;
 }
 
-export interface componentPortal extends componentBase {
+interface componentPortal extends componentBase {
   date_changed?: Date;
   image?: {
     url: string;
@@ -92,6 +93,8 @@ export interface componentPortal extends componentBase {
     alt: string;
   };
 }
+
+interface componentNbsap extends componentBase {}
 
 export interface componentArticleRaw {
   attributes: {
@@ -225,4 +228,15 @@ export interface componentPortalRaw {
       };
     };
   };
+}
+
+export interface componentNbsapRaw {
+  title_AR_s: string;
+  title_EN_s: string;
+  title_ES_s: string;
+  title_FR_s: string;
+  title_RU_s: string;
+  title_ZH_s: string;
+  submittedDate_s: string;
+  url_ss: string;
 }

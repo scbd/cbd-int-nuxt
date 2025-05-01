@@ -206,5 +206,33 @@ const objectLocation = (
     />
   </template>
 
+  <template v-else-if="objectType === 'nbsap'">
+    <div
+      v-if="nbsaps_status.status === 'OK'"
+      class="content-object"
+      :class="objectType"
+    >
+      <div class="date">
+        {{
+          Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectStartDate)
+        }}
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on" target="_blank"
+          >Read {{ objectType }}</NuxtLink
+        >
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="nbsaps_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
   <Loader v-else class="error-loader" />
 </template>
