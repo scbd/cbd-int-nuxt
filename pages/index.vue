@@ -2,7 +2,8 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams } from "~/types/components";
 
-const { getMeetings, getNotifications, getStatements } = getComponents();
+const { getMeetings, getNotifications, getPortals, getStatements } =
+  getComponents();
 
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
@@ -56,11 +57,9 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
-onMounted(async () => {
-  await getMeetings(meetings_params);
-  await getNotifications(notifications_params);
-  await getStatements(statements_params);
-});
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+await getStatements(statements_params);
 
 definePageMeta({
   layout: "landing-home",
@@ -68,11 +67,17 @@ definePageMeta({
 </script>
 
 <template>
-  <!-- <HeroSinglefeature /> -->
   <article class="cus-article container-xxl d-flex flex-column">
-    <!-- <ContentobjectRow object-type="update" /> -->
-    <ContentobjectRow object-type="meeting" :objects="meetings" />
-    <ContentobjectRow object-type="notification" :objects="notifications" />
-    <ContentobjectRow object-type="statement" :objects="statements" />
+    <ClientOnly>
+      <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
+      <ContentobjectRow
+        object-type="notification"
+        :objects="referenced_notifications"
+      />
+      <ContentobjectRow
+        object-type="statement"
+        :objects="referenced_statements"
+      />
+    </ClientOnly>
   </article>
 </template>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { componentRequest } from "~/types/components";
+import type {
+  componentSanitized,
+  availableLanguages,
+} from "~/types/components";
 
 const props = defineProps<{
   objectType: string;
-  objects: componentRequest;
+  objects: componentSanitized[];
 }>();
 </script>
 
@@ -13,61 +16,100 @@ const props = defineProps<{
       class="content-row d-flex flex-column"
       :class="objectType === 'update' ? 'recent-updates' : objectType"
     >
-      <div class="row-title">Recent {{ objectType }}s</div>
+      <div class="row-title">
+        {{
+          objectType === "portal"
+            ? "Portals and Resources"
+            : `Recent ${objectType}s`
+        }}
+      </div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
-          v-if="objects.meetings && objects.meetings.length > 0"
-          v-for="meeting in objects?.meetings"
-          :object-type="objectType"
+          v-if="objectType === 'meeting'"
+          v-for="meeting in objects"
+          :object-type="props.objectType"
           :object-title="
-            meeting.title[active_language!.active_language.slice(0, 2)]
+            (meeting.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-start-date="meeting.date"
           :object-end-date="meeting.date_end"
           :object-event-city="
-            meeting.event_city[active_language!.active_language.slice(0, 2)]
+            meeting.event_city?.[active_language!.active_language.slice(0, 2)]
           "
           :object-event-country="
-            meeting.event_country[active_language!.active_language.slice(0, 2)]
+            meeting.event_country?.[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-link="meeting.url"
         />
         <ContentobjectBlock
-          v-else-if="objects.notifications && objects.notifications.length > 0"
-          v-for="notification in objects?.notifications"
+          v-else-if="objectType === 'notification'"
+          v-for="notification in objects"
           :object-type="objectType"
           :object-title="
-            notification.title[active_language!.active_language.slice(0, 2)]
+            (notification.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-symbol="notification.symbol"
           :object-start-date="notification.date"
           :object-action-required="notification.date_action"
           :object-description="
-            notification.fulltext[active_language!.active_language.slice(0, 2)]
+            (notification.fulltext as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-subjects="
-            notification.themes[active_language!.active_language.slice(0, 2)]
+            (notification.themes as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-link="notification.url"
         />
         <ContentobjectBlock
-          v-else-if="objects.statements && objects.statements.length > 0"
-          v-for="statement in objects.statements"
+          v-else-if="objectType === 'statement'"
+          v-for="statement in objects"
           :object-type="objectType"
           :object-symbol="statement.symbol"
           :object-title="
-            statement.title[active_language!.active_language.slice(0, 2)]
+            (statement.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
           :object-start-date="statement.date"
           :object-link="statement.url"
+        />
+        <ContentobjectBlock
+          v-else-if="objectType === 'portal'"
+          v-for="portal in objects"
+          :object-type="objectType"
+          :object-title="<string>portal.title"
+          :object-link="portal.url"
+          :object-img="portal.image"
+        />
+        <ContentobjectBlock
+          v-else-if="objectType === 'nbsap'"
+          v-for="nbsap in objects"
+          :object-type="objectType"
+          :object-title="
+            (nbsap.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-start-date="nbsap.date"
+          :object-link="nbsap.url"
         />
       </div>
       <NuxtLink
         to="#"
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
-        >More {{ objectType }}s</NuxtLink
       >
+        {{ objectType === "nbsap" ? "All submissions" : `More ${objectType}s` }}
+      </NuxtLink>
     </section>
   </ClientOnly>
 </template>
