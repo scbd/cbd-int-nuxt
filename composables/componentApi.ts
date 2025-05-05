@@ -114,68 +114,70 @@ export default function getComponents() {
       rows: (search_parameters.rows || 4).toString(),
     });
 
-    const response = (await fetch(
-      `${config.public.SOLR_QUERY}?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).catch((error) => {
+    try {
+      const response = await fetch(
+        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const notifications_raw: { response: componentRequest } =
+        await response.json();
+
+      const data_docs_mapped = notifications_raw.response.docs!.map(
+        (raw_data: componentNotificationRaw): componentSanitized => ({
+          type: "notification",
+          symbol: raw_data.symbol_s,
+          date: new Date(raw_data.date_s),
+          date_action: raw_data.actionDate_s
+            ? new Date(raw_data.actionDate_s)
+            : undefined,
+          date_deadline: new Date(raw_data.deadline_s),
+          sender: raw_data.sender_s,
+          reference: raw_data.reference_s,
+          url: raw_data.url_ss[0],
+          recipient: raw_data.recipient_ss,
+          title: {
+            ar: raw_data.title_AR_s,
+            en: raw_data.title_EN_s,
+            es: raw_data.title_ES_s,
+            fr: raw_data.title_FR_s,
+            ru: raw_data.title_RU_s,
+            zh: raw_data.title_ZH_s,
+          },
+          themes: {
+            ar: raw_data.themes_AR_ss[0],
+            en: raw_data.themes_EN_ss[0],
+            es: raw_data.themes_ES_ss[0],
+            fr: raw_data.themes_FR_ss[0],
+            ru: raw_data.themes_RU_ss[0],
+            zh: raw_data.themes_ZH_ss[0],
+          },
+          fulltext: {
+            ar: raw_data.fulltext_AR_s,
+            en: raw_data.fulltext_EN_s,
+            es: raw_data.fulltext_ES_s,
+            fr: raw_data.fulltext_FR_s,
+            ru: raw_data.fulltext_RU_s,
+            zh: raw_data.fulltext_ZH_s,
+          },
+        })
+      );
+
+      const notification_list: componentSanitized[] = data_docs_mapped;
+
+      referenced_notifications.value = notification_list;
+      notifications_status.value.status = "OK";
+
+      return notification_list;
+    } catch (error) {
       console.error(error);
       notifications_status.value.status = "error";
-    })) as Response;
-
-    const notifications_raw: { response: componentRequest } =
-      await response.json();
-
-    const data_docs_mapped = notifications_raw.response.docs!.map(
-      (raw_data: componentNotificationRaw): componentSanitized => ({
-        type: "notification",
-        symbol: raw_data.symbol_s,
-        date: new Date(raw_data.date_s),
-        date_action: raw_data.actionDate_s
-          ? new Date(raw_data.actionDate_s)
-          : undefined,
-        date_deadline: new Date(raw_data.deadline_s),
-        sender: raw_data.sender_s,
-        reference: raw_data.reference_s,
-        url: raw_data.url_ss[0],
-        recipient: raw_data.recipient_ss,
-        title: {
-          ar: raw_data.title_AR_s,
-          en: raw_data.title_EN_s,
-          es: raw_data.title_ES_s,
-          fr: raw_data.title_FR_s,
-          ru: raw_data.title_RU_s,
-          zh: raw_data.title_ZH_s,
-        },
-        themes: {
-          ar: raw_data.themes_AR_ss.join("، "),
-          en: raw_data.themes_EN_ss.join(", "),
-          es: raw_data.themes_ES_ss.join(", "),
-          fr: raw_data.themes_FR_ss.join(", "),
-          ru: raw_data.themes_RU_ss.join(", "),
-          zh: raw_data.themes_ZH_ss.join(", "),
-        },
-        fulltext: {
-          ar: raw_data.fulltext_AR_s,
-          en: raw_data.fulltext_EN_s,
-          es: raw_data.fulltext_ES_s,
-          fr: raw_data.fulltext_FR_s,
-          ru: raw_data.fulltext_RU_s,
-          zh: raw_data.fulltext_ZH_s,
-        },
-      })
-    );
-
-    const notification_list: componentSanitized[] = data_docs_mapped;
-
-    referenced_notifications.value = notification_list;
-    notifications_status.value.status = "OK";
-
-    return notification_list;
+    }
   };
 
   const getStatements = async (search_parameters: searchParams) => {
