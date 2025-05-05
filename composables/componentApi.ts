@@ -343,8 +343,5 @@ export default function getComponents() {
   return {
     getMeetings,
     getNotifications,
-    getStatements,
-    getPortals,
-    getNbsaps,
   };
 }
