@@ -231,14 +231,6 @@ export default function getComponents() {
             ru: raw_data.title_RU_s,
             zh: raw_data.title_ZH_s,
           },
-          themes: {
-            ar: raw_data.themes_AR_ss.join("، "),
-            en: raw_data.themes_EN_ss.join(", "),
-            es: raw_data.themes_ES_ss.join(", "),
-            fr: raw_data.themes_FR_ss.join(", "),
-            ru: raw_data.themes_RU_ss.join(", "),
-            zh: raw_data.themes_ZH_ss.join(", "),
-          },
           fulltext: {
             ar: raw_data.fulltext_AR_s,
             en: raw_data.fulltext_EN_s,
