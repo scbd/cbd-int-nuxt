@@ -2,8 +2,7 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams } from "~/types/components";
 
-const { getMeetings, getNotifications, getPortals, getStatements } =
-  getComponents();
+const { getMeetings, getNotifications, getStatements } = getComponents();
 
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
