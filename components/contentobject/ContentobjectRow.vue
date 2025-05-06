@@ -45,49 +45,38 @@ const props = defineProps<{
         />
 
         <ContentobjectBlock
-      <div class="row-title">
-        {{
-          objectType === "portal"
-            ? "Portals and Resources"
-            : `Recent ${objectType}s`
-        }}
-      </div>
-      <div class="content-wrapper d-flex">
-        <ContentobjectBlock
-          v-if="objectType === 'meeting'"
-          v-for="meeting in objects"
+          v-if="(objects as componentRequest).meetings"
+          v-for="content_object in (objects as componentRequest)?.meetings"
           :object-type="props.objectType"
           :object-title="
-            (meeting.title as availableLanguages)[
+            content_object.title[active_language!.active_language.slice(0, 2)]
+          "
+          :object-start-date="content_object.date_start"
+          :object-end-date="content_object.date_end"
+          :object-event-city="
+            content_object.event_city[
               active_language!.active_language.slice(0, 2)
             ]
-          "
-          :object-start-date="meeting.date"
-          :object-end-date="meeting.date_end"
-          :object-event-city="
-            meeting.event_city?.[active_language!.active_language.slice(0, 2)]
           "
           :object-event-country="
-            meeting.event_country?.[
+            content_object.event_country[
               active_language!.active_language.slice(0, 2)
             ]
           "
-          :object-link="meeting.url"
+          :object-link="content_object.url"
         />
         <ContentobjectBlock
-          v-else-if="objectType === 'notification'"
-          v-for="notification in objects"
-          :object-type="objectType"
+          v-if="(objects as componentRequest).notifications"
+          v-for="content_object in (objects as componentRequest).notifications"
+          :object-type="props.objectType"
           :object-title="
-            (notification.title as availableLanguages)[
-              active_language!.active_language.slice(0, 2)
-            ]
+            content_object.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-symbol="notification.symbol"
-          :object-start-date="notification.date"
-          :object-action-required="notification.date_action"
+          :object-symbol="content_object.symbol"
+          :object-start-date="content_object.date"
+          :object-action-required="content_object.date_action"
           :object-description="
-            (notification.fulltext as availableLanguages)[
+            content_object.fulltext[
               active_language!.active_language.slice(0, 2)
             ]
           "

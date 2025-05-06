@@ -54,7 +54,6 @@ const notifications_params: searchParams = {
 const updates: componentSanitized[] = [];
 
 const articles = (await getArticles(articles_params)) ?? [];
-// const featured_articles = (await getArticles(articles_params)) ?? [];
 const meetings = (await getMeetings(meetings_params)) ?? [];
 const notifications = (await getNotifications(notifications_params)) ?? [];
 
@@ -92,7 +91,6 @@ watch(active_language, async () => {
   await getPortals();
 });
 
-
 definePageMeta({
   layout: "landing-home",
 });
@@ -102,6 +100,7 @@ definePageMeta({
   <ClientOnly>
     <Hero :article="referenced_articles" />
   </ClientOnly>
+
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
       <ContentobjectRow object-type="update" :objects="sorted_updates" />

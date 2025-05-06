@@ -1,14 +1,13 @@
 import type { drupalToken } from "~/types/drupalAuth";
 import {
   type componentRequest,
+  type component-updates,
   type component-portals,
   type componentMeetingRaw,
   type componentNotificationRaw,
   type component-hero,
   type componentArticleRaw,
   type componentArticleCoverImageRaw,
-  type componentMeetingRaw,
-  type componentNotificationRaw,
   type componentMeetingRaw,
   type componentNotificationRaw,
   type componentNbsapRaw,
@@ -492,7 +491,7 @@ const config = useRuntimeConfig();
       nbsaps_status.value.status = "error";
     }
   };
-  
+
   return {
     getArticles,
     getMeetings,

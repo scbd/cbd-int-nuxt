@@ -30,6 +30,24 @@ export interface searchParams {
 export interface componentSanitized
   extends componentArticle,
     componentMeeting,
+    component-updates,
+    componentNotification {
+  type: string;
+}
+
+export interface componentBase {
+  url: string;
+  date: Date;
+  title:
+    | string
+    | {
+        [ar: string]: string;
+        en: string;
+        es: string;
+        fr: string;
+        ru: string;
+        zh: string;
+      };
     componentNotification,
     componentPortal,
     component-portals
@@ -65,6 +83,22 @@ export interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
   date_end?: Date;
+  event_city?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
+  event_country?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
   event_city?: availableLanguages;
   event_country?: availableLanguages;
 }
