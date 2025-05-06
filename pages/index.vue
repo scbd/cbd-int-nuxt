@@ -2,8 +2,7 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams } from "~/types/components";
 
-const { getMeetings, getNotifications } = getComponents();
-
+const { getMeetings, getNotifications, getStatements } = getComponents();
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
   fl: [
@@ -49,6 +48,21 @@ const notifications_params: searchParams = {
 await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 
+const statements_params: searchParams = {
+  q: "schema_s:statement",
+  fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
+  sort: {
+    params: "date_s",
+    direction: "desc",
+  },
+  rows: 4,
+};
+
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+await getStatements(statements_params);
+
+
 definePageMeta({
   layout: "landing-home",
 });
@@ -61,6 +75,10 @@ definePageMeta({
       <ContentobjectRow
         object-type="notification"
         :objects="referenced_notifications"
+      />
+      <ContentobjectRow
+        object-type="statement"
+        :objects="referenced_statements"
       />
     </ClientOnly>
   </article>
