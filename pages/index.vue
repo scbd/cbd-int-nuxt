@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import getComponents from "~/composables/componentApi";
-import type { searchParams } from "~/types/components";
+import type { searchParams, componentSanitized } from "~/types/components";
 
-const { getMeetings, getNotifications, getStatements } = getComponents();
+const { getArticles, getMeetings, getNotifications, getStatements } = getComponents();
+
+const articles_params: searchParams = {
+  q: "article",
+  rows: 10,
+};
+
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
   fl: [
@@ -45,6 +51,22 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
+const updates: componentSanitized[] = [];
+
+const articles = (await getArticles(articles_params)) ?? [];
+// const featured_articles = (await getArticles(articles_params)) ?? [];
+const meetings = (await getMeetings(meetings_params)) ?? [];
+const notifications = (await getNotifications(notifications_params)) ?? [];
+
+updates.push(...articles, ...meetings, ...notifications);
+const sorted_updates = updates
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 4);
+
+watch(active_language, async () => {
+  await getArticles(articles_params);
+});
+
 await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 
@@ -69,8 +91,12 @@ definePageMeta({
 </script>
 
 <template>
+  <ClientOnly>
+    <Hero :article="referenced_articles" />
+  </ClientOnly>
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
+      <ContentobjectRow object-type="update" :objects="sorted_updates" />
       <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
       <ContentobjectRow
         object-type="notification"

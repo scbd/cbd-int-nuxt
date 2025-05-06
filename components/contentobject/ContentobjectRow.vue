@@ -16,6 +16,35 @@ const props = defineProps<{
       class="content-row d-flex flex-column"
       :class="objectType === 'update' ? 'recent-updates' : objectType"
     >
+      <div class="row-title">Recent {{ objectType }}s</div>
+      <div class="content-wrapper d-flex">
+        <ContentobjectBlock
+          v-if="objectType === 'update'"
+          v-for="update in objects"
+          :object-type="update.type"
+          :object-title="
+            typeof update.title === 'string'
+              ? <string>update.title
+              : update.title[active_language!.active_language.slice(0, 2)]
+          "
+          :object-start-date="update.date"
+          :object-img="update.image_cover"
+          :object-link="update.url"
+          :object-end-date="update.date_end"
+          :object-action-required="update.date_action"
+          :object-symbol="update.symbol"
+          :object-event-city="
+            update.event_city?.[active_language!.active_language.slice(0, 2)]
+          "
+          :object-event-country="
+            update.event_country?.[active_language!.active_language.slice(0, 2)]
+          "
+          :object-description="
+            update.fulltext?.[active_language!.active_language.slice(0, 2)]
+          "
+        />
+
+        <ContentobjectBlock
       <div class="row-title">
         {{
           objectType === "portal"
@@ -69,6 +98,7 @@ const props = defineProps<{
           "
           :object-link="notification.url"
         />
+      </div>
         <ContentobjectBlock
           v-else-if="objectType === 'statement'"
           v-for="statement in objects"
