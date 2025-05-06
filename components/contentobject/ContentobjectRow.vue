@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { componentRequest, componentSanitized } from "~/types/components";
+import type {
+  componentSanitized,
+  availableLanguages,
+} from "~/types/components";
 
 const props = defineProps<{
   objectType: string;
-  objects: componentRequest | componentSanitized[];
+  objects: componentSanitized[];
 }>();
 </script>
 
@@ -16,8 +19,8 @@ const props = defineProps<{
       <div class="row-title">Recent {{ objectType }}s</div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
-          v-if="(objects as componentSanitized[]).length > 0"
-          v-for="update in objects as componentSanitized[]"
+          v-if="objectType === 'update'"
+          v-for="update in objects"
           :object-type="update.type"
           :object-title="
             typeof update.title === 'string'
@@ -78,11 +81,54 @@ const props = defineProps<{
             ]
           "
           :object-subjects="
-            content_object.themes[active_language!.active_language.slice(0, 2)]
+            (notification.themes as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
-          :object-link="content_object.url"
+          :object-link="notification.url"
         />
       </div>
+        <ContentobjectBlock
+          v-else-if="objectType === 'statement'"
+          v-for="statement in objects"
+          :object-type="objectType"
+          :object-symbol="statement.symbol"
+          :object-title="
+            (statement.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-start-date="statement.date"
+          :object-link="statement.url"
+        />
+        <ContentobjectBlock
+          v-else-if="objectType === 'portal'"
+          v-for="portal in objects"
+          :object-type="objectType"
+          :object-title="<string>portal.title"
+          :object-link="portal.url"
+          :object-img="portal.image"
+        />
+        <ContentobjectBlock
+          v-else-if="objectType === 'nbsap'"
+          v-for="nbsap in objects"
+          :object-type="objectType"
+          :object-title="
+            (nbsap.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-start-date="nbsap.date"
+          :object-link="nbsap.url"
+        />
+      </div>
+      <NuxtLink
+        to="#"
+        class="btn cbd-btn cbd-btn-outline-more-content"
+        role="button"
+      >
+        {{ objectType === "nbsap" ? "All submissions" : `More ${objectType}s` }}
+      </NuxtLink>
     </section>
   </ClientOnly>
 </template>

@@ -2,7 +2,7 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams, componentSanitized } from "~/types/components";
 
-const { getArticles, getMeetings, getNotifications } = getComponents();
+const { getArticles, getMeetings, getNotifications, getStatements } = getComponents();
 
 const articles_params: searchParams = {
   q: "article",
@@ -66,12 +66,41 @@ watch(active_language, async () => {
   await getArticles(articles_params);
 });
 
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+
+const statements_params: searchParams = {
+  q: "schema_s:statement",
+  fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
+  sort: {
+    params: "date_s",
+    direction: "desc",
+  },
+  rows: 4,
+};
+
+// const meetings = (await getMeetings(meetings_params)) ?? [];
+// const notifications = (await getNotifications(notifications_params)) ?? [];
+
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+await getStatements(statements_params);
+await getPortals();
+
+watch(active_language, async () => {
+  await getPortals();
+});
+
 definePageMeta({
   layout: "landing-home",
 });
 </script>
 
 <template>
+  <ClientOnly>
+    <Hero :article="referenced_articles" />
+  </ClientOnly>
+
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
       <ContentobjectRow object-type="update" :objects="sorted_updates" />
@@ -80,6 +109,11 @@ definePageMeta({
         object-type="notification"
         :objects="referenced_notifications"
       />
+      <ContentobjectRow
+        object-type="statement"
+        :objects="referenced_statements"
+      />
+      <ContentobjectRow object-type="portal" :objects="referenced_portals" />
     </ClientOnly>
   </article>
 </template>
