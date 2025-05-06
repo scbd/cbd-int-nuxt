@@ -18,6 +18,8 @@ logs
 .fleet
 .idea
 keys
+.vscode
+.gitignore
 
 # Local env files
 .env

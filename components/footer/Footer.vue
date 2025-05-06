@@ -1,14 +1,12 @@
-<script setup lang="ts">
-
-// Handler
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <footer class="cus-footer d-flex flex-column">
-        <client-only>
-        <div class="footer-row footer-navigation">
-            <ClientOnly>
+        <ClientOnly>
+        <div 
+            v-if="footer_menu_status.status === 'OK'"
+            class="footer-row footer-navigation">
+            
             <nav
                 v-for="nav in footer_menu"
                 :key="nav.title">
@@ -49,8 +47,6 @@
                     </li>
                 </ul>
             </nav>
-            </ClientOnly>
-
             
             <nav class="a-part-of">
                 <div class="nav-title">A Part Of</div>
@@ -69,17 +65,9 @@
                 </ul>
             </nav>
         </div>
-        </client-only>
 
-        <!-- <div class="footer-row contact-and-legal">
-            <ul>
-                <li>&copy; 2025 Secretariat of the Convention on Biological Diversity</li>
-                <li><NuxtLink to="#">Terms of Use</NuxtLink></li>
-                <li><NuxtLink to="#">Privacy Policy</NuxtLink></li>
-                <li><NuxtLink to="#">Contact Us</NuxtLink></li>
-                <li><NuxtLink to="#">Credits</NuxtLink></li>
-            </ul>
-        </div> -->
+        <Loader v-else :class="footer_menu_status.status === 'error' ? 'error-loader' : ''" />
+        </ClientOnly>
 
     </footer>
 </template>

@@ -10,6 +10,7 @@
                 </NuxtLink>
             </li>
             <li class="nav-item">
+                <ClientOnly>
                 <NuxtLink 
                     v-for="language in languages"
                     :key="language.langCode"
@@ -39,6 +40,7 @@
                         </NuxtLink>
                     </li>
                 </ul>
+                </ClientOnly>
             </li>
             <li class="nav-item">
                 <NuxtLink class="nav-link" to="#" role="button">

@@ -14,15 +14,22 @@ export interface drupalMenu {
     };
 }
 
-export interface footerMenu {
+export interface fetchedMenu {
     langCode: string,
     menu_name: string,
     menu: []
 }
 
-export interface drupalMenuItem {
+export interface fetchedMenuItem {
     id: string,
     title: string,
     link: string,
-    children: drupalMenuItem[]
+    options?: {
+        attributes?: {
+            component?: string,
+            submenu?: string,
+            icon?: string
+        }
+    },
+    children: fetchedMenuItem[]
 }
