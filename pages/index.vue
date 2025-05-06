@@ -3,7 +3,6 @@ import getComponents from "~/composables/componentApi";
 import type { searchParams } from "~/types/components";
 
 const { getMeetings, getNotifications, getStatements } = getComponents();
-
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
   fl: [
@@ -46,6 +45,9 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+
 const statements_params: searchParams = {
   q: "schema_s:statement",
   fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
@@ -59,6 +61,7 @@ const statements_params: searchParams = {
 await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 await getStatements(statements_params);
+
 
 definePageMeta({
   layout: "landing-home",
