@@ -256,7 +256,7 @@ const objectLocation = (
       <div class="description">{{ objectDescription }}</div>
       <div class="read-on-wrapper">
         <NuxtLink :to="objectLink" class="read-on">
-        
+
       <div class="title">{{ objectTitle }}</div>
       <div v-show="objectEventCity || objectEventCountry" class="location">
         {{
@@ -297,7 +297,7 @@ const objectLocation = (
             day: "numeric",
           }).format(objectStartDate)
         }}
-
+        
         <template v-if="objectEndDate">
           &nbsp;&ndash;&nbsp;
           {{
@@ -324,6 +324,7 @@ const objectLocation = (
         {{ `Subject(s): ${objectSubjects}` }}
       </div>
       <div class="description">{{ objectDescription }}</div>
+
       <div class="read-on-wrapper">
         <NuxtLink :to="objectLink" class="read-on"
       </div>

@@ -116,7 +116,6 @@ const handlerHeaderNavigation = async () => {
 
 const handlerFooterNavigation = async () => {
     footer_menu_status.value.status = "pending";
-
     try {
         const footerData: fetchedMenu | unknown = await getDrupalMenu(
             'cbd-footer',

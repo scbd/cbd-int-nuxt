@@ -117,5 +117,6 @@ definePageMeta({
       <ContentobjectRow object-type="portal" :objects="referenced_portals" />
       <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
     </ClientOnly>
+
   </article>
 </template>
