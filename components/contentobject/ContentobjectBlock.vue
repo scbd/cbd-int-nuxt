@@ -125,6 +125,19 @@ const objectLocation = (
           }}
         </template>
       </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div v-show="objectEventCity || objectEventCountry" class="location">
+        {{
+          objectLocation(
+            active_language!.active_language,
+            objectEventCity,
+            objectEventCountry
+          )
+        }}
+      </div>
+      <div v-show="objectDescription" class="description">
+        {{ objectDescription }}
+      </div>
       <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
       <div v-show="objectActionRequired" class="action-required">
         {{
@@ -148,13 +161,91 @@ const objectLocation = (
     </div>
     <Loader
       v-else
+      :class="articles_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
+  <template v-else-if="objectType === 'meeting'">
+    <div
+      v-if="meetings_status.status === 'OK'"
       :class="meetings_status.status === 'error' ? 'error-loader' : ''"
     />
   </template>
 
+  <template v-else-if="objectType === 'notification'">
+    <div
+      v-if="notifications_status.status === 'OK'"
   <template v-else-if="objectType === 'statement'">
     <div
       v-if="statements_status.status === 'OK'"
+      class="content-object"
+      :class="objectType"
+    >
+      <div class="date">
+        {{
+          Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectStartDate)
+        }}
+        <template v-if="objectEndDate">
+          &nbsp;&ndash;&nbsp;
+          {{
+            Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(objectEndDate)
+          }}
+        </template>
+      </div>
+      <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
+      <div v-show="objectActionRequired" class="action-required">
+        {{
+          `Action required: 
+          ${Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectActionRequired)}`
+        }}
+      </div>
+      <div v-show="objectSubjects" class="subjects">
+        {{ `Subject(s): ${objectSubjects}` }}
+      </div>
+      <div class="description">{{ objectDescription }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on"
+      <div class="title">{{ objectTitle }}</div>
+      <div v-show="objectEventCity || objectEventCountry" class="location">
+        {{
+          objectLocation(
+            active_language!.active_language,
+            objectEventCity,
+            objectEventCountry
+          )
+        }}
+      </div>
+      <div v-show="objectDescription" class="description">
+        {{ objectDescription }}
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on" target="_blank"
+          >View {{ objectType }}</NuxtLink
+        >
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="meetings_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
+  <template v-else-if="objectType === 'notification'">
+    <div
+      v-if="notifications_status.status === 'OK'"
       class="content-object"
       :class="objectType"
     >
@@ -203,6 +294,34 @@ const objectLocation = (
     <Loader
       v-else
       :class="portals_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
+  <template v-else-if="objectType === 'nbsap'">
+    <div
+      v-if="nbsaps_status.status === 'OK'"
+      class="content-object"
+      :class="objectType"
+    >
+      <div class="date">
+        {{
+          Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectStartDate)
+        }}
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on" target="_blank"
+          >Read {{ objectType }}</NuxtLink
+        >
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="nbsaps_status.status === 'error' ? 'error-loader' : ''"
     />
   </template>
 

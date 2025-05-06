@@ -3,8 +3,6 @@ import type { drupalLanguage } from "~/types/drupalLanguages";
 import type { fetchedMenu, fetchedMenuItem } from "~/types/drupalMenu";
 import type { userSettings } from "~/types/userSettings";
 
-import getComponents from "./componentApi";
-
 export const languages = ref<drupalLanguage[]>([]);
 export const active_language = ref<userSettings>();
 export const megamenu = ref<fetchedMenuItem[]>([]);
@@ -78,20 +76,52 @@ const handlerHeaderNavigation = async () => {
   }
 };
 
+const handlerHeaderNavigation = async () => {
+    megamenu_status.value.status = "pending";
+    
+    try {
+        const menuData: fetchedMenu | unknown = await getDrupalMenu(
+            'cbd-header',
+            active_language.value!.active_language
+        );
+        const menu_temp = menuData as fetchedMenu;        
+        
+        for (const menu_item of menu_temp.menu as fetchedMenuItem[]) {
+            const machine_name = menu_item.options!.attributes!.submenu!.slice(0,32);
+            
+            try {
+                const submenuData: fetchedMenu | unknown = await getDrupalMenu(
+                    machine_name,
+                    active_language.value!.active_language
+                );
+                const submenu_temp = submenuData as fetchedMenu;
+                menu_item.children.push(...submenu_temp.menu);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        megamenu.value = menu_temp.menu;
+        megamenu_status.value.status = "OK";
+    } catch (error) {
+        console.error(error);
+        megamenu_status.value.status = "error";
+    }
+}
+
 const handlerFooterNavigation = async () => {
-  footer_menu_status.value.status = "pending";
+    footer_menu_status.value.status = "pending";
 
-  try {
-    const footerData: fetchedMenu | unknown = await getDrupalMenu(
-      "cbd-footer",
-      active_language.value!.active_language
-    );
-    const footer_temp = footerData as fetchedMenu;
-    footer_menu.value = footer_temp.menu;
+    try {
+        const footerData: fetchedMenu | unknown = await getDrupalMenu(
+            'cbd-footer',
+            active_language.value!.active_language
+        );
+        const footer_temp = footerData as fetchedMenu;
+        footer_menu.value = footer_temp.menu;
 
-    footer_menu_status.value.status = "OK";
-  } catch (error) {
-    console.error(error);
-    footer_menu_status.value.status = "error";
-  }
-};
+        footer_menu_status.value.status = "OK";
+    } catch (error) {
+        console.error(error);
+        footer_menu_status.value.status = "error";
+    }
+}

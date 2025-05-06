@@ -32,11 +32,16 @@ export interface componentSanitized
     componentMeeting,
     componentNotification,
     componentPortal,
+    component-portals
     componentStatement {
-  type: string;
+      type: string;
+    }
 }
 
 export interface componentBase {
+    componentStatement,
+    componentNbsap {
+  type: string;
   url: string;
   date: Date;
   title: string | availableLanguages;
@@ -92,6 +97,8 @@ export interface componentPortal extends componentBase {
     alt: string;
   };
 }
+
+interface componentNbsap extends componentBase {}
 
 export interface componentArticleRaw {
   attributes: {
@@ -225,4 +232,15 @@ export interface componentPortalRaw {
       };
     };
   };
+}
+
+export interface componentNbsapRaw {
+  title_AR_s: string;
+  title_EN_s: string;
+  title_ES_s: string;
+  title_FR_s: string;
+  title_RU_s: string;
+  title_ZH_s: string;
+  submittedDate_s: string;
+  url_ss: string;
 }
