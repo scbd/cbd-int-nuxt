@@ -129,6 +129,7 @@ export const nbsaps_status = ref<componentStatus>({ status: "pending" });
 export default function getComponents() {
 const config = useRuntimeConfig();
 
+
   const getMeetings = async (search_parameters: searchParams) => {
     meetings_status.value.status = "pending";
 

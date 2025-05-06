@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
     import type { fetchedMenuItem } from '~/types/drupalMenu';
     
     const props = defineProps<
@@ -34,3 +33,4 @@
         </ul>
     </li>
 </template>
+
