@@ -47,7 +47,43 @@ const objectLocation = (
 };
 </script>
 
-<template>
+  <template v-if="objectType === 'article'">
+    <div
+      v-if="articles_status.status === 'OK'"
+      class="content-object"
+      :class="[
+        objectType,
+        objectInfo?.source ? `accent-${objectInfo.source}` : 'accent-cbd',
+      ]"
+    >
+      <img
+        :src="props.objectImg?.url ?? '/images/update-1.jpg'"
+        :alt="objectImg?.alt"
+        :title="objectImg?.title"
+        class="content-image"
+      />
+      <div class="information">
+        <div class="taxonomy">
+          <div class="source">{{ objectInfo?.source ?? "CBD" }}</div>
+          <div class="type">{{ objectInfo?.type ?? "Article" }}</div>
+        </div>
+        <div class="date">
+          {{
+            Intl.DateTimeFormat(active_language!.active_language, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }).format(objectStartDate)
+          }}
+        </div>
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="description">
+        {{ objectDescription ?? "Description Placeholder" }}
+      </div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on">Read on</NuxtLink>
+
   <template v-if="objectType === 'update'"> </template>
 
   <template v-else-if="objectType === 'meeting'">
@@ -125,6 +161,21 @@ const objectLocation = (
           }}
         </template>
       </div>
+
+      <div class="title">{{ objectTitle }}</div>
+      <div v-show="objectEventCity || objectEventCountry" class="location">
+        {{
+          objectLocation(
+            active_language!.active_language,
+            objectEventCity,
+            objectEventCountry
+          )
+        }}
+      </div>
+      <div v-show="objectDescription" class="description">
+        {{ objectDescription }}
+      </div>
+
       <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
       <div v-show="objectActionRequired" class="action-required">
         {{
@@ -148,10 +199,20 @@ const objectLocation = (
     </div>
     <Loader
       v-else
+      :class="articles_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
+  <template v-else-if="objectType === 'meeting'">
+    <div
+      v-if="meetings_status.status === 'OK'"
       :class="meetings_status.status === 'error' ? 'error-loader' : ''"
     />
   </template>
 
+  <template v-else-if="objectType === 'notification'">
+    <div
+      v-if="notifications_status.status === 'OK'"
   <template v-else-if="objectType === 'statement'">
     <div
       v-if="statements_status.status === 'OK'"
@@ -166,6 +227,105 @@ const objectLocation = (
             day: "numeric",
           }).format(objectStartDate)
         }}
+        <template v-if="objectEndDate">
+          &nbsp;&ndash;&nbsp;
+          {{
+            Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(objectEndDate)
+          }}
+        </template>
+      </div>
+
+      <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
+      <div v-show="objectActionRequired" class="action-required">
+        {{
+          `Action required: 
+          ${Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectActionRequired)}`
+        }}
+      </div>
+      <div v-show="objectSubjects" class="subjects">
+        {{ `Subject(s): ${objectSubjects}` }}
+      </div>
+      <div class="description">{{ objectDescription }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on">
+        
+      <div class="title">{{ objectTitle }}</div>
+      <div v-show="objectEventCity || objectEventCountry" class="location">
+        {{
+          objectLocation(
+            active_language!.active_language,
+            objectEventCity,
+            objectEventCountry
+          )
+        }}
+      </div>
+      <div v-show="objectDescription" class="description">
+        {{ objectDescription }}
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on" target="_blank"
+          >View {{ objectType }}</NuxtLink
+        >
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="meetings_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
+  <template v-else-if="objectType === 'notification'">
+    <div
+      v-if="notifications_status.status === 'OK'"
+      class="content-object"
+      :class="objectType"
+    >
+      <div class="date">
+        {{
+          Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectStartDate)
+        }}
+
+        <template v-if="objectEndDate">
+          &nbsp;&ndash;&nbsp;
+          {{
+            Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(objectEndDate)
+          }}
+        </template>
+      </div>
+      <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
+      <div v-show="objectActionRequired" class="action-required">
+        {{
+          `Action required: 
+          ${Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectActionRequired)}`
+        }}
+      </div>
+      <div v-show="objectSubjects" class="subjects">
+        {{ `Subject(s): ${objectSubjects}` }}
+      </div>
+      <div class="description">{{ objectDescription }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on"
       </div>
       <div class="title">{{ objectTitle }}</div>
       <div class="read-on-wrapper">
