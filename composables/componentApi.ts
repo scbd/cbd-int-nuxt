@@ -1,6 +1,9 @@
 import type { drupalToken } from "~/types/drupalAuth";
 import {
   type componentRequest,
+  type component-portals,
+  type componentMeetingRaw,
+  type componentNotificationRaw,
   type component-hero,
   type componentArticleRaw,
   type componentArticleCoverImageRaw,
@@ -250,12 +253,12 @@ const config = useRuntimeConfig();
           zh: raw_data.title_ZH_s,
         },
         themes: {
-          ar: raw_data.themes_AR_ss[0],
-          en: raw_data.themes_EN_ss[0],
-          es: raw_data.themes_ES_ss[0],
-          fr: raw_data.themes_FR_ss[0],
-          ru: raw_data.themes_RU_ss[0],
-          zh: raw_data.themes_ZH_ss[0],
+          ar: raw_data.themes_AR_ss.join("، "),
+          en: raw_data.themes_EN_ss.join(", "),
+          es: raw_data.themes_ES_ss.join(", "),
+          fr: raw_data.themes_FR_ss.join(", "),
+          ru: raw_data.themes_RU_ss.join(", "),
+          zh: raw_data.themes_ZH_ss.join(", "),
         },
         fulltext: {
           ar: raw_data.fulltext_AR_s,
@@ -433,7 +436,7 @@ const config = useRuntimeConfig();
       portals_status.value.status = "error";
     }
   };
-
+  
   const getNbsaps = async (search_parameters: searchParams) => {
     nbsaps_status.value.status = "pending";
 
@@ -489,11 +492,12 @@ const config = useRuntimeConfig();
       nbsaps_status.value.status = "error";
     }
   };
-
+  
   return {
     getArticles,
     getMeetings,
     getNotifications,
     getStatements,
+    getPortals,
   };
 }

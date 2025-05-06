@@ -80,9 +80,17 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
+// const meetings = (await getMeetings(meetings_params)) ?? [];
+// const notifications = (await getNotifications(notifications_params)) ?? [];
+
 await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 await getStatements(statements_params);
+await getPortals();
+
+watch(active_language, async () => {
+  await getPortals();
+});
 
 
 definePageMeta({
@@ -106,6 +114,7 @@ definePageMeta({
         object-type="statement"
         :objects="referenced_statements"
       />
+      <ContentobjectRow object-type="portal" :objects="referenced_portals" />
     </ClientOnly>
   </article>
 </template>

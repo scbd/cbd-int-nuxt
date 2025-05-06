@@ -32,18 +32,22 @@ export interface componentSanitized
     componentMeeting,
     componentNotification,
     componentPortal,
+    component-portals
+    componentStatement {
+      type: string;
+    }
+}
+
+export interface componentBase {
     componentStatement,
     componentNbsap {
   type: string;
-}
-
-interface componentBase {
   url: string;
   date: Date;
   title: string | availableLanguages;
 }
 
-interface componentArticle extends componentBase {
+export interface componentArticle extends componentBase {
   image_cover?: {
     url: string;
     width: number;
@@ -57,7 +61,7 @@ interface componentArticle extends componentBase {
   content?: string;
 }
 
-interface componentMeeting extends componentBase {
+export interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
   date_end?: Date;
@@ -65,7 +69,7 @@ interface componentMeeting extends componentBase {
   event_country?: availableLanguages;
 }
 
-interface componentNotification extends componentBase {
+export interface componentNotification extends componentBase {
   symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
@@ -76,12 +80,12 @@ interface componentNotification extends componentBase {
   fulltext?: availableLanguages;
 }
 
-interface componentStatement extends componentBase {
+export interface componentStatement extends componentBase {
   // location: string;
   // description: string;
 }
 
-interface componentPortal extends componentBase {
+export interface componentPortal extends componentBase {
   date_changed?: Date;
   image?: {
     url: string;
