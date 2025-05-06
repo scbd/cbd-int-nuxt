@@ -47,7 +47,7 @@ const getLanguages = async () => {
 const handlerHeaderNavigation = async () => {
   megamenu_status.value.status = "pending";
 
-  try {
+ try {
     const menuData: fetchedMenu | unknown = await getDrupalMenu(
       "cbd-header",
       active_language.value!.active_language
@@ -106,7 +106,13 @@ const handlerHeaderNavigation = async () => {
         console.error(error);
         megamenu_status.value.status = "error";
     }
-}
+    megamenu.value = menu_temp.menu;
+    megamenu_status.value.status = "OK";
+  } catch (error) {
+    console.error(error);
+    megamenu_status.value.status = "error";
+  }
+};
 
 const handlerFooterNavigation = async () => {
     footer_menu_status.value.status = "pending";

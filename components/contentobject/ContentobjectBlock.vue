@@ -47,7 +47,6 @@ const objectLocation = (
 };
 </script>
 
-<template>
   <template v-if="objectType === 'article'">
     <div
       v-if="articles_status.status === 'OK'"
@@ -162,6 +161,7 @@ const objectLocation = (
           }}
         </template>
       </div>
+
       <div class="title">{{ objectTitle }}</div>
       <div v-show="objectEventCity || objectEventCountry" class="location">
         {{
@@ -175,6 +175,7 @@ const objectLocation = (
       <div v-show="objectDescription" class="description">
         {{ objectDescription }}
       </div>
+
       <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
       <div v-show="objectActionRequired" class="action-required">
         {{

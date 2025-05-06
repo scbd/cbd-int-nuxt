@@ -353,6 +353,32 @@ const config = useRuntimeConfig();
     } catch (error) {
       console.error(error);
       notifications_status.value.status = "error";
+    }
+  };
+
+  const getStatements = async (search_parameters: searchParams) => {
+    statements_status.value.status = "pending";
+
+    const params = new URLSearchParams({
+      q: "schema_s:statement",
+      fl: search_parameters.fl?.toString() || "",
+      sort: search_parameters.sort?.params
+        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+        : "abs(ms(startDate_dt,NOW)) asc",
+      rows: (search_parameters.rows || 4).toString(),
+    });
+
+    try {
+      const response = await fetch(
+        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       if (response.ok) {
         const statements_raw: { response: componentRequest } =
           await response.json();
@@ -435,7 +461,7 @@ const config = useRuntimeConfig();
       portals_status.value.status = "error";
     }
   };
-  
+
   const getNbsaps = async (search_parameters: searchParams) => {
     nbsaps_status.value.status = "pending";
 
@@ -498,5 +524,6 @@ const config = useRuntimeConfig();
     getNotifications,
     getStatements,
     getPortals,
+    getNbsaps,
   };
 }

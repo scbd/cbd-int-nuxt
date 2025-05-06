@@ -86,6 +86,7 @@ await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 await getStatements(statements_params);
 await getPortals();
+await getNbsaps(nbsaps_params);
 
 watch(active_language, async () => {
   await getPortals();
@@ -114,6 +115,7 @@ definePageMeta({
         :objects="referenced_statements"
       />
       <ContentobjectRow object-type="portal" :objects="referenced_portals" />
+      <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
     </ClientOnly>
   </article>
 </template>

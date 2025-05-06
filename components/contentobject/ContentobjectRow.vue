@@ -88,6 +88,7 @@ const props = defineProps<{
           :object-link="notification.url"
         />
       </div>
+
         <ContentobjectBlock
           v-else-if="objectType === 'statement'"
           v-for="statement in objects"
