@@ -16,49 +16,67 @@ const props = defineProps<{
       class="content-row d-flex flex-column"
       :class="objectType === 'update' ? 'recent-updates' : objectType"
     >
-      <div class="row-title">
-        {{
-          objectType === "portal"
-            ? "Portals and Resources"
-            : `Recent ${objectType}s`
-        }}
-      </div>
+      <div class="row-title">Recent {{ objectType }}s</div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
-          v-if="objectType === 'meeting'"
-          v-for="meeting in objects"
-          :object-type="props.objectType"
+          v-if="objectType === 'update'"
+          v-for="update in objects"
+          :object-type="update.type"
           :object-title="
-            (meeting.title as availableLanguages)[
-              active_language!.active_language.slice(0, 2)
-            ]
+            typeof update.title === 'string'
+              ? <string>update.title
+              : update.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-start-date="meeting.date"
-          :object-end-date="meeting.date_end"
+          :object-start-date="update.date"
+          :object-img="update.image_cover"
+          :object-link="update.url"
+          :object-end-date="update.date_end"
+          :object-action-required="update.date_action"
+          :object-symbol="update.symbol"
           :object-event-city="
-            meeting.event_city?.[active_language!.active_language.slice(0, 2)]
+            update.event_city?.[active_language!.active_language.slice(0, 2)]
           "
           :object-event-country="
-            meeting.event_country?.[
+            update.event_country?.[active_language!.active_language.slice(0, 2)]
+          "
+          :object-description="
+            update.fulltext?.[active_language!.active_language.slice(0, 2)]
+          "
+        />
+
+        <ContentobjectBlock
+          v-if="(objects as componentRequest).meetings"
+          v-for="content_object in (objects as componentRequest)?.meetings"
+          :object-type="props.objectType"
+          :object-title="
+            content_object.title[active_language!.active_language.slice(0, 2)]
+          "
+          :object-start-date="content_object.date_start"
+          :object-end-date="content_object.date_end"
+          :object-event-city="
+            content_object.event_city[
               active_language!.active_language.slice(0, 2)
             ]
           "
-          :object-link="meeting.url"
+          :object-event-country="
+            content_object.event_country[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-link="content_object.url"
         />
         <ContentobjectBlock
-          v-else-if="objectType === 'notification'"
-          v-for="notification in objects"
-          :object-type="objectType"
+          v-if="(objects as componentRequest).notifications"
+          v-for="content_object in (objects as componentRequest).notifications"
+          :object-type="props.objectType"
           :object-title="
-            (notification.title as availableLanguages)[
-              active_language!.active_language.slice(0, 2)
-            ]
+            content_object.title[active_language!.active_language.slice(0, 2)]
           "
-          :object-symbol="notification.symbol"
-          :object-start-date="notification.date"
-          :object-action-required="notification.date_action"
+          :object-symbol="content_object.symbol"
+          :object-start-date="content_object.date"
+          :object-action-required="content_object.date_action"
           :object-description="
-            (notification.fulltext as availableLanguages)[
+            content_object.fulltext[
               active_language!.active_language.slice(0, 2)
             ]
           "
@@ -69,6 +87,8 @@ const props = defineProps<{
           "
           :object-link="notification.url"
         />
+      </div>
+
         <ContentobjectBlock
           v-else-if="objectType === 'statement'"
           v-for="statement in objects"

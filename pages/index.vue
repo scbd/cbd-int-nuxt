@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import getComponents from "~/composables/componentApi";
-import type { searchParams } from "~/types/components";
+import type { searchParams, componentSanitized } from "~/types/components";
 
-const { getMeetings, getNotifications, getPortals, getStatements } =
-  getComponents();
+const { getArticles, getMeetings, getNotifications, getStatements } = getComponents();
+
+const articles_params: searchParams = {
+  q: "article",
+  rows: 10,
+};
 
 const meetings_params: searchParams = {
   q: "schema_s:meeting",
@@ -47,6 +51,24 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
+const updates: componentSanitized[] = [];
+
+const articles = (await getArticles(articles_params)) ?? [];
+const meetings = (await getMeetings(meetings_params)) ?? [];
+const notifications = (await getNotifications(notifications_params)) ?? [];
+
+updates.push(...articles, ...meetings, ...notifications);
+const sorted_updates = updates
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 4);
+
+watch(active_language, async () => {
+  await getArticles(articles_params);
+});
+
+await getMeetings(meetings_params);
+await getNotifications(notifications_params);
+
 const statements_params: searchParams = {
   q: "schema_s:statement",
   fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
@@ -57,9 +79,18 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
+// const meetings = (await getMeetings(meetings_params)) ?? [];
+// const notifications = (await getNotifications(notifications_params)) ?? [];
+
 await getMeetings(meetings_params);
 await getNotifications(notifications_params);
 await getStatements(statements_params);
+await getPortals();
+await getNbsaps(nbsaps_params);
+
+watch(active_language, async () => {
+  await getPortals();
+});
 
 definePageMeta({
   layout: "landing-home",
@@ -67,8 +98,13 @@ definePageMeta({
 </script>
 
 <template>
+  <ClientOnly>
+    <Hero :article="referenced_articles" />
+  </ClientOnly>
+
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
+      <ContentobjectRow object-type="update" :objects="sorted_updates" />
       <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
       <ContentobjectRow
         object-type="notification"
@@ -78,6 +114,9 @@ definePageMeta({
         object-type="statement"
         :objects="referenced_statements"
       />
+      <ContentobjectRow object-type="portal" :objects="referenced_portals" />
+      <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
     </ClientOnly>
+
   </article>
 </template>

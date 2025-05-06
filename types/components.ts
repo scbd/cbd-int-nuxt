@@ -30,20 +30,42 @@ export interface searchParams {
 export interface componentSanitized
   extends componentArticle,
     componentMeeting,
-    componentNotification,
-    componentPortal,
-    componentStatement,
-    componentNbsap {
+    component-updates,
+    componentNotification {
   type: string;
 }
 
-interface componentBase {
+export interface componentBase {
+  url: string;
+  date: Date;
+  title:
+    | string
+    | {
+        [ar: string]: string;
+        en: string;
+        es: string;
+        fr: string;
+        ru: string;
+        zh: string;
+      };
+    componentNotification,
+    componentPortal,
+    component-portals
+    componentStatement {
+      type: string;
+    }
+}
+
+export interface componentBase {
+    componentStatement,
+    componentNbsap {
+  type: string;
   url: string;
   date: Date;
   title: string | availableLanguages;
 }
 
-interface componentArticle extends componentBase {
+export interface componentArticle extends componentBase {
   image_cover?: {
     url: string;
     width: number;
@@ -57,15 +79,31 @@ interface componentArticle extends componentBase {
   content?: string;
 }
 
-interface componentMeeting extends componentBase {
+export interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
   date_end?: Date;
+  event_city?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
+  event_country?: {
+    [ar: string]: string;
+    en: string;
+    es: string;
+    fr: string;
+    ru: string;
+    zh: string;
+  };
   event_city?: availableLanguages;
   event_country?: availableLanguages;
 }
 
-interface componentNotification extends componentBase {
+export interface componentNotification extends componentBase {
   symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
@@ -76,12 +114,12 @@ interface componentNotification extends componentBase {
   fulltext?: availableLanguages;
 }
 
-interface componentStatement extends componentBase {
+export interface componentStatement extends componentBase {
   // location: string;
   // description: string;
 }
 
-interface componentPortal extends componentBase {
+export interface componentPortal extends componentBase {
   date_changed?: Date;
   image?: {
     url: string;
