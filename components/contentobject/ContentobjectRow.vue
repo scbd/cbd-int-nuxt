@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {
-  availableLanguages,
   componentSanitized,
+  availableLanguages,
 } from "~/types/components";
 
 const props = defineProps<{
@@ -44,6 +44,15 @@ const props = defineProps<{
           "
         />
 
+        <ContentobjectBlock
+      <div class="row-title">
+        {{
+          objectType === "portal"
+            ? "Portals and Resources"
+            : `Recent ${objectType}s`
+        }}
+      </div>
+      <div class="content-wrapper d-flex">
         <ContentobjectBlock
           v-if="objectType === 'meeting'"
           v-for="meeting in objects"
@@ -90,6 +99,47 @@ const props = defineProps<{
           :object-link="notification.url"
         />
       </div>
+        <ContentobjectBlock
+          v-else-if="objectType === 'statement'"
+          v-for="statement in objects"
+          :object-type="objectType"
+          :object-symbol="statement.symbol"
+          :object-title="
+            (statement.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-start-date="statement.date"
+          :object-link="statement.url"
+        />
+        <ContentobjectBlock
+          v-else-if="objectType === 'portal'"
+          v-for="portal in objects"
+          :object-type="objectType"
+          :object-title="<string>portal.title"
+          :object-link="portal.url"
+          :object-img="portal.image"
+        />
+        <ContentobjectBlock
+          v-else-if="objectType === 'nbsap'"
+          v-for="nbsap in objects"
+          :object-type="objectType"
+          :object-title="
+            (nbsap.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
+          "
+          :object-start-date="nbsap.date"
+          :object-link="nbsap.url"
+        />
+      </div>
+      <NuxtLink
+        to="#"
+        class="btn cbd-btn cbd-btn-outline-more-content"
+        role="button"
+      >
+        {{ objectType === "nbsap" ? "All submissions" : `More ${objectType}s` }}
+      </NuxtLink>
     </section>
   </ClientOnly>
 </template>
