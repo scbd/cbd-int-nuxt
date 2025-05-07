@@ -4,53 +4,50 @@ import type { fetchedMenu, fetchedMenuItem } from "~/types/drupalMenu";
 import type { userSettings } from "~/types/userSettings";
 
 export const languages = ref<drupalLanguage[]>([]);
-export const active_language = ref<userSettings>();
+export const activeLanguage = ref<userSettings>();
 export const megamenu = ref<fetchedMenuItem[]>([]);
-export const footer_menu = ref<fetchedMenuItem[]>();
+export const footerMenu = ref<fetchedMenuItem[]>();
 
-export const language_status = ref<componentStatus>({ status: "pending" });
-export const footer_menu_status = ref<componentStatus>({ status: "pending" });
-export const megamenu_status = ref<componentStatus>({ status: "pending" });
+export const languageStatus = ref<componentStatus>({ status: "pending" });
+export const footerMenuStatus = ref<componentStatus>({ status: "pending" });
+export const megamenuStatus = ref<componentStatus>({ status: "pending" });
 
 export const setActiveLanguage = async (langCode: string) => {
-  const { getPortals } = getComponents();
-
   try {
     await setLanguage(langCode).then(() => {
-      active_language.value = { active_language: langCode };
+      activeLanguage.value = { active_language: langCode };
     });
     await getLanguages();
     await handlerHeaderNavigation();
     await handlerFooterNavigation();
-    await getPortals(langCode);
   } catch (error) {
     console.error(error);
   }
 };
 
 const getLanguages = async () => {
-  language_status.value.status = "pending";
+  languageStatus.value.status = "pending";
 
   try {
     const languageData = await getDrupalLanguages(
-      active_language!.value!.active_language
+      activeLanguage!.value!.active_language
     );
     languages.value = languageData;
 
-    language_status.value.status = "OK";
+    languageStatus.value.status = "OK";
   } catch (error) {
     console.error(error);
-    language_status.value.status = "error";
+    languageStatus.value.status = "error";
   }
 };
 
 const handlerHeaderNavigation = async () => {
-  megamenu_status.value.status = "pending";
+  megamenuStatus.value.status = "pending";
 
- try {
+  try {
     const menuData: fetchedMenu | unknown = await getDrupalMenu(
       "cbd-header",
-      active_language.value!.active_language
+      activeLanguage.value!.active_language
     );
     const menu_temp = menuData as fetchedMenu;
 
@@ -60,73 +57,35 @@ const handlerHeaderNavigation = async () => {
       try {
         const submenuData: fetchedMenu | unknown = await getDrupalMenu(
           machine_name,
-          active_language.value!.active_language
+          activeLanguage.value!.active_language
         );
-        const submenu_temp = submenuData as fetchedMenu;
-        menu_item.children.push(...submenu_temp.menu);
+        const submenuPlaceholder = submenuData as fetchedMenu;
+        menu_item.children.push(...submenuPlaceholder.menu);
       } catch (error) {
         console.error(error);
       }
     }
     megamenu.value = menu_temp.menu;
-    megamenu_status.value.status = "OK";
+    megamenuStatus.value.status = "OK";
   } catch (error) {
     console.error(error);
-    megamenu_status.value.status = "error";
-  }
-};
-
-const handlerHeaderNavigation = async () => {
-    megamenu_status.value.status = "pending";
-    
-    try {
-        const menuData: fetchedMenu | unknown = await getDrupalMenu(
-            'cbd-header',
-            active_language.value!.active_language
-        );
-        const menu_temp = menuData as fetchedMenu;        
-        
-        for (const menu_item of menu_temp.menu as fetchedMenuItem[]) {
-            const machine_name = menu_item.options!.attributes!.submenu!.slice(0,32);
-            
-            try {
-                const submenuData: fetchedMenu | unknown = await getDrupalMenu(
-                    machine_name,
-                    active_language.value!.active_language
-                );
-                const submenu_temp = submenuData as fetchedMenu;
-                menu_item.children.push(...submenu_temp.menu);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        megamenu.value = menu_temp.menu;
-        megamenu_status.value.status = "OK";
-    } catch (error) {
-        console.error(error);
-        megamenu_status.value.status = "error";
-    }
-    megamenu.value = menu_temp.menu;
-    megamenu_status.value.status = "OK";
-  } catch (error) {
-    console.error(error);
-    megamenu_status.value.status = "error";
+    megamenuStatus.value.status = "error";
   }
 };
 
 const handlerFooterNavigation = async () => {
-    footer_menu_status.value.status = "pending";
-    try {
-        const footerData: fetchedMenu | unknown = await getDrupalMenu(
-            'cbd-footer',
-            active_language.value!.active_language
-        );
-        const footer_temp = footerData as fetchedMenu;
-        footer_menu.value = footer_temp.menu;
+  footerMenuStatus.value.status = "pending";
+  try {
+    const footerData: fetchedMenu | unknown = await getDrupalMenu(
+      "cbd-footer",
+      activeLanguage.value!.active_language
+    );
+    const footerPlaceholder = footerData as fetchedMenu;
+    footerMenu.value = footerPlaceholder.menu;
 
-        footer_menu_status.value.status = "OK";
-    } catch (error) {
-        console.error(error);
-        footer_menu_status.value.status = "error";
-    }
-}
+    footerMenuStatus.value.status = "OK";
+  } catch (error) {
+    console.error(error);
+    footerMenuStatus.value.status = "error";
+  }
+};
