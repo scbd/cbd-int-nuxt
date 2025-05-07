@@ -1,18 +1,13 @@
 import type { drupalToken } from "~/types/drupalAuth";
 import {
   type componentRequest,
-  type component-updates,
-  type component-portals,
-  type componentMeetingRaw,
-  type componentNotificationRaw,
-  type component-hero,
   type componentArticleRaw,
   type componentArticleCoverImageRaw,
   type componentMeetingRaw,
   type componentNotificationRaw,
-  type componentNbsapRaw,
-  type componentPortalRaw,
   type componentStatementRaw,
+  type componentPortalRaw,
+  type componentNbsapRaw,
   type componentSanitized,
   type searchParams,
 } from "~/types/components";
@@ -24,6 +19,12 @@ export const referenced_meetings = ref<componentSanitized[]>([]);
 export const meetings_status = ref<componentStatus>({ status: "pending" });
 export const referenced_notifications = ref<componentSanitized[]>([]);
 export const notifications_status = ref<componentStatus>({ status: "pending" });
+export const referenced_statements = ref<componentSanitized[]>([]);
+export const statements_status = ref<componentStatus>({ status: "pending" });
+export const referenced_portals = ref<componentSanitized[]>([]);
+export const portals_status = ref<componentStatus>({ status: "pending" });
+export const referenced_nbsaps = ref<componentSanitized[]>([]);
+export const nbsaps_status = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
@@ -117,19 +118,6 @@ export default function getComponents() {
     }
   };
 
-export const referenced_statements = ref<componentSanitized[]>([]);
-export const statements_status = ref<componentStatus>({ status: "pending" });
-
-export const referenced_portals = ref<componentSanitized[]>([]);
-export const portals_status = ref<componentStatus>({ status: "pending" });
-
-export const referenced_nbsaps = ref<componentSanitized[]>([]);
-export const nbsaps_status = ref<componentStatus>({ status: "pending" });
-
-export default function getComponents() {
-const config = useRuntimeConfig();
-
-
   const getMeetings = async (search_parameters: searchParams) => {
     meetings_status.value.status = "pending";
 
@@ -208,82 +196,6 @@ const config = useRuntimeConfig();
   const getNotifications = async (search_parameters: searchParams) => {
     const params = new URLSearchParams({
       q: "schema_s:notification",
-      fl: search_parameters.fl?.toString() || "",
-      sort: search_parameters.sort?.params
-        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
-        : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (search_parameters.rows || 4).toString(),
-    });
-
-    const response = (await fetch(
-      `${config.public.SOLR_QUERY}?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).catch((error) => {
-      console.error(error);
-      notifications_status.value.status = "error";
-    })) as Response;
-
-    const notifications_raw: { response: componentRequest } =
-      await response.json();
-
-    const data_docs_mapped = notifications_raw.response.docs!.map(
-      (raw_data: componentNotificationRaw): componentSanitized => ({
-        type: "notification",
-        symbol: raw_data.symbol_s,
-        date: new Date(raw_data.date_s),
-        date_action: raw_data.actionDate_s
-          ? new Date(raw_data.actionDate_s)
-          : undefined,
-        date_deadline: new Date(raw_data.deadline_s),
-        sender: raw_data.sender_s,
-        reference: raw_data.reference_s,
-        url: raw_data.url_ss[0],
-        recipient: raw_data.recipient_ss,
-        title: {
-          ar: raw_data.title_AR_s,
-          en: raw_data.title_EN_s,
-          es: raw_data.title_ES_s,
-          fr: raw_data.title_FR_s,
-          ru: raw_data.title_RU_s,
-          zh: raw_data.title_ZH_s,
-        },
-        themes: {
-          ar: raw_data.themes_AR_ss.join("، "),
-          en: raw_data.themes_EN_ss.join(", "),
-          es: raw_data.themes_ES_ss.join(", "),
-          fr: raw_data.themes_FR_ss.join(", "),
-          ru: raw_data.themes_RU_ss.join(", "),
-          zh: raw_data.themes_ZH_ss.join(", "),
-        },
-        fulltext: {
-          ar: raw_data.fulltext_AR_s,
-          en: raw_data.fulltext_EN_s,
-          es: raw_data.fulltext_ES_s,
-          fr: raw_data.fulltext_FR_s,
-          ru: raw_data.fulltext_RU_s,
-          zh: raw_data.fulltext_ZH_s,
-        },
-      })
-    );
-
-    const notification_list: componentSanitized[] = data_docs_mapped;
-
-    referenced_notifications.value = notification_list;
-    notifications_status.value.status = "OK";
-
-    return notification_list;
-  };
-
-  const getStatements = async (search_parameters: searchParams) => {
-    statements_status.value.status = "pending";
-
-    const params = new URLSearchParams({
-      q: "schema_s:statement",
       fl: search_parameters.fl?.toString() || "",
       sort: search_parameters.sort?.params
         ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`

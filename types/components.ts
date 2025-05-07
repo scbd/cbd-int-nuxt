@@ -30,36 +30,14 @@ export interface searchParams {
 export interface componentSanitized
   extends componentArticle,
     componentMeeting,
-    component-updates,
-    componentNotification {
-  type: string;
-}
-
-export interface componentBase {
-  url: string;
-  date: Date;
-  title:
-    | string
-    | {
-        [ar: string]: string;
-        en: string;
-        es: string;
-        fr: string;
-        ru: string;
-        zh: string;
-      };
     componentNotification,
     componentPortal,
-    component-portals
-    componentStatement {
-      type: string;
-    }
-}
-
-export interface componentBase {
     componentStatement,
     componentNbsap {
   type: string;
+}
+
+interface componentBase {
   url: string;
   date: Date;
   title: string | availableLanguages;
@@ -79,31 +57,15 @@ export interface componentArticle extends componentBase {
   content?: string;
 }
 
-export interface componentMeeting extends componentBase {
+interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
   date_end?: Date;
-  event_city?: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
-  event_country?: {
-    [ar: string]: string;
-    en: string;
-    es: string;
-    fr: string;
-    ru: string;
-    zh: string;
-  };
   event_city?: availableLanguages;
   event_country?: availableLanguages;
 }
 
-export interface componentNotification extends componentBase {
+interface componentNotification extends componentBase {
   symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
@@ -118,8 +80,7 @@ export interface componentStatement extends componentBase {
   // location: string;
   // description: string;
 }
-
-export interface componentPortal extends componentBase {
+interface componentPortal extends componentBase {
   date_changed?: Date;
   image?: {
     url: string;

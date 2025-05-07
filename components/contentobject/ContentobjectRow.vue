@@ -45,38 +45,40 @@ const props = defineProps<{
         />
 
         <ContentobjectBlock
-          v-if="(objects as componentRequest).meetings"
-          v-for="content_object in (objects as componentRequest)?.meetings"
+          v-if="objectType === 'meeting'"
+          v-for="meeting in objects"
           :object-type="props.objectType"
           :object-title="
-            content_object.title[active_language!.active_language.slice(0, 2)]
-          "
-          :object-start-date="content_object.date_start"
-          :object-end-date="content_object.date_end"
-          :object-event-city="
-            content_object.event_city[
+            (meeting.title as availableLanguages)[
               active_language!.active_language.slice(0, 2)
             ]
+          "
+          :object-start-date="meeting.date"
+          :object-end-date="meeting.date_end"
+          :object-event-city="
+            meeting.event_city?.[active_language!.active_language.slice(0, 2)]
           "
           :object-event-country="
-            content_object.event_country[
+            meeting.event_country?.[
               active_language!.active_language.slice(0, 2)
             ]
           "
-          :object-link="content_object.url"
+          :object-link="meeting.url"
         />
         <ContentobjectBlock
-          v-if="(objects as componentRequest).notifications"
-          v-for="content_object in (objects as componentRequest).notifications"
-          :object-type="props.objectType"
+          v-else-if="objectType === 'notification'"
+          v-for="notification in objects"
+          :object-type="objectType"
           :object-title="
-            content_object.title[active_language!.active_language.slice(0, 2)]
+            (notification.title as availableLanguages)[
+              active_language!.active_language.slice(0, 2)
+            ]
           "
-          :object-symbol="content_object.symbol"
-          :object-start-date="content_object.date"
-          :object-action-required="content_object.date_action"
+          :object-symbol="notification.symbol"
+          :object-start-date="notification.date"
+          :object-action-required="notification.date_action"
           :object-description="
-            content_object.fulltext[
+            (notification.fulltext as availableLanguages)[
               active_language!.active_language.slice(0, 2)
             ]
           "
@@ -87,8 +89,6 @@ const props = defineProps<{
           "
           :object-link="notification.url"
         />
-      </div>
-
         <ContentobjectBlock
           v-else-if="objectType === 'statement'"
           v-for="statement in objects"
@@ -108,7 +108,6 @@ const props = defineProps<{
           :object-type="objectType"
           :object-title="<string>portal.title"
           :object-link="portal.url"
-          :object-img="portal.image"
         />
         <ContentobjectBlock
           v-else-if="objectType === 'nbsap'"

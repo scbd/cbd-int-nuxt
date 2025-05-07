@@ -12,7 +12,7 @@
 @use "overrides";
 
 @use "variables";
-@use "blocks";
+// @use "blocks";
 @use "components";
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,62.5..100,100..900;1,62.5..100,100..900&display=swap");
@@ -299,16 +299,6 @@ h2 {
 }
 
 @media (max-width: 539px) {
-  .cus-hero {
-    .featured-item {
-      .featured-information {
-        .featured-description {
-          font-size: 1.167rem;
-        }
-      }
-    }
-  }
-
   .protocol-subnavigation {
     .nav {
       width: 100%;
