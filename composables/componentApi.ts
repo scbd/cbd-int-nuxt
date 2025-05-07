@@ -239,12 +239,12 @@ export default function getComponents() {
             zh: rawData.title_ZH_s,
           },
           themes: {
-            ar: rawData.themes_AR_ss[0],
-            en: rawData.themes_EN_ss[0],
-            es: rawData.themes_ES_ss[0],
-            fr: rawData.themes_FR_ss[0],
-            ru: rawData.themes_RU_ss[0],
-            zh: rawData.themes_ZH_ss[0],
+            ar: rawData.themes_AR_ss ? rawData.themes_AR_ss.join("، ") : "",
+            en: rawData.themes_EN_ss ? rawData.themes_EN_ss.join(", ") : "",
+            es: rawData.themes_ES_ss ? rawData.themes_ES_ss.join(", ") : "",
+            fr: rawData.themes_FR_ss ? rawData.themes_FR_ss.join(", ") : "",
+            ru: rawData.themes_RU_ss ? rawData.themes_RU_ss.join(", ") : "",
+            zh: rawData.themes_ZH_ss ? rawData.themes_ZH_ss.join(", ") : "",
           },
           fulltext: {
             ar: rawData.fulltext_AR_s,

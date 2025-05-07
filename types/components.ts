@@ -43,7 +43,7 @@ interface componentBase {
   title: string | availableLanguages;
 }
 
-export interface componentArticle extends componentBase {
+interface componentArticle extends componentBase {
   image_cover?: {
     url: string;
     width: number;
@@ -76,10 +76,8 @@ interface componentNotification extends componentBase {
   fulltext?: availableLanguages;
 }
 
-export interface componentStatement extends componentBase {
-  // location: string;
-  // description: string;
-}
+interface componentStatement extends componentBase {}
+
 interface componentPortal extends componentBase {
   date_changed?: Date;
   image?: {

@@ -106,6 +106,7 @@ const props = defineProps<{
           :object-type="objectType"
           :object-title="<string>portal.title"
           :object-link="portal.url"
+          :object-img="portal.image"
         />
         <ContentobjectBlock
           v-else-if="objectType === 'nbsap'"

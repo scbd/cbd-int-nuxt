@@ -13,12 +13,12 @@ const props = defineProps<{
   objectLink?: string;
   objectImg?: {
     url: string;
-    width: number;
-    height: number;
-    mime_type: string;
-    file_size: number;
-    title: string;
-    alt: string;
+    width?: number;
+    height?: number;
+    mime_type?: string;
+    file_size?: number;
+    title?: string;
+    alt?: string;
   };
   objectInfo?: {
     source?: string;
