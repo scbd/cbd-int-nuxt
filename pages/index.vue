@@ -11,12 +11,12 @@ const {
   getNbsaps,
 } = getComponents();
 
-const articles_params: searchParams = {
+const articlesParams: searchParams = {
   q: "article",
   rows: 10,
 };
 
-const meetings_params: searchParams = {
+const meetingsParams: searchParams = {
   q: "schema_s:meeting",
   fl: [
     "startDate_dt",
@@ -36,7 +36,7 @@ const meetings_params: searchParams = {
   rows: 4,
 };
 
-const notifications_params: searchParams = {
+const notificationsParams: searchParams = {
   q: "schema_s:notification",
   fl: [
     "symbol_s",
@@ -58,7 +58,7 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
-const statements_params: searchParams = {
+const statementsParams: searchParams = {
   q: "schema_s:statement",
   fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
   sort: {
@@ -68,7 +68,7 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
-const nbsaps_params: searchParams = {
+const nbsapsParams: searchParams = {
   q: "schema_s:nbsap",
   fl: ["submittedDate_s", "url_ss", "title_??_s"],
   sort: {
@@ -80,20 +80,20 @@ const nbsaps_params: searchParams = {
 
 const updates: componentSanitized[] = [];
 
-const articles = (await getArticles(articles_params)) ?? [];
-const meetings = (await getMeetings(meetings_params)) ?? [];
-const notifications = (await getNotifications(notifications_params)) ?? [];
-await getStatements(statements_params);
+const articles = (await getArticles(articlesParams)) ?? [];
+const meetings = (await getMeetings(meetingsParams)) ?? [];
+const notifications = (await getNotifications(notificationsParams)) ?? [];
+await getStatements(statementsParams);
 await getPortals();
-await getNbsaps(nbsaps_params);
+await getNbsaps(nbsapsParams);
 
 updates.push(...articles, ...meetings, ...notifications);
-const sorted_updates = updates
+const sortedUpdates = updates
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
 
-watch(active_language, async () => {
-  await getArticles(articles_params);
+watch(activeLanguage, async () => {
+  await getArticles(articlesParams);
   await getPortals();
 });
 
@@ -104,23 +104,23 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <Hero :article="referenced_articles" />
+    <Hero :article="referencedArticles" />
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
-      <ContentobjectRow object-type="update" :objects="sorted_updates" />
-      <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
+      <ContentobjectRow object-type="update" :objects="sortedUpdates" />
+      <ContentobjectRow object-type="meeting" :objects="referencedMeetings" />
       <ContentobjectRow
         object-type="notification"
-        :objects="referenced_notifications"
+        :objects="referencedNotifications"
       />
       <ContentobjectRow
         object-type="statement"
-        :objects="referenced_statements"
+        :objects="referencedStatements"
       />
-      <ContentobjectRow object-type="portal" :objects="referenced_portals" />
-      <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
+      <ContentobjectRow object-type="portal" :objects="referencedPortals" />
+      <ContentobjectRow object-type="nbsap" :objects="referencedNbsaps" />
     </ClientOnly>
   </article>
 </template>

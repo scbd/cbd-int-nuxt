@@ -13,33 +13,33 @@ import {
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
 
-export const referenced_articles = ref<componentSanitized[]>([]);
-export const articles_status = ref<componentStatus>({ status: "pending" });
-export const referenced_meetings = ref<componentSanitized[]>([]);
-export const meetings_status = ref<componentStatus>({ status: "pending" });
-export const referenced_notifications = ref<componentSanitized[]>([]);
-export const notifications_status = ref<componentStatus>({ status: "pending" });
-export const referenced_statements = ref<componentSanitized[]>([]);
-export const statements_status = ref<componentStatus>({ status: "pending" });
-export const referenced_portals = ref<componentSanitized[]>([]);
-export const portals_status = ref<componentStatus>({ status: "pending" });
-export const referenced_nbsaps = ref<componentSanitized[]>([]);
-export const nbsaps_status = ref<componentStatus>({ status: "pending" });
+export const referencedArticles = ref<componentSanitized[]>([]);
+export const articlesStatus = ref<componentStatus>({ status: "pending" });
+export const referencedMeetings = ref<componentSanitized[]>([]);
+export const meetingsStatus = ref<componentStatus>({ status: "pending" });
+export const referencedNotifications = ref<componentSanitized[]>([]);
+export const notificationsStatus = ref<componentStatus>({ status: "pending" });
+export const referencedStatements = ref<componentSanitized[]>([]);
+export const statementsStatus = ref<componentStatus>({ status: "pending" });
+export const referencedPortals = ref<componentSanitized[]>([]);
+export const portalsStatus = ref<componentStatus>({ status: "pending" });
+export const referencedNbsaps = ref<componentSanitized[]>([]);
+export const nbsapsStatus = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
 
   const drupalToken = useState<drupalToken>("drupal_token").value;
 
-  const getArticles = async (search_parameters: searchParams) => {
-    articles_status.value.status = "pending";
-    const lang_code = active_language.value?.active_language;
+  const getArticles = async (searchParameters: searchParams) => {
+    articlesStatus.value.status = "pending";
+    const langCode = activeLanguage.value?.active_language;
 
     const params = new URLSearchParams({});
 
     try {
       const response = await fetch(
-        `${config.public.DRUPAL_URL}/${lang_code !== "en" ? (lang_code + "/").toString() : ""}jsonapi/node/article`,
+        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/article`,
         {
           method: "GET",
           headers: {
@@ -49,7 +49,7 @@ export default function getComponents() {
         }
       );
       if (response.ok) {
-        const articles_raw: componentRequest = await response.json();
+        const articlesRaw: componentRequest = await response.json();
 
         const getArticleImage = async (cover_image_url: string) => {
           const response = fetch(cover_image_url, {
@@ -68,27 +68,27 @@ export default function getComponents() {
           return response;
         };
 
-        const data_mapped = articles_raw.data!.map(
-          (raw_data: componentArticleRaw): componentSanitized => ({
+        const dataMapped = articlesRaw.data!.map(
+          (rawData: componentArticleRaw): componentSanitized => ({
             type: "article",
-            title: raw_data.attributes.title,
-            url: raw_data.attributes.path.alias,
+            title: rawData.attributes.title,
+            url: rawData.attributes.path.alias,
             image_cover: {
-              url: raw_data.relationships.field_image.links.related.href,
+              url: rawData.relationships.field_image.links.related.href,
               mime_type: "",
               file_size: 0,
-              title: raw_data.relationships.field_image.data.meta.title,
-              width: raw_data.relationships.field_image.data.meta.width,
-              height: raw_data.relationships.field_image.data.meta.height,
-              alt: raw_data.relationships.field_image.data.meta.alt,
+              title: rawData.relationships.field_image.data.meta.title,
+              width: rawData.relationships.field_image.data.meta.width,
+              height: rawData.relationships.field_image.data.meta.height,
+              alt: rawData.relationships.field_image.data.meta.alt,
             },
-            date: new Date(raw_data.attributes.created),
-            date_edited: new Date(raw_data.attributes.changed),
-            content: raw_data.attributes.body.processed,
+            date: new Date(rawData.attributes.created),
+            date_edited: new Date(rawData.attributes.changed),
+            content: rawData.attributes.body.processed,
           })
         );
 
-        for await (const article of data_mapped.flat()) {
+        for await (const article of dataMapped.flat()) {
           if (article.image_cover?.url) {
             try {
               const image_cover = await getArticleImage(
@@ -105,29 +105,29 @@ export default function getComponents() {
           }
         }
 
-        const articles_list: componentSanitized[] = data_mapped;
+        const articlesList: componentSanitized[] = dataMapped;
 
-        referenced_articles.value = articles_list;
-        articles_status.value.status = "OK";
+        referencedArticles.value = articlesList;
+        articlesStatus.value.status = "OK";
 
-        return articles_list;
+        return articlesList;
       }
     } catch (error) {
       console.error(error);
-      articles_status.value.status = "error";
+      articlesStatus.value.status = "error";
     }
   };
 
-  const getMeetings = async (search_parameters: searchParams) => {
-    meetings_status.value.status = "pending";
+  const getMeetings = async (searchParameters: searchParams) => {
+    meetingsStatus.value.status = "pending";
 
     const params = new URLSearchParams({
       q: "schema_s:meeting",
-      fl: search_parameters.fl?.toString() || "",
-      sort: search_parameters.sort?.params
-        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+      fl: searchParameters.fl?.toString() || "",
+      sort: searchParameters.sort?.params
+        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
         : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (search_parameters.rows || 4).toString(),
+      rows: (searchParameters.rows || 4).toString(),
     });
 
     try {
@@ -142,65 +142,65 @@ export default function getComponents() {
       );
 
       if (response.ok) {
-        const meetings_raw: { response: componentRequest } =
+        const meetingsRaw: { response: componentRequest } =
           await response.json();
 
-        const data_docs_mapped = meetings_raw.response.docs!.map(
-          (raw_data: componentMeetingRaw): componentSanitized => ({
+        const dataDocsMapped = meetingsRaw.response.docs!.map(
+          (rawData: componentMeetingRaw): componentSanitized => ({
             type: "meeting",
-            symbol: raw_data.symbol_s,
-            date: new Date(raw_data.startDate_dt),
-            date_end: new Date(raw_data.endDate_dt),
-            url: raw_data.url_ss[0],
+            symbol: rawData.symbol_s,
+            date: new Date(rawData.startDate_dt),
+            date_end: new Date(rawData.endDate_dt),
+            url: rawData.url_ss[0],
             title: {
-              ar: raw_data.title_AR_s,
-              en: raw_data.title_EN_s,
-              es: raw_data.title_ES_s,
-              fr: raw_data.title_FR_s,
-              ru: raw_data.title_RU_s,
-              zh: raw_data.title_ZH_s,
+              ar: rawData.title_AR_s,
+              en: rawData.title_EN_s,
+              es: rawData.title_ES_s,
+              fr: rawData.title_FR_s,
+              ru: rawData.title_RU_s,
+              zh: rawData.title_ZH_s,
             },
             event_city: {
-              ar: raw_data.eventCity_AR_s,
-              en: raw_data.eventCity_EN_s,
-              es: raw_data.eventCity_ES_s,
-              fr: raw_data.eventCity_FR_s,
-              ru: raw_data.eventCity_RU_s,
-              zh: raw_data.eventCity_ZH_s,
+              ar: rawData.eventCity_AR_s,
+              en: rawData.eventCity_EN_s,
+              es: rawData.eventCity_ES_s,
+              fr: rawData.eventCity_FR_s,
+              ru: rawData.eventCity_RU_s,
+              zh: rawData.eventCity_ZH_s,
             },
             event_country: {
-              ar: raw_data.eventCountry_AR_s,
-              en: raw_data.eventCountry_EN_s,
-              es: raw_data.eventCountry_ES_s,
-              fr: raw_data.eventCountry_FR_s,
-              ru: raw_data.eventCountry_RU_s,
-              zh: raw_data.eventCountry_ZH_s,
+              ar: rawData.eventCountry_AR_s,
+              en: rawData.eventCountry_EN_s,
+              es: rawData.eventCountry_ES_s,
+              fr: rawData.eventCountry_FR_s,
+              ru: rawData.eventCountry_RU_s,
+              zh: rawData.eventCountry_ZH_s,
             },
-            status: raw_data.status_s,
+            status: rawData.status_s,
           })
         );
 
-        const meeting_list: componentSanitized[] = data_docs_mapped;
+        const meetingList: componentSanitized[] = dataDocsMapped;
 
-        referenced_meetings.value = meeting_list;
-        meetings_status.value.status = "OK";
+        referencedMeetings.value = meetingList;
+        meetingsStatus.value.status = "OK";
 
-        return meeting_list;
+        return meetingList;
       }
     } catch (error) {
       console.error(error);
-      meetings_status.value.status = "error";
+      meetingsStatus.value.status = "error";
     }
   };
 
-  const getNotifications = async (search_parameters: searchParams) => {
+  const getNotifications = async (searchParameters: searchParams) => {
     const params = new URLSearchParams({
       q: "schema_s:notification",
-      fl: search_parameters.fl?.toString() || "",
-      sort: search_parameters.sort?.params
-        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+      fl: searchParameters.fl?.toString() || "",
+      sort: searchParameters.sort?.params
+        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
         : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (search_parameters.rows || 4).toString(),
+      rows: (searchParameters.rows || 4).toString(),
     });
 
     try {
@@ -214,71 +214,71 @@ export default function getComponents() {
         }
       );
 
-      const notifications_raw: { response: componentRequest } =
+      const notificationsRaw: { response: componentRequest } =
         await response.json();
 
-      const data_docs_mapped = notifications_raw.response.docs!.map(
-        (raw_data: componentNotificationRaw): componentSanitized => ({
+      const dataDocsMapped = notificationsRaw.response.docs!.map(
+        (rawData: componentNotificationRaw): componentSanitized => ({
           type: "notification",
-          symbol: raw_data.symbol_s,
-          date: new Date(raw_data.date_s),
-          date_action: raw_data.actionDate_s
-            ? new Date(raw_data.actionDate_s)
+          symbol: rawData.symbol_s,
+          date: new Date(rawData.date_s),
+          date_action: rawData.actionDate_s
+            ? new Date(rawData.actionDate_s)
             : undefined,
-          date_deadline: new Date(raw_data.deadline_s),
-          sender: raw_data.sender_s,
-          reference: raw_data.reference_s,
-          url: raw_data.url_ss[0],
-          recipient: raw_data.recipient_ss,
+          date_deadline: new Date(rawData.deadline_s),
+          sender: rawData.sender_s,
+          reference: rawData.reference_s,
+          url: rawData.url_ss[0],
+          recipient: rawData.recipient_ss,
           title: {
-            ar: raw_data.title_AR_s,
-            en: raw_data.title_EN_s,
-            es: raw_data.title_ES_s,
-            fr: raw_data.title_FR_s,
-            ru: raw_data.title_RU_s,
-            zh: raw_data.title_ZH_s,
+            ar: rawData.title_AR_s,
+            en: rawData.title_EN_s,
+            es: rawData.title_ES_s,
+            fr: rawData.title_FR_s,
+            ru: rawData.title_RU_s,
+            zh: rawData.title_ZH_s,
           },
           themes: {
-            ar: raw_data.themes_AR_ss[0],
-            en: raw_data.themes_EN_ss[0],
-            es: raw_data.themes_ES_ss[0],
-            fr: raw_data.themes_FR_ss[0],
-            ru: raw_data.themes_RU_ss[0],
-            zh: raw_data.themes_ZH_ss[0],
+            ar: rawData.themes_AR_ss[0],
+            en: rawData.themes_EN_ss[0],
+            es: rawData.themes_ES_ss[0],
+            fr: rawData.themes_FR_ss[0],
+            ru: rawData.themes_RU_ss[0],
+            zh: rawData.themes_ZH_ss[0],
           },
           fulltext: {
-            ar: raw_data.fulltext_AR_s,
-            en: raw_data.fulltext_EN_s,
-            es: raw_data.fulltext_ES_s,
-            fr: raw_data.fulltext_FR_s,
-            ru: raw_data.fulltext_RU_s,
-            zh: raw_data.fulltext_ZH_s,
+            ar: rawData.fulltext_AR_s,
+            en: rawData.fulltext_EN_s,
+            es: rawData.fulltext_ES_s,
+            fr: rawData.fulltext_FR_s,
+            ru: rawData.fulltext_RU_s,
+            zh: rawData.fulltext_ZH_s,
           },
         })
       );
 
-      const notification_list: componentSanitized[] = data_docs_mapped;
+      const notificationList: componentSanitized[] = dataDocsMapped;
 
-      referenced_notifications.value = notification_list;
-      notifications_status.value.status = "OK";
+      referencedNotifications.value = notificationList;
+      notificationsStatus.value.status = "OK";
 
-      return notification_list;
+      return notificationList;
     } catch (error) {
       console.error(error);
-      notifications_status.value.status = "error";
+      notificationsStatus.value.status = "error";
     }
   };
 
-  const getStatements = async (search_parameters: searchParams) => {
-    statements_status.value.status = "pending";
+  const getStatements = async (searchParameters: searchParams) => {
+    statementsStatus.value.status = "pending";
 
     const params = new URLSearchParams({
       q: "schema_s:statement",
-      fl: search_parameters.fl?.toString() || "",
-      sort: search_parameters.sort?.params
-        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+      fl: searchParameters.fl?.toString() || "",
+      sort: searchParameters.sort?.params
+        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
         : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (search_parameters.rows || 4).toString(),
+      rows: (searchParameters.rows || 4).toString(),
     });
 
     try {
@@ -293,49 +293,49 @@ export default function getComponents() {
       );
 
       if (response.ok) {
-        const statements_raw: { response: componentRequest } =
+        const statementsRaw: { response: componentRequest } =
           await response.json();
 
-        const data_docs_mapped = statements_raw.response.docs!.map(
-          (raw_data: componentStatementRaw): componentSanitized => ({
+        const dataDocsMapped = statementsRaw.response.docs!.map(
+          (rawData: componentStatementRaw): componentSanitized => ({
             type: "statement",
-            symbol: raw_data.symbol_s,
-            date: new Date(raw_data.date_s),
-            url: raw_data.url_ss[0],
+            symbol: rawData.symbol_s,
+            date: new Date(rawData.date_s),
+            url: rawData.url_ss[0],
             title: {
-              ar: raw_data.title_AR_s,
-              en: raw_data.title_EN_s,
-              es: raw_data.title_ES_s,
-              fr: raw_data.title_FR_s,
-              ru: raw_data.title_RU_s,
-              zh: raw_data.title_ZH_s,
+              ar: rawData.title_AR_s,
+              en: rawData.title_EN_s,
+              es: rawData.title_ES_s,
+              fr: rawData.title_FR_s,
+              ru: rawData.title_RU_s,
+              zh: rawData.title_ZH_s,
             },
           })
         );
 
-        const statement_list: componentSanitized[] = data_docs_mapped;
+        const statementList: componentSanitized[] = dataDocsMapped;
 
-        referenced_statements.value = statement_list;
-        statements_status.value.status = "OK";
+        referencedStatements.value = statementList;
+        statementsStatus.value.status = "OK";
 
-        return statement_list;
+        return statementList;
       }
     } catch (error) {
       console.error(error);
-      statements_status.value.status = "error";
+      statementsStatus.value.status = "error";
     }
   };
 
   const getPortals = async () => {
-    portals_status.value.status = "pending";
+    portalsStatus.value.status = "pending";
 
     const drupalToken = useState<drupalToken>("drupal_token").value;
 
     try {
-      const lang_code = active_language.value?.active_language;
+      const langCode = activeLanguage.value?.active_language;
 
       const response = await fetch(
-        `${config.public.DRUPAL_URL}/${lang_code !== "en" ? (lang_code + "/").toString() : ""}jsonapi/menu_link_content/cbd-portals`,
+        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/menu_link_content/cbd-portals`,
         {
           method: "GET",
           headers: {
@@ -346,45 +346,45 @@ export default function getComponents() {
       );
 
       if (response.ok) {
-        const portals_raw: componentRequest = await response.json();
+        const portalsRaw: componentRequest = await response.json();
 
-        const data_mapped = portals_raw.data!.map(
-          (raw_data: componentPortalRaw): componentSanitized => ({
+        const dataMapped = portalsRaw.data!.map(
+          (rawData: componentPortalRaw): componentSanitized => ({
             type: "portal",
-            title: raw_data.attributes.title,
-            url: raw_data.attributes.link.uri,
-            date: new Date(raw_data.attributes.revision_created),
-            date_changed: new Date(raw_data.attributes.changed),
+            title: rawData.attributes.title,
+            url: rawData.attributes.link.uri,
+            date: new Date(rawData.attributes.revision_created),
+            date_changed: new Date(rawData.attributes.changed),
             image: {
-              url: `${config.public.DRUPAL_URL}/sites/default/files/${raw_data.attributes.link.options.attributes.icon}`,
-              alt: raw_data.attributes.title,
+              url: `${config.public.DRUPAL_URL}/sites/default/files/${rawData.attributes.link.options.attributes.icon}`,
+              alt: rawData.attributes.title,
             },
           })
         );
 
-        const portals_list: componentSanitized[] = data_mapped;
+        const portalsList: componentSanitized[] = dataMapped;
 
-        referenced_portals.value = portals_list;
-        portals_status.value.status = "OK";
+        referencedPortals.value = portalsList;
+        portalsStatus.value.status = "OK";
 
-        return portals_list;
+        return portalsList;
       }
     } catch (error) {
       console.error(error);
-      portals_status.value.status = "error";
+      portalsStatus.value.status = "error";
     }
   };
 
-  const getNbsaps = async (search_parameters: searchParams) => {
-    nbsaps_status.value.status = "pending";
+  const getNbsaps = async (searchParameters: searchParams) => {
+    nbsapsStatus.value.status = "pending";
 
     const params = new URLSearchParams({
       q: "schema_s:nbsap",
-      fl: search_parameters.fl?.toString() || "",
-      sort: search_parameters.sort?.params
-        ? `${search_parameters.sort.params} ${search_parameters.sort?.direction || "asc"}`
+      fl: searchParameters.fl?.toString() || "",
+      sort: searchParameters.sort?.params
+        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
         : "abs(ms(submittedDate_s,NOW)) asc",
-      rows: (search_parameters.rows || 4).toString(),
+      rows: (searchParameters.rows || 4).toString(),
     });
 
     try {
@@ -399,35 +399,34 @@ export default function getComponents() {
       );
 
       if (response.ok) {
-        const nbsaps_raw: { response: componentRequest } =
-          await response.json();
+        const nbsapsRaw: { response: componentRequest } = await response.json();
 
-        const data_docs_mapped = nbsaps_raw.response.docs!.map(
-          (raw_data: componentNbsapRaw): componentSanitized => ({
+        const dataDocsMapped = nbsapsRaw.response.docs!.map(
+          (rawData: componentNbsapRaw): componentSanitized => ({
             type: "nbsap",
-            date: new Date(raw_data.submittedDate_s),
-            url: raw_data.url_ss[0],
+            date: new Date(rawData.submittedDate_s),
+            url: rawData.url_ss[0],
             title: {
-              ar: raw_data.title_AR_s,
-              en: raw_data.title_EN_s,
-              es: raw_data.title_ES_s,
-              fr: raw_data.title_FR_s,
-              ru: raw_data.title_RU_s,
-              zh: raw_data.title_ZH_s,
+              ar: rawData.title_AR_s,
+              en: rawData.title_EN_s,
+              es: rawData.title_ES_s,
+              fr: rawData.title_FR_s,
+              ru: rawData.title_RU_s,
+              zh: rawData.title_ZH_s,
             },
           })
         );
 
-        const nbsap_list: componentSanitized[] = data_docs_mapped;
+        const nbsapList: componentSanitized[] = dataDocsMapped;
 
-        referenced_nbsaps.value = nbsap_list;
-        nbsaps_status.value.status = "OK";
+        referencedNbsaps.value = nbsapList;
+        nbsapsStatus.value.status = "OK";
 
-        return nbsap_list;
+        return nbsapList;
       }
     } catch (error) {
       console.error(error);
-      nbsaps_status.value.status = "error";
+      nbsapsStatus.value.status = "error";
     }
   };
 
