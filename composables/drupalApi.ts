@@ -75,6 +75,7 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
                         id: item.id,
                         title: item.attributes.title,
                         link: cleanUri(item.attributes.link.uri),
+                        options: item.attributes.link.options,
                         children: []
                     };
                     
@@ -89,6 +90,7 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
                                 id: child.id,
                                 title: child.attributes.title,
                                 link: cleanUri(child.attributes.link.uri),
+                                options: child.attributes.link.options,
                                 children: []
                             };
                             
@@ -102,7 +104,8 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
                                     return {
                                         id: grandchild.id,
                                         title: grandchild.attributes.title,
-                                        link: cleanUri(grandchild.attributes.link.uri)
+                                        link: cleanUri(grandchild.attributes.link.uri),
+                                        options: grandchild.attributes.link.options,
                                     };
                                 });
                             }

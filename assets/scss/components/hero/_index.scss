@@ -1,57 +1,127 @@
 .cus-landing-page .cus-hero {
-    height: 25rem;
+  height: 25rem;
 }
 
 .cus-landing-page-protocol .cus-hero {
-    height: 20rem;
+  height: 20rem;
 }
 
 .cus-hero {
+  &.triple-features {
+    display: flex;
+    column-gap: 0.5rem;
+    .triple-ancilliary-wrapper {
+      display: flex;
+      flex-basis: 40rem;
+      flex-direction: column;
+      row-gap: 0.5rem;
+      .featured-item {
+        .featured-cover-image {
+          width: 100%;
+        }
+        .featured-description {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+        }
+      }
+    }
+  }
+  .featured-item {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid: repeat(3, [row] 1fr) / repeat(3, [col] 1fr);
+    overflow: hidden;
+    .featured-cover-image {
+      width: 100%;
+      height: 100%;
+      grid-row: row / span 3;
+      grid-column: col / span 3;
+      object-fit: cover;
+      object-position: center;
+    }
+    .featured-wrapper {
+      width: 100%;
+      max-width: 78rem;
+      padding: 1rem;
+      grid-row: row / span 3;
+      grid-column: col / span 3;
+      display: flex;
+      row-gap: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      color: var(--bs-body);
+    }
+    .featured-information {
+      padding: 1rem 1rem 1rem 1.33rem;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+      background-color: rgba(255, 255, 255, 0.75);
+      box-shadow: 0.33rem 0 inset var(--cbd-content-accent);
+      .featured-taxonomy {
+        display: flex;
+        font-size: 1rem;
+        line-height: 1;
+        font-weight: 600;
+        .featured-type {
+          text-transform: capitalize;
+        }
+        .featured-source:not(:empty) {
+          margin-right: 0.5rem;
+          padding-right: 0.5rem;
+          box-shadow: -2px 0 inset black;
+        }
+      }
+      .featured-description {
+        font-size: 1.778rem;
+        line-height: 1.25;
+        font-weight: 600;
+      }
+    }
+    .featured-buttons {
+      padding: 0;
+      column-gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 953px) {
+  .cus-hero {
+    &.triple-features {
+      .featured-primary,
+      .triple-ancilliary-wrapper {
+        flex-basis: 50%;
+      }
+    }
     .featured-item {
-        .featured-wrapper {
-            width: 100%;
-            max-width: 78rem;
-            padding: 1rem;
-            row-gap: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-end;
+      .featured-information {
+        .featured-description {
+          font-size: 1.167rem;
         }
-        .featured-information {
-            padding: 1rem 1rem 1rem 1.33rem;
-            display: flex;
-            flex-direction: column;
-            row-gap: 0.5rem;
-            background-color: rgba(255, 255, 255, 0.75);
-            box-shadow: 0.33rem 0 inset var(--cbd-content-accent);
-            .featured-taxonomy {
-                display: flex;
-                font-size: 1rem;
-                line-height: 1;
-                font-weight: 600;
-                .featured-source:not(:empty){
-                    margin-right: 0.5rem;
-                    padding-right: 0.5rem;
-                    box-shadow: -2px 0 inset black;
-                }
-            }
-            .featured-description {
-                font-size: 1.778rem;
-                line-height: 1.25;
-                font-weight: 600;
-            }
-        }
-        .featured-buttons {
-            padding: 0;
-            column-gap: 1rem;
-        }
+      }
     }
-    
-    .featured-primary {
-        width: 100%;
-        height: 100%;
-        background: url(/images/hero-primary.jpg) center no-repeat;
-        background-size: cover;
+  }
+}
+
+@media (max-width: 539px) {
+  .cus-hero {
+    &.triple-features {
+      height: auto;
+      flex-direction: column;
+      .triple-ancilliary-wrapper {
+        row-gap: 0;
+      }
     }
+    .featured-item {
+      .featured-information {
+        .featured-description {
+          font-size: 1.167rem;
+        }
+      }
+    }
+  }
 }
