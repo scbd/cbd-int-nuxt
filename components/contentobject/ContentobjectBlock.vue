@@ -47,7 +47,7 @@ const objectLocation = (
 };
 </script>
 
-<template v-if="objectType === 'article'">
+<template>
   <template v-if="objectType === 'article'">
     <div
       v-if="articles_status.status === 'OK'"
@@ -200,6 +200,34 @@ const objectLocation = (
     :class="`gbf-target-${objectGBFtarget?.number}`"
   ></div>
 
+  <template v-else-if="objectType === 'statement'">
+    <div
+      v-if="statements_status.status === 'OK'"
+      class="content-object"
+      :class="objectType"
+    >
+      <div class="date">
+        {{
+          Intl.DateTimeFormat(active_language!.active_language.slice(0, 2), {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(objectStartDate)
+        }}
+      </div>
+      <div class="title">{{ objectTitle }}</div>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="objectLink" class="read-on" target="_blank"
+          >View {{ objectType }}</NuxtLink
+        >
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="statements_status.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
+
   <template v-else-if="objectType === 'portal'">
     <div
       v-if="portals_status.status === 'OK'"
@@ -207,7 +235,7 @@ const objectLocation = (
     >
       <NuxtLink :to="objectLink" class="content-link">
         <NuxtImg
-          :src="objectImg?.url"
+          :src="objectImg?.url ?? '/images/absch-image.png'"
           :alt="objectImg?.alt"
           class="content-image"
         />

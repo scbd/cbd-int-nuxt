@@ -68,15 +68,24 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
+const nbsaps_params: searchParams = {
+  q: "schema_s:nbsap",
+  fl: ["submittedDate_s", "url_ss", "title_??_s"],
+  sort: {
+    params: "submittedDate_s",
+    direction: "desc",
+  },
+  rows: 4,
+};
+
 const updates: componentSanitized[] = [];
 
 const articles = (await getArticles(articles_params)) ?? [];
 const meetings = (await getMeetings(meetings_params)) ?? [];
 const notifications = (await getNotifications(notifications_params)) ?? [];
-
 await getStatements(statements_params);
 await getPortals();
-// await getNbsaps(nbsaps_params);
+await getNbsaps(nbsaps_params);
 
 updates.push(...articles, ...meetings, ...notifications);
 const sorted_updates = updates
@@ -95,7 +104,7 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <!-- <Hero :article="referenced_articles" /> -->
+    <Hero :article="referenced_articles" />
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">
@@ -111,7 +120,7 @@ definePageMeta({
         :objects="referenced_statements"
       />
       <ContentobjectRow object-type="portal" :objects="referenced_portals" />
-      <!-- <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" /> -->
+      <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
     </ClientOnly>
   </article>
 </template>
