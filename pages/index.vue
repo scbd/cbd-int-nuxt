@@ -95,7 +95,7 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <Hero :article="referenced_articles" />
+    <!-- <Hero :article="referenced_articles" /> -->
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">
