@@ -3,6 +3,7 @@ import {
   type componentRequest,
   type componentArticleRaw,
   type componentArticleCoverImageRaw,
+  type componentArticlePath,
   type componentMeetingRaw,
   type componentNotificationRaw,
   type componentStatementRaw,
@@ -35,11 +36,42 @@ export default function getComponents() {
     articlesStatus.value.status = "pending";
     const langCode = activeLanguage.value?.active_language;
 
-    const params = new URLSearchParams({});
+    let uuid = "";
+
+    if (searchParameters.q === "content-page") {
+      const params = new URLSearchParams({
+        path: [searchParameters.fl].flat().toString(),
+      });
+
+      try {
+        const response = await fetch(
+          `${config.public.DRUPAL_URL}/router/translate-path?${params}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const articleResponse: componentArticlePath = await response.json();
+          if (articleResponse.entity) {
+            uuid = articleResponse.entity.uuid;
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    const params = new URLSearchParams({
+      "page[limit]": searchParameters.rows.toString(),
+    });
 
     try {
       const response = await fetch(
-        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/article`,
+        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/article${uuid ? "/" + uuid : ""}?${params}`,
         {
           method: "GET",
           headers: {
@@ -50,6 +82,10 @@ export default function getComponents() {
       );
       if (response.ok) {
         const articlesRaw: componentRequest = await response.json();
+
+        if ((articlesRaw.data as componentArticleRaw).attributes) {
+          articlesRaw.data = [articlesRaw.data as componentArticleRaw];
+        }
 
         const getArticleImage = async (cover_image_url: string) => {
           const response = fetch(cover_image_url, {
@@ -68,7 +104,7 @@ export default function getComponents() {
           return response;
         };
 
-        const dataMapped = articlesRaw.data!.map(
+        const dataMapped = (articlesRaw.data as componentArticleRaw[])!.map(
           (rawData: componentArticleRaw): componentSanitized => ({
             type: "article",
             title: rawData.attributes.title,
@@ -348,7 +384,7 @@ export default function getComponents() {
       if (response.ok) {
         const portalsRaw: componentRequest = await response.json();
 
-        const dataMapped = portalsRaw.data!.map(
+        const dataMapped = (portalsRaw.data as componentPortalRaw[])!.map(
           (rawData: componentPortalRaw): componentSanitized => ({
             type: "portal",
             title: rawData.attributes.title,
