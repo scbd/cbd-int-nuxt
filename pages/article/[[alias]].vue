@@ -14,7 +14,14 @@ const articleParams: searchParams = {
   rows: 1,
 };
 
-await getArticles(articleParams);
+const articles = await getArticles(articleParams);
+
+if (!articles || articles.length == 0) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: "Page not found",
+  });
+}
 
 watch(activeLanguage, async () => {
   await getArticles(articleParams);
@@ -29,7 +36,7 @@ definePageMeta({
     <article class="cus-article container-fluid d-flex flex-column">
       <ClientOnly>
         <template v-for="article in referencedArticles">
-          <section v-html="article.content"></section>
+          <section v-html="article.content" class="rendered-content"></section>
         </template>
       </ClientOnly>
     </article>

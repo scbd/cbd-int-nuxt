@@ -56,12 +56,20 @@ export default function getComponents() {
 
         if (response.ok) {
           const articleResponse: componentArticlePath = await response.json();
-          if (articleResponse.entity) {
-            uuid = articleResponse.entity.uuid;
-          }
+          uuid = articleResponse.entity.uuid;
+        } else {
+          // TODO: Fix this area
+          articlesStatus.value.status = "404";
+          referencedArticles.value = [];
+          uuid = "404";
+          throw createError({
+            statusCode: 404,
+            statusMessage: "Page not found",
+          });
         }
       } catch (error) {
         console.error(error);
+        // return error;
       }
     }
 
