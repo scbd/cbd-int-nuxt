@@ -58,18 +58,17 @@ export default function getComponents() {
           const articleResponse: componentArticlePath = await response.json();
           uuid = articleResponse.entity.uuid;
         } else {
-          // TODO: Fix this area
-          articlesStatus.value.status = "404";
           referencedArticles.value = [];
-          uuid = "404";
-          throw createError({
-            statusCode: 404,
-            statusMessage: "Page not found",
-          });
+          throw new Error(response.statusText, { cause: response.url });
         }
       } catch (error) {
-        console.error(error);
-        // return error;
+        const errorThrown = error as Error;
+        throw createError({
+          statusCode: 404,
+          statusMessage: errorThrown.message,
+          cause: errorThrown.cause,
+          fatal: true,
+        });
       }
     }
 
@@ -146,6 +145,55 @@ export default function getComponents() {
             } catch (error) {
               console.error(error);
             }
+          }
+
+          // Parser
+          if (article.content?.includes("wp-block-example-faq-block")) {
+            article.content = article.content.replaceAll(
+              `class="faqitem"`,
+              `class="accordion-item"`
+            );
+            article.content = article.content.replaceAll(
+              `class="faq-title h3"`,
+              `class="accordion-header"`
+            );
+            article.content = article.content.replaceAll(
+              `class="accordion-trigger"`,
+              `class="accordion-button collapsed" data-bs-toggle="collapse"`
+            );
+            article.content = article.content.replaceAll(
+              `class="accordion-panel"`,
+              `class="accordion-collapse collapse"`
+            );
+
+            const convertedContent = {
+              content: new DOMParser().parseFromString(
+                article.content,
+                "text/html"
+              ),
+            };
+
+            const accordionItems =
+              convertedContent.content.querySelectorAll(".accordion-item");
+
+            accordionItems.forEach((accordionItem, index) => {
+              const accordionButton = accordionItem.querySelector(
+                ".accordion-button.collapsed"
+              );
+              const accordionTarget = accordionItem.querySelector(
+                ".accordion-collapse.collapse"
+              );
+              const accordionBody =
+                accordionTarget?.querySelector("div:first-child");
+              accordionButton?.setAttribute(
+                "data-bs-target",
+                `#${accordionTarget!.getAttribute("id") ?? ""}`
+              );
+              accordionTarget?.removeAttribute("hidden");
+              accordionBody?.classList.add("accordion-body");
+            });
+
+            article.content = convertedContent.content.body.innerHTML;
           }
         }
 

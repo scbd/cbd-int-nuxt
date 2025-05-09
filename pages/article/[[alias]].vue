@@ -4,8 +4,6 @@ import getComponents from "~/composables/componentApi";
 
 const { getArticles } = getComponents();
 
-// const props = defineProps<{}>();
-
 const route = useRoute();
 
 const articleParams: searchParams = {
@@ -14,14 +12,7 @@ const articleParams: searchParams = {
   rows: 1,
 };
 
-const articles = await getArticles(articleParams);
-
-if (!articles || articles.length == 0) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: "Page not found",
-  });
-}
+await getArticles(articleParams);
 
 watch(activeLanguage, async () => {
   await getArticles(articleParams);

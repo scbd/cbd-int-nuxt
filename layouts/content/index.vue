@@ -8,7 +8,7 @@
     </nav>
   </header>
   <ClientOnly>
-    <template v-show="referencedArticles.length > 0">
+    <template v-if="referencedArticles.length > 0">
       <Breadcrumbs :content="referencedArticles" />
       <HeroContent :article="referencedArticles" />
     </template>
