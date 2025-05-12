@@ -59,14 +59,15 @@ export default function getComponents() {
           uuid = articleResponse.entity.uuid;
         } else {
           referencedArticles.value = [];
-          throw new Error(response.statusText, { cause: response.url });
+          throw new Error(response.statusText, {
+            cause: { url: response.url, statusCode: response.status },
+          });
         }
-      } catch (error) {
-        const errorThrown = error as Error;
+      } catch (error: any) {
         throw createError({
-          statusCode: 404,
-          statusMessage: errorThrown.message,
-          cause: errorThrown.cause,
+          statusCode: error.cause.statusCode,
+          statusMessage: error.message,
+          cause: error.cause.url,
           fatal: true,
         });
       }
