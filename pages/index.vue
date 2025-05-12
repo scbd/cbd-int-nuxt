@@ -13,7 +13,7 @@ const {
 
 const articlesParams: searchParams = {
   q: "article",
-  rows: 10,
+  rows: 4,
 };
 
 const meetingsParams: searchParams = {

@@ -1,39 +1,44 @@
-@use 'cus-main';
-@use 'cus-serp';
-@use 'cus-footer';
-@use 'navigation';
-@use 'content-object';
-@use 'aside';
+@use "cus-main";
+@use "cus-serp";
+@use "cus-footer";
+@use "navigation";
+@use "content-object";
+@use "aside";
 
 .cus-header,
 .cus-main,
 .cus-footer {
-    width: 100%;
+  width: 100%;
 }
 
 .cus-landing-page,
 .cus-landing-page-protocol,
 .cus-internal-page {
-    .cus-article,
-    .region {
-        row-gap: 2rem;
-    }
+  .cus-article,
+  .region {
+    row-gap: 2rem;
+  }
 }
 
-.cus-internal-page {    
-    &>.container-xxl {
-        padding: 0 1rem;
-        column-gap: 2rem;
-        align-items: stretch;
-    }
-    .cus-article,
-    .region {
-        padding: 0;
-        margin: 0;
-        flex: 1 2 100%;
-    }
+.cus-internal-page {
+  & > .container-xxl {
+    padding: 0 1rem;
+    column-gap: 2rem;
+    align-items: stretch;
+  }
+  .cus-article,
+  .region {
+    padding: 0;
+    margin: 0;
+    flex: 1 2 100%;
+  }
 }
 
 .cus-article {
-    padding: 0 1rem;
+  padding: 0 1rem;
+  section:first-of-type {
+    h1:first-of-type {
+      display: none;
+    }
+  }
 }

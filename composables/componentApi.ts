@@ -3,6 +3,7 @@ import {
   type componentRequest,
   type componentArticleRaw,
   type componentArticleCoverImageRaw,
+  type componentArticlePath,
   type componentMeetingRaw,
   type componentNotificationRaw,
   type componentStatementRaw,
@@ -35,11 +36,50 @@ export default function getComponents() {
     articlesStatus.value.status = "pending";
     const langCode = activeLanguage.value?.active_language;
 
-    const params = new URLSearchParams({});
+    let uuid = "";
+
+    if (searchParameters.q === "content-page") {
+      const params = new URLSearchParams({
+        path: [searchParameters.fl].flat().toString(),
+      });
+
+      try {
+        const response = await fetch(
+          `${config.public.DRUPAL_URL}/router/translate-path?${params}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const articleResponse: componentArticlePath = await response.json();
+          uuid = articleResponse.entity.uuid;
+        } else {
+          referencedArticles.value = [];
+          throw new Error(response.statusText, {
+            cause: { url: response.url, statusCode: response.status },
+          });
+        }
+      } catch (error: any) {
+        throw createError({
+          statusCode: error.cause.statusCode,
+          statusMessage: error.message,
+          cause: error.cause.url,
+          fatal: true,
+        });
+      }
+    }
+
+    const params = new URLSearchParams({
+      "page[limit]": searchParameters.rows.toString(),
+    });
 
     try {
       const response = await fetch(
-        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/article`,
+        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/article${uuid ? "/" + uuid : ""}?${params}`,
         {
           method: "GET",
           headers: {
@@ -50,6 +90,10 @@ export default function getComponents() {
       );
       if (response.ok) {
         const articlesRaw: componentRequest = await response.json();
+
+        if ((articlesRaw.data as componentArticleRaw).attributes) {
+          articlesRaw.data = [articlesRaw.data as componentArticleRaw];
+        }
 
         const getArticleImage = async (cover_image_url: string) => {
           const response = fetch(cover_image_url, {
@@ -68,7 +112,7 @@ export default function getComponents() {
           return response;
         };
 
-        const dataMapped = articlesRaw.data!.map(
+        const dataMapped = (articlesRaw.data as componentArticleRaw[])!.map(
           (rawData: componentArticleRaw): componentSanitized => ({
             type: "article",
             title: rawData.attributes.title,
@@ -102,6 +146,55 @@ export default function getComponents() {
             } catch (error) {
               console.error(error);
             }
+          }
+
+          // Parser
+          if (article.content?.includes("wp-block-example-faq-block")) {
+            article.content = article.content.replaceAll(
+              `class="faqitem"`,
+              `class="accordion-item"`
+            );
+            article.content = article.content.replaceAll(
+              `class="faq-title h3"`,
+              `class="accordion-header"`
+            );
+            article.content = article.content.replaceAll(
+              `class="accordion-trigger"`,
+              `class="accordion-button collapsed" data-bs-toggle="collapse"`
+            );
+            article.content = article.content.replaceAll(
+              `class="accordion-panel"`,
+              `class="accordion-collapse collapse"`
+            );
+
+            const convertedContent = {
+              content: new DOMParser().parseFromString(
+                article.content,
+                "text/html"
+              ),
+            };
+
+            const accordionItems =
+              convertedContent.content.querySelectorAll(".accordion-item");
+
+            accordionItems.forEach((accordionItem, index) => {
+              const accordionButton = accordionItem.querySelector(
+                ".accordion-button.collapsed"
+              );
+              const accordionTarget = accordionItem.querySelector(
+                ".accordion-collapse.collapse"
+              );
+              const accordionBody =
+                accordionTarget?.querySelector("div:first-child");
+              accordionButton?.setAttribute(
+                "data-bs-target",
+                `#${accordionTarget!.getAttribute("id") ?? ""}`
+              );
+              accordionTarget?.removeAttribute("hidden");
+              accordionBody?.classList.add("accordion-body");
+            });
+
+            article.content = convertedContent.content.body.innerHTML;
           }
         }
 
@@ -348,7 +441,7 @@ export default function getComponents() {
       if (response.ok) {
         const portalsRaw: componentRequest = await response.json();
 
-        const dataMapped = portalsRaw.data!.map(
+        const dataMapped = (portalsRaw.data as componentPortalRaw[])!.map(
           (rawData: componentPortalRaw): componentSanitized => ({
             type: "portal",
             title: rawData.attributes.title,

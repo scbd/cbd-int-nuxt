@@ -1,17 +1,23 @@
 .breadcrumbs {
-    font-size: 0.8rem;
-    --bs-breadcrumb-divider: '>';
-    .breadcrumb {
-        margin-bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  font-size: 0.8rem;
+  --bs-breadcrumb-divider: ">";
+  background: var(--bs-secondary-bg);
+  .breadcrumb {
+    margin-bottom: 0;
+    .breadcrumb-item:not(:last-of-type) {
+      text-transform: capitalize;
     }
+  }
 }
 
 html:dir(rtl) {
-    .breadcrumb-item + .breadcrumb-item::before {
-        float: right;
-        padding-left: var(--bs-breadcrumb-item-padding-x);
-    }
-    .breadcrumb-item {
-        padding-left: var(--bs-breadcrumb-item-padding-x)
-    }
+  .breadcrumb-item + .breadcrumb-item::before {
+    float: right;
+    padding-left: var(--bs-breadcrumb-item-padding-x);
+  }
+  .breadcrumb-item {
+    padding-left: var(--bs-breadcrumb-item-padding-x);
+  }
 }

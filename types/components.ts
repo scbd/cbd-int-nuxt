@@ -1,7 +1,7 @@
 export interface componentRequest {
   numFound?: number;
   start?: number;
-  data?: [];
+  data?: componentArticleRaw | componentArticleRaw[] | componentPortalRaw[];
   docs?: [];
 }
 
@@ -139,6 +139,15 @@ export interface componentArticleCoverImageRaw {
       filemime: string;
       filesize: number;
     };
+  };
+}
+
+export interface componentArticlePath {
+  entity: {
+    uuid: string;
+  };
+  jsonapi: {
+    individual: string;
   };
 }
 
