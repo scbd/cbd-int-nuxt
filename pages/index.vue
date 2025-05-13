@@ -13,6 +13,10 @@ const {
 
 const articlesParams: searchParams = {
   q: "article",
+  sort: {
+    direction: "desc",
+    params: "changed",
+  },
   rows: 4,
 };
 
