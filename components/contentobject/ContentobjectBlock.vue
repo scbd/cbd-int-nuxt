@@ -5,7 +5,6 @@ import type {
 } from "~/types/components";
 
 const props = defineProps<{
-  componentType: string;
   component: componentSanitized;
 }>();
 
@@ -39,7 +38,7 @@ const objectLocation = (
 </script>
 
 <template>
-  <template v-if="componentType === 'article'">
+  <template v-if="component.type === 'article'">
     <div
       v-if="articlesStatus.status === 'OK'"
       class="content-object"
@@ -84,7 +83,7 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="componentType === 'meeting'">
+  <template v-else-if="component.type === 'meeting'">
     <div
       v-if="meetingsStatus.status === 'OK'"
       class="content-object"
@@ -154,7 +153,7 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="componentType === 'notification'">
+  <template v-else-if="component.type === 'notification'">
     <div
       v-if="notificationsStatus.status === 'OK'"
       class="content-object"
@@ -226,12 +225,12 @@ const objectLocation = (
   </template>
 
   <div
-    v-else-if="componentType === 'gbf-target'"
+    v-else-if="component.type === 'gbf-target'"
     class="content-object"
     :class="/*`gbf-target-${objectGBFtarget?.number}`*/ ''"
   ></div>
 
-  <template v-else-if="componentType === 'statement'">
+  <template v-else-if="component.type === 'statement'">
     <div
       v-if="statementsStatus.status === 'OK'"
       class="content-object"
@@ -272,7 +271,7 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="componentType === 'portal'">
+  <template v-else-if="component.type === 'portal'">
     <div
       v-if="portalsStatus.status === 'OK'"
       class="content-object portal-resource"
@@ -292,7 +291,7 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="componentType === 'nbsap'">
+  <template v-else-if="component.type === 'nbsap'">
     <div
       v-if="nbsapsStatus.status === 'OK'"
       class="content-object"

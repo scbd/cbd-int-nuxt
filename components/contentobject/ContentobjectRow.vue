@@ -18,38 +18,32 @@ const props = defineProps<{
         <ContentobjectBlock
           v-if="componentType === 'update'"
           v-for="update in components"
-          :component-type="update.type"
           :component="update"
         />
 
         <ContentobjectBlock
           v-if="componentType === 'meeting'"
           v-for="meeting in components"
-          :component-type="props.componentType"
           :component="meeting"
         />
         <ContentobjectBlock
           v-else-if="componentType === 'notification'"
           v-for="notification in components"
-          :component-type="componentType"
           :component="notification"
         />
         <ContentobjectBlock
           v-else-if="componentType === 'statement'"
           v-for="statement in components"
-          :component-type="componentType"
           :component="statement"
         />
         <ContentobjectBlock
           v-else-if="componentType === 'portal'"
           v-for="portal in components"
-          :component-type="componentType"
           :component="portal"
         />
         <ContentobjectBlock
           v-else-if="componentType === 'nbsap'"
           v-for="nbsap in components"
-          :component-type="componentType"
           :component="nbsap"
         />
       </div>
