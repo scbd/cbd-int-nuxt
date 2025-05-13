@@ -1,36 +1,26 @@
 <script setup lang="ts">
+import type {
+  availableLanguages,
+  componentSanitized,
+} from "~/types/components";
+
 const props = defineProps<{
-  objectType: string;
-  objectTitle: string;
-  objectSymbol?: string;
-  objectStartDate?: Date;
-  objectEndDate?: Date;
-  objectSubjects?: string;
-  objectEventCity?: string;
-  objectEventCountry?: string;
-  objectActionRequired?: Date;
-  objectDescription?: string;
-  objectLink?: string;
-  objectImg?: {
-    url: string;
-    width?: number;
-    height?: number;
-    mime_type?: string;
-    file_size?: number;
-    title?: string;
-    alt?: string;
-  };
-  objectInfo?: {
-    source?: string;
-    type?: string;
-  };
-  objectGBFtarget?: {
-    number: number;
-    description: string;
-    colour: string;
-    resources: string[];
-  };
+  component: componentSanitized;
 }>();
+
+const handlerMissingImage = (component: componentSanitized) => {
+  const languages = ["ar", "en", "es", "fr", "ru", "zh"];
+
+  let imgSrc = `/sites/default/files/${component.type}s${component.url?.slice(component.url?.lastIndexOf("/"))}`;
+
+  for (let language of languages) {
+    if (imgSrc.endsWith(`-${language}.pdf`)) {
+      return imgSrc.replace(`-${language}.pdf`, ".jpg");
+    }
+  }
+
+  return `${imgSrc}.jpg`;
+};
 
 const objectLocation = (
   language: string,
@@ -48,25 +38,26 @@ const objectLocation = (
 </script>
 
 <template>
-  <template v-if="objectType === 'article'">
+  <template v-if="component.type === 'article'">
     <div
       v-if="articlesStatus.status === 'OK'"
       class="content-object"
       :class="[
-        objectType,
-        objectInfo?.source ? `accent-${objectInfo.source}` : 'accent-cbd',
+        component.type,
+        // objectInfo?.source ? `accent-${objectInfo.source}` : 'accent-cbd',
+        'accent-cbd',
       ]"
     >
       <img
-        :src="props.objectImg?.url ?? '/images/update-1.jpg'"
-        :alt="objectImg?.alt"
-        :title="objectImg?.title"
+        :src="component.image_cover?.url ?? '/images/content_replacement.svg'"
+        :alt="component.image_cover?.alt"
+        :title="component.image_cover?.title"
         class="content-image"
       />
       <div class="information">
         <div class="taxonomy">
-          <div class="source">{{ objectInfo?.source ?? "CBD" }}</div>
-          <div class="type">{{ objectInfo?.type ?? "Article" }}</div>
+          <div class="source">{{ /*objectInfo?.source ??*/ "CBD" }}</div>
+          <div class="type">{{ /*objectInfo?.type ??*/ "Article" }}</div>
         </div>
         <div class="date">
           {{
@@ -74,16 +65,16 @@ const objectLocation = (
               year: "numeric",
               month: "short",
               day: "numeric",
-            }).format(objectStartDate)
+            }).format(component.date)
           }}
         </div>
       </div>
-      <div class="title">{{ objectTitle }}</div>
+      <div class="title">{{ component.title }}</div>
       <div class="description">
-        {{ objectDescription ?? "Description Placeholder" }}
+        {{ component.content ?? "Description Placeholder" }}
       </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on">Read on</NuxtLink>
+        <NuxtLink :to="component.url" class="read-on">Read on</NuxtLink>
       </div>
     </div>
     <Loader
@@ -92,11 +83,11 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="objectType === 'meeting'">
+  <template v-else-if="component.type === 'meeting'">
     <div
       v-if="meetingsStatus.status === 'OK'"
       class="content-object"
-      :class="objectType"
+      :class="component.type"
     >
       <div class="date">
         {{
@@ -104,35 +95,55 @@ const objectLocation = (
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(objectStartDate)
+          }).format(component.date)
         }}
-        <template v-if="objectEndDate">
+        <template v-if="component.date_end">
           &nbsp;&ndash;&nbsp;
           {{
             Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
               year: "numeric",
               month: "long",
               day: "numeric",
-            }).format(objectEndDate)
+            }).format(component.date_end)
           }}
         </template>
       </div>
-      <div class="title">{{ objectTitle }}</div>
-      <div v-show="objectEventCity || objectEventCountry" class="location">
+
+      <img
+        :src="handlerMissingImage(component)"
+        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        class="content-image"
+      />
+
+      <div class="title">
+        {{
+          (component.title as availableLanguages)[
+            activeLanguage!.active_language.slice(0, 2)
+          ]
+        }}
+      </div>
+      <div
+        v-show="component.event_city || component.event_country"
+        class="location"
+      >
         {{
           objectLocation(
             activeLanguage!.active_language,
-            objectEventCity,
-            objectEventCountry
+            (component.event_city as availableLanguages)[
+              activeLanguage!.active_language.slice(0, 2)
+            ],
+            (component.event_country as availableLanguages)[
+              activeLanguage!.active_language.slice(0, 2)
+            ]
           )
         }}
       </div>
-      <div v-show="objectDescription" class="description">
+      <!-- <div v-show="objectDescription" class="description">
         {{ objectDescription }}
-      </div>
+      </div> -->
       <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on"
-          >View {{ objectType }}</NuxtLink
+        <NuxtLink :to="component.url" class="read-on"
+          >View {{ component.type }}</NuxtLink
         >
       </div>
     </div>
@@ -142,11 +153,11 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="objectType === 'notification'">
+  <template v-else-if="component.type === 'notification'">
     <div
       v-if="notificationsStatus.status === 'OK'"
       class="content-object"
-      :class="objectType"
+      :class="component.type"
     >
       <div class="date">
         {{
@@ -154,37 +165,56 @@ const objectLocation = (
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(objectStartDate)
+          }).format(component.date)
         }}
-        <template v-if="objectEndDate">
+        <template v-if="component.date_end">
           &nbsp;&ndash;&nbsp;
           {{
             Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
               year: "numeric",
               month: "long",
               day: "numeric",
-            }).format(objectEndDate)
+            }).format(component.date_end)
           }}
         </template>
       </div>
-      <div class="title">{{ `${objectSymbol} &ndash; ${objectTitle}` }}</div>
-      <div v-show="objectActionRequired" class="action-required">
+
+      <img
+        :src="handlerMissingImage(component)"
+        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        class="content-image"
+      />
+
+      <div class="title">
+        {{
+          `${component.symbol} &ndash; ${(component.title as availableLanguages)[activeLanguage!.active_language.slice(0, 2)]}`
+        }}
+      </div>
+      <div v-show="component.date_action" class="action-required">
         {{
           `Action required: 
           ${Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(objectActionRequired)}`
+          }).format(component.date_action)}`
         }}
       </div>
-      <div v-show="objectSubjects" class="subjects">
-        {{ `Subject(s): ${objectSubjects}` }}
+      <div v-show="component.themes" class="subjects">
+        {{
+          `Subject(s): ${(component.themes as availableLanguages)[activeLanguage!.active_language.slice(0, 2)]}`
+        }}
       </div>
-      <div class="description">{{ objectDescription }}</div>
+      <div class="description">
+        {{
+          (component.fulltext as availableLanguages)[
+            activeLanguage!.active_language.slice(0, 2)
+          ]
+        }}
+      </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on"
-          >View {{ objectType }}</NuxtLink
+        <NuxtLink :to="component.url" class="read-on"
+          >View {{ component.type }}</NuxtLink
         >
       </div>
     </div>
@@ -195,16 +225,16 @@ const objectLocation = (
   </template>
 
   <div
-    v-else-if="objectType === 'gbf-target'"
+    v-else-if="component.type === 'gbf-target'"
     class="content-object"
-    :class="`gbf-target-${objectGBFtarget?.number}`"
+    :class="/*`gbf-target-${objectGBFtarget?.number}`*/ ''"
   ></div>
 
-  <template v-else-if="objectType === 'statement'">
+  <template v-else-if="component.type === 'statement'">
     <div
       v-if="statementsStatus.status === 'OK'"
       class="content-object"
-      :class="objectType"
+      :class="component.type"
     >
       <div class="date">
         {{
@@ -212,13 +242,26 @@ const objectLocation = (
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(objectStartDate)
+          }).format(component.date)
         }}
       </div>
-      <div class="title">{{ objectTitle }}</div>
+
+      <img
+        :src="handlerMissingImage(component)"
+        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        class="content-image"
+      />
+
+      <div class="title">
+        {{
+          (component.title as availableLanguages)[
+            activeLanguage!.active_language.slice(0, 2)
+          ]
+        }}
+      </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on" target="_blank"
-          >View {{ objectType }}</NuxtLink
+        <NuxtLink :to="component.url" class="read-on" target="_blank"
+          >View {{ component.type }}</NuxtLink
         >
       </div>
     </div>
@@ -228,18 +271,18 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="objectType === 'portal'">
+  <template v-else-if="component.type === 'portal'">
     <div
       v-if="portalsStatus.status === 'OK'"
       class="content-object portal-resource"
     >
-      <NuxtLink :to="objectLink" class="content-link">
+      <NuxtLink :to="component.url" class="content-link">
         <NuxtImg
-          :src="objectImg?.url ?? '/images/absch-image.png'"
-          :alt="objectImg?.alt"
+          :src="component.image?.url ?? '/images/absch-image.png'"
+          :alt="component.image?.alt"
           class="content-image"
         />
-        <div class="title">{{ objectTitle }}</div>
+        <div class="title">{{ component.title }}</div>
       </NuxtLink>
     </div>
     <Loader
@@ -248,11 +291,11 @@ const objectLocation = (
     />
   </template>
 
-  <template v-else-if="objectType === 'nbsap'">
+  <template v-else-if="component.type === 'nbsap'">
     <div
       v-if="nbsapsStatus.status === 'OK'"
       class="content-object"
-      :class="objectType"
+      :class="component.type"
     >
       <div class="date">
         {{
@@ -260,13 +303,19 @@ const objectLocation = (
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(objectStartDate)
+          }).format(component.date)
         }}
       </div>
-      <div class="title">{{ objectTitle }}</div>
+      <div class="title">
+        {{
+          (component.title as availableLanguages)[
+            activeLanguage!.active_language.slice(0, 2)
+          ]
+        }}
+      </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="objectLink" class="read-on" target="_blank"
-          >Read {{ objectType }}</NuxtLink
+        <NuxtLink :to="component.url" class="read-on" target="_blank"
+          >Read {{ component.type }}</NuxtLink
         >
       </div>
     </div>

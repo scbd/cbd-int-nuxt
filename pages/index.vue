@@ -109,18 +109,24 @@ definePageMeta({
 
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
-      <ContentobjectRow object-type="update" :objects="sortedUpdates" />
-      <ContentobjectRow object-type="meeting" :objects="referencedMeetings" />
+      <ContentobjectRow component-type="update" :components="sortedUpdates" />
       <ContentobjectRow
-        object-type="notification"
-        :objects="referencedNotifications"
+        component-type="meeting"
+        :components="referencedMeetings"
       />
       <ContentobjectRow
-        object-type="statement"
-        :objects="referencedStatements"
+        component-type="notification"
+        :components="referencedNotifications"
       />
-      <ContentobjectRow object-type="portal" :objects="referencedPortals" />
-      <ContentobjectRow object-type="nbsap" :objects="referencedNbsaps" />
+      <ContentobjectRow
+        component-type="statement"
+        :components="referencedStatements"
+      />
+      <ContentobjectRow
+        component-type="portal"
+        :components="referencedPortals"
+      />
+      <ContentobjectRow component-type="nbsap" :components="referencedNbsaps" />
     </ClientOnly>
   </article>
 </template>
