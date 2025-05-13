@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import type {
-  componentSanitized,
-  availableLanguages,
-} from "~/types/components";
+import type { componentSanitized } from "~/types/components";
 
 const props = defineProps<{
-  objectType: string;
-  objects: componentSanitized[];
+  componentType: string;
+  components: componentSanitized[];
 }>();
 </script>
 
@@ -14,111 +11,46 @@ const props = defineProps<{
   <ClientOnly>
     <section
       class="content-row d-flex flex-column"
-      :class="objectType === 'update' ? 'recent-updates' : objectType"
+      :class="componentType === 'update' ? 'recent-updates' : componentType"
     >
-      <div class="row-title">Recent {{ objectType }}s</div>
+      <div class="row-title">Recent {{ componentType }}s</div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
-          v-if="objectType === 'update'"
-          v-for="update in objects"
-          :object-type="update.type"
-          :object-title="
-            typeof update.title === 'string'
-              ? <string>update.title
-              : update.title[activeLanguage!.active_language.slice(0, 2)]
-          "
-          :object-start-date="update.date"
-          :object-img="update.image_cover"
-          :object-link="update.url"
-          :object-end-date="update.date_end"
-          :object-action-required="update.date_action"
-          :object-symbol="update.symbol"
-          :object-event-city="
-            update.event_city?.[activeLanguage!.active_language.slice(0, 2)]
-          "
-          :object-event-country="
-            update.event_country?.[activeLanguage!.active_language.slice(0, 2)]
-          "
-          :object-description="
-            update.fulltext?.[activeLanguage!.active_language.slice(0, 2)]
-          "
+          v-if="componentType === 'update'"
+          v-for="update in components"
+          :component-type="update.type"
+          :component="update"
         />
 
         <ContentobjectBlock
-          v-if="objectType === 'meeting'"
-          v-for="meeting in objects"
-          :object-type="props.objectType"
-          :object-title="
-            (meeting.title as availableLanguages)[
-              activeLanguage!.active_language.slice(0, 2)
-            ]
-          "
-          :object-start-date="meeting.date"
-          :object-end-date="meeting.date_end"
-          :object-event-city="
-            meeting.event_city?.[activeLanguage!.active_language.slice(0, 2)]
-          "
-          :object-event-country="
-            meeting.event_country?.[activeLanguage!.active_language.slice(0, 2)]
-          "
-          :object-link="meeting.url"
+          v-if="componentType === 'meeting'"
+          v-for="meeting in components"
+          :component-type="props.componentType"
+          :component="meeting"
         />
         <ContentobjectBlock
-          v-else-if="objectType === 'notification'"
-          v-for="notification in objects"
-          :object-type="objectType"
-          :object-title="
-            (notification.title as availableLanguages)[
-              activeLanguage!.active_language.slice(0, 2)
-            ]
-          "
-          :object-symbol="notification.symbol"
-          :object-start-date="notification.date"
-          :object-action-required="notification.date_action"
-          :object-description="
-            (notification.fulltext as availableLanguages)[
-              activeLanguage!.active_language.slice(0, 2)
-            ]
-          "
-          :object-subjects="
-            (notification.themes as availableLanguages)[
-              activeLanguage!.active_language.slice(0, 2)
-            ]
-          "
-          :object-link="notification.url"
+          v-else-if="componentType === 'notification'"
+          v-for="notification in components"
+          :component-type="componentType"
+          :component="notification"
         />
         <ContentobjectBlock
-          v-else-if="objectType === 'statement'"
-          v-for="statement in objects"
-          :object-type="objectType"
-          :object-symbol="statement.symbol"
-          :object-title="
-            (statement.title as availableLanguages)[
-              activeLanguage!.active_language.slice(0, 2)
-            ]
-          "
-          :object-start-date="statement.date"
-          :object-link="statement.url"
+          v-else-if="componentType === 'statement'"
+          v-for="statement in components"
+          :component-type="componentType"
+          :component="statement"
         />
         <ContentobjectBlock
-          v-else-if="objectType === 'portal'"
-          v-for="portal in objects"
-          :object-type="objectType"
-          :object-title="<string>portal.title"
-          :object-link="portal.url"
-          :object-img="portal.image"
+          v-else-if="componentType === 'portal'"
+          v-for="portal in components"
+          :component-type="componentType"
+          :component="portal"
         />
         <ContentobjectBlock
-          v-else-if="objectType === 'nbsap'"
-          v-for="nbsap in objects"
-          :object-type="objectType"
-          :object-title="
-            (nbsap.title as availableLanguages)[
-              activeLanguage!.active_language.slice(0, 2)
-            ]
-          "
-          :object-start-date="nbsap.date"
-          :object-link="nbsap.url"
+          v-else-if="componentType === 'nbsap'"
+          v-for="nbsap in components"
+          :component-type="componentType"
+          :component="nbsap"
         />
       </div>
       <NuxtLink
@@ -126,7 +58,11 @@ const props = defineProps<{
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
       >
-        {{ objectType === "nbsap" ? "All submissions" : `More ${objectType}s` }}
+        {{
+          componentType === "nbsap"
+            ? "All submissions"
+            : `More ${componentType}s`
+        }}
       </NuxtLink>
     </section>
   </ClientOnly>
