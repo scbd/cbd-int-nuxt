@@ -13,6 +13,7 @@ import {
   type searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
+import contentParser from "~/composables/contentParser";
 
 export const referencedArticles = ref<componentSanitized[]>([]);
 export const articlesStatus = ref<componentStatus>({ status: "pending" });
@@ -148,54 +149,7 @@ export default function getComponents() {
             }
           }
 
-          // Parser
-          if (article.content?.includes("wp-block-example-faq-block")) {
-            article.content = article.content.replaceAll(
-              `class="faqitem"`,
-              `class="accordion-item"`
-            );
-            article.content = article.content.replaceAll(
-              `class="faq-title h3"`,
-              `class="accordion-header"`
-            );
-            article.content = article.content.replaceAll(
-              `class="accordion-trigger"`,
-              `class="accordion-button collapsed" data-bs-toggle="collapse"`
-            );
-            article.content = article.content.replaceAll(
-              `class="accordion-panel"`,
-              `class="accordion-collapse collapse"`
-            );
-
-            const convertedContent = {
-              content: new DOMParser().parseFromString(
-                article.content,
-                "text/html"
-              ),
-            };
-
-            const accordionItems =
-              convertedContent.content.querySelectorAll(".accordion-item");
-
-            accordionItems.forEach((accordionItem, index) => {
-              const accordionButton = accordionItem.querySelector(
-                ".accordion-button.collapsed"
-              );
-              const accordionTarget = accordionItem.querySelector(
-                ".accordion-collapse.collapse"
-              );
-              const accordionBody =
-                accordionTarget?.querySelector("div:first-child");
-              accordionButton?.setAttribute(
-                "data-bs-target",
-                `#${accordionTarget!.getAttribute("id") ?? ""}`
-              );
-              accordionTarget?.removeAttribute("hidden");
-              accordionBody?.classList.add("accordion-body");
-            });
-
-            article.content = convertedContent.content.body.innerHTML;
-          }
+          article.content = contentParser(article.content);
         }
 
         const articlesList: componentSanitized[] = dataMapped;

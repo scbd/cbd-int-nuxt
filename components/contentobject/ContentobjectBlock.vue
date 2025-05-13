@@ -8,17 +8,19 @@ const props = defineProps<{
   component: componentSanitized;
 }>();
 
+const config = useRuntimeConfig();
+
 const handlerMissingImage = (component: componentSanitized) => {
   const languages = ["ar", "en", "es", "fr", "ru", "zh"];
 
-  let imgSrc = `/sites/default/files/${component.type}s${component.url?.slice(component.url?.lastIndexOf("/"))}`;
+  let imgSrc = `${config.public.IMAGE_URL}/sites/default/files/${component.type}s${component.url?.slice(component.url?.lastIndexOf("/"))}`;
 
   for (let language of languages) {
     if (imgSrc.endsWith(`-${language}.pdf`)) {
       return imgSrc.replace(`-${language}.pdf`, ".jpg");
     }
   }
-
+  console.log(`${imgSrc}.jpg`);
   return `${imgSrc}.jpg`;
 };
 
