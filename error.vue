@@ -34,17 +34,16 @@ body {
   overflow: hidden;
 }
 
-h1,
-h2 {
+.error-heading {
   color: var(--cbd-green);
 }
 
-h1 {
+h1.error-heading {
   font-size: 2.4rem;
   margin: 0 0 0.5rem;
 }
 
-h2 {
+h2.error-heading {
   font-size: 1.8rem;
   margin: 0;
 }
@@ -127,8 +126,8 @@ h2 {
     </div>
     <div class="info">
       <hgroup class="titles">
-        <h1>{{ error.statusCode }}</h1>
-        <h2>{{ error.statusMessage }}</h2>
+        <h1 class="error-heading">{{ error.statusCode }}</h1>
+        <h2 class="error-heading">{{ error.statusMessage }}</h2>
       </hgroup>
       <div id="error-msg" class="error-msg">
         {{ error.cause }}
