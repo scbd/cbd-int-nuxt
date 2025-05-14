@@ -76,6 +76,7 @@ export default function getComponents() {
 
     const params = new URLSearchParams({
       "page[limit]": searchParameters.rows.toString(),
+      sort: `${searchParameters.sort?.direction === "desc" ? "-" : ""}${searchParameters.sort?.params ?? "created"}`,
     });
 
     try {
