@@ -11,9 +11,9 @@ export default defineNuxtPlugin({
       const userSettings = useState<userSettings>("user_settings", () => ({
         active_language: "en",
       }));
-      active_language.value = userSettings.value;
+      activeLanguage.value = userSettings.value;
 
-      setActiveLanguage(active_language.value.active_language);
+      setActiveLanguage(activeLanguage.value.active_language);
     },
     "page:finish"() {
       useHead({

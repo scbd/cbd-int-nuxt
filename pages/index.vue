@@ -2,14 +2,25 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams, componentSanitized } from "~/types/components";
 
-const { getArticles, getMeetings, getNotifications, getStatements } = getComponents();
+const {
+  getArticles,
+  getMeetings,
+  getNotifications,
+  getStatements,
+  getPortals,
+  getNbsaps,
+} = getComponents();
 
-const articles_params: searchParams = {
+const articlesParams: searchParams = {
   q: "article",
-  rows: 10,
+  sort: {
+    direction: "desc",
+    params: "changed",
+  },
+  rows: 4,
 };
 
-const meetings_params: searchParams = {
+const meetingsParams: searchParams = {
   q: "schema_s:meeting",
   fl: [
     "startDate_dt",
@@ -29,7 +40,7 @@ const meetings_params: searchParams = {
   rows: 4,
 };
 
-const notifications_params: searchParams = {
+const notificationsParams: searchParams = {
   q: "schema_s:notification",
   fl: [
     "symbol_s",
@@ -51,25 +62,7 @@ const notifications_params: searchParams = {
   rows: 4,
 };
 
-const updates: componentSanitized[] = [];
-
-const articles = (await getArticles(articles_params)) ?? [];
-const meetings = (await getMeetings(meetings_params)) ?? [];
-const notifications = (await getNotifications(notifications_params)) ?? [];
-
-updates.push(...articles, ...meetings, ...notifications);
-const sorted_updates = updates
-  .sort((a, b) => b.date.getTime() - a.date.getTime())
-  .slice(0, 4);
-
-watch(active_language, async () => {
-  await getArticles(articles_params);
-});
-
-await getMeetings(meetings_params);
-await getNotifications(notifications_params);
-
-const statements_params: searchParams = {
+const statementsParams: searchParams = {
   q: "schema_s:statement",
   fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
   sort: {
@@ -79,16 +72,32 @@ const statements_params: searchParams = {
   rows: 4,
 };
 
-// const meetings = (await getMeetings(meetings_params)) ?? [];
-// const notifications = (await getNotifications(notifications_params)) ?? [];
+const nbsapsParams: searchParams = {
+  q: "schema_s:nbsap",
+  fl: ["submittedDate_s", "url_ss", "title_??_s"],
+  sort: {
+    params: "submittedDate_s",
+    direction: "desc",
+  },
+  rows: 4,
+};
 
-await getMeetings(meetings_params);
-await getNotifications(notifications_params);
-await getStatements(statements_params);
+const updates: componentSanitized[] = [];
+
+const articles = (await getArticles(articlesParams)) ?? [];
+const meetings = (await getMeetings(meetingsParams)) ?? [];
+const notifications = (await getNotifications(notificationsParams)) ?? [];
+await getStatements(statementsParams);
 await getPortals();
-await getNbsaps(nbsaps_params);
+await getNbsaps(nbsapsParams);
 
-watch(active_language, async () => {
+updates.push(...articles, ...meetings, ...notifications);
+const sortedUpdates = updates
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 4);
+
+watch(activeLanguage, async () => {
+  await getArticles(articlesParams);
   await getPortals();
 });
 
@@ -99,24 +108,29 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <Hero :article="referenced_articles" />
+    <Hero :article="referencedArticles" />
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
-      <ContentobjectRow object-type="update" :objects="sorted_updates" />
-      <ContentobjectRow object-type="meeting" :objects="referenced_meetings" />
+      <ContentobjectRow component-type="update" :components="sortedUpdates" />
       <ContentobjectRow
-        object-type="notification"
-        :objects="referenced_notifications"
+        component-type="meeting"
+        :components="referencedMeetings"
       />
       <ContentobjectRow
-        object-type="statement"
-        :objects="referenced_statements"
+        component-type="notification"
+        :components="referencedNotifications"
       />
-      <ContentobjectRow object-type="portal" :objects="referenced_portals" />
-      <ContentobjectRow object-type="nbsap" :objects="referenced_nbsaps" />
+      <ContentobjectRow
+        component-type="statement"
+        :components="referencedStatements"
+      />
+      <ContentobjectRow
+        component-type="portal"
+        :components="referencedPortals"
+      />
+      <ContentobjectRow component-type="nbsap" :components="referencedNbsaps" />
     </ClientOnly>
-
   </article>
 </template>

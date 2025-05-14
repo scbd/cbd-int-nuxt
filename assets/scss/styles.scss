@@ -24,10 +24,6 @@
 }
 
 body {
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
-
   // Default
   font-size: 18px;
   font-family: "Noto Sans", sans-serif;
@@ -67,6 +63,10 @@ h1 {
 h2 {
   font-size: 1.67rem;
   line-height: 1.25;
+}
+
+p + h2 {
+  margin-top: 1.5rem;
 }
 
 .cbd-list {
@@ -299,16 +299,6 @@ h2 {
 }
 
 @media (max-width: 539px) {
-  .cus-hero {
-    .featured-item {
-      .featured-information {
-        .featured-description {
-          font-size: 1.167rem;
-        }
-      }
-    }
-  }
-
   .protocol-subnavigation {
     .nav {
       width: 100%;
