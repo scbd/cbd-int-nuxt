@@ -5,6 +5,14 @@ export default function contentParser(content: string = "") {
     content: new DOMParser().parseFromString(content, "text/html"),
   };
 
+  // Columns
+  const columnWrappers =
+    convertedContent.content.querySelectorAll(".wp-block-columns");
+
+  for (const columnWrapper of columnWrappers) {
+    columnWrapper.classList.add("d-flex");
+  }
+
   // Images
   const images = convertedContent.content.querySelectorAll("img");
 

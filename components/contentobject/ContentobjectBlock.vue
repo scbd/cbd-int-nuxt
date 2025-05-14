@@ -20,7 +20,6 @@ const handlerMissingImage = (component: componentSanitized) => {
       return imgSrc.replace(`-${language}.pdf`, ".jpg");
     }
   }
-  console.log(`${imgSrc}.jpg`);
   return `${imgSrc}.jpg`;
 };
 
