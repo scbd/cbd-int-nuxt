@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import type {
-  componentSanitized,
-  availableLanguages,
-} from "~/types/components";
-import type { fetchedMenuItem } from "~/types/drupalMenu";
+import type { componentSanitized } from "~/types/components";
 import type { page } from "~/types/page";
-
 const props = defineProps<{
   content?: componentSanitized[];
   page?: page;
-  submenuItems?: fetchedMenuItem[];
 }>();
 
 const route = useRoute();
@@ -45,78 +39,21 @@ if (props.submenuItems) {
       <li class="breadcrumb-item">
         <NuxtLink to="/"> Home </NuxtLink>
       </li>
+      <li v-for="(step, index) in routeArray" class="breadcrumb-item">
+        <a :href="route.fullPath.replace(step[index - 1], '')">{{ step }}</a>
+      </li>
 
-      <template v-if="pathItems.level2">
-        <li v-if="pathItems.level2.children" class="breadcrumb-item">
-          <NuxtLink
-            :to="
-              pathItems.level2.link !== '<nolink>' ? pathItems.level2.link : ''
-            "
-            >{{ pathItems.level2.title }}</NuxtLink
-          >
-        </li>
-        <li v-else class="breadcrumb-item active" aria-current="page">
-          {{ pathItems.level2.title }}
-        </li>
+      <li v-if="page" class="breadcrumb-item active" aria-current="page">
+        {{ page.title }}
+      </li>
 
-        <li v-if="pathItems.level3 && pathItems.level4" class="breadcrumb-item">
-          <NuxtLink
-            :to="
-              pathItems.level3.link !== '<nolink>' ? pathItems.level3.link : ''
-            "
-            >{{ pathItems.level3.title }}</NuxtLink
-          >
-        </li>
-        <li
-          v-else-if="pathItems.level3 && !pathItems.level4"
-          class="breadcrumb-item active"
-          aria-current="page"
-        >
-          {{ pathItems.level3.title }}
-        </li>
-
-        <li
-          v-if="pathItems.level4"
-          class="breadcrumb-item active"
-          aria-current="page"
-        >
-          {{ pathItems.level4.title }}
-        </li>
-      </template>
-      <template v-else>
-        <template v-for="(step, index) in routeArray">
-          <li
-            v-if="step !== routeArray[routeArray.length - 1]"
-            class="breadcrumb-item"
-          >
-            <NuxtLink :to="`/${routeArray.slice(0, index + 1).join('/')}`">{{
-              step
-            }}</NuxtLink>
-          </li>
-        </template>
-
-        <li v-if="page" class="breadcrumb-item active" aria-current="page">
-          {{ page.title }}
-        </li>
-        <li
-          v-else
-          v-for="crumbs in content"
-          class="breadcrumb-item active"
-          aria-current="page"
-        >
-          <template v-if="crumbs.type === 'article'">
-            {{ crumbs.title }}
-          </template>
-          <template v-else>
-            {{
-              crumbs.symbol ??
-              (crumbs.title as availableLanguages)[
-                activeLanguage!.active_language.slice(0, 2)
-              ]
-            }}
-          </template>
-        </li>
-      </template>
+      <li
+        v-for="crumbs in content"
+        class="breadcrumb-item active"
+        aria-current="page"
+      >
+        {{ crumbs.title }}
+      </li>
     </ol>
   </nav>
 </template>

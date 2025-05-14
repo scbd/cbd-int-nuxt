@@ -53,9 +53,8 @@ export default async function getPages(pageParamaters: pageParamaters) {
             url: pageRaw.data.attributes.path.alias,
             date_created: new Date(pageRaw.data.attributes.created),
             date_edited: new Date(pageRaw.data.attributes.changed),
-            content: pageRaw.data.attributes.body.processed,
+            content: contentParser(pageRaw.data.attributes.body.processed),
             summary: pageRaw.data.attributes.body.summary ?? "",
-            field_menu: pageRaw.data.attributes.field_menu ?? "",
           };
           referencedPage.value = page;
           pageStatus.value.status = "OK";

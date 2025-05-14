@@ -9,7 +9,6 @@ export interface page {
   date_edited: Date;
   content: string;
   summary: string;
-  field_menu: string;
 }
 
 export interface pageParamaters {
@@ -39,7 +38,6 @@ export interface pageRaw {
         processed: string;
         summary: string;
       };
-      field_menu: string;
     };
   };
 }
