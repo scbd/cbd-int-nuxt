@@ -59,6 +59,9 @@ h1 {
   line-height: 1.5;
   margin-bottom: 1rem;
 }
+.rendered-content h1 {
+  margin-top: 1rem;
+}
 
 h2 {
   font-size: 1.67rem;
@@ -228,6 +231,10 @@ p + h2 {
         }
       }
     }
+  }
+
+  .wp-block-columns {
+    flex-direction: column;
   }
 
   html:dir(rtl) {
