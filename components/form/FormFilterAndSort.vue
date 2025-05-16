@@ -1,4 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { searchParams } from "~/types/components";
+import getComponents from "~/composables/componentApi";
+
+const { getNotifications } = getComponents();
+
+const props = defineProps<{
+  searchParams: searchParams;
+}>();
+
+const searchHandler = async () => {
+  await getNotifications(props.searchParams);
+};
+</script>
 <template>
   <div class="filter-and-sort-wrapper container-fluid">
     <button
@@ -25,7 +38,7 @@
       <div class="filter-row row">
         <div class="form_section-header">Filter</div>
         <div class="form_section-options">
-          <select name="" id="" class="form-select">
+          <!-- <select name="" id="" class="form-select">
             <option value="" selected disabled>Sector</option>
             <option value="">CBD</option>
             <option value="">Cartagena Protocol</option>
@@ -43,6 +56,23 @@
             <option value="">Option 1</option>
             <option value="">Option 2</option>
             <option value="">Option 3</option>
+          </select> -->
+          <select name="" id="" class="form-select">
+            <option value="" selected disabled>Year</option>
+            <template
+              v-for="year of [
+                ...Array(new Date().getFullYear() + 1).keys(),
+              ].slice(1991)"
+            >
+              <option
+                :value="year"
+                @select="
+                  searchParams.q = `schema_s:notification AND symbol_s:${year}-*`
+                "
+              >
+                {{ year }}
+              </option>
+            </template>
           </select>
         </div>
       </div>
@@ -76,7 +106,12 @@
           </div>
         </div>
       </div>
-      <input class="btn cbd-btn-primary" type="submit" value="Search" />
+      <input
+        class="btn cbd-btn-primary"
+        type="submit"
+        value="Search"
+        @submit="searchHandler()"
+      />
     </form>
   </div>
 </template>

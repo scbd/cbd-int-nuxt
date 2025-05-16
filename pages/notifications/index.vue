@@ -20,12 +20,13 @@ const notificationsParams: searchParams = {
     "title_??_s",
     "themes_??_ss",
     "fulltext_??_s",
+    "files_ss",
   ],
   sort: {
     params: "date_s",
     direction: "desc",
   },
-  rows: 4,
+  rows: 20,
 };
 
 await getNotifications(notificationsParams);
@@ -41,7 +42,7 @@ definePageMeta({
       <p>Search Criteria</p>
     </section>
     <section>
-      <FormFilterAndSort />
+      <FormFilterAndSort :search-params="notificationsParams" />
     </section>
 
     <ClientOnly>

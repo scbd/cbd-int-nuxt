@@ -243,7 +243,7 @@ export default function getComponents() {
 
   const getNotifications = async (searchParameters: searchParams) => {
     const params = new URLSearchParams({
-      q: "schema_s:notification",
+      q: searchParameters.q,
       fl: searchParameters.fl?.toString() || "",
       sort: searchParameters.sort?.params
         ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
@@ -302,6 +302,7 @@ export default function getComponents() {
             ru: rawData.fulltext_RU_s,
             zh: rawData.fulltext_ZH_s,
           },
+          files: JSON.parse(rawData.files_ss?.[0] ?? "{}"),
         })
       );
 

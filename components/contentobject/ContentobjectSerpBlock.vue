@@ -107,23 +107,38 @@ const objectLocation = (
             }}
           </div>
         </div>
-        <div class="files">
-          <div class="files-title">Files</div>
-          <div class="files-available">
-            <a href="#" class="btn"
-              ><img
-                src="/images/icons/icon_file-pdf.svg"
-                alt="Download PDF Document"
-            /></a>
-            <a href="#" class="btn"
-              ><img
-                src="/images/icons/icon_file-doc.svg"
-                alt="Download DOC Document"
-            /></a>
+        <template v-if="component.files?.length">
+          <div class="files">
+            <div class="files-title">Files</div>
+            <div class="files-available">
+              <NuxtLink
+                v-for="file in component.files"
+                v-show="
+                  file.language === activeLanguage!.active_language.slice(0, 2)
+                "
+                class="btn"
+                target="_blank"
+                :to="file.url"
+              >
+                <img
+                  v-show="file.type.includes('pdf')"
+                  src="/images/icons/icon_file-pdf.svg"
+                  :alt="`Download ${component.title} Notification as a PDF Document`"
+                />
+                <img
+                  v-show="file.type.includes('doc')"
+                  src="/images/icons/icon_file-pdf.svg"
+                  :alt="`Download ${component.title} Notification as a DOC Document`"
+                />
+              </NuxtLink>
+            </div>
           </div>
-        </div>
+        </template>
         <div class="read-on-wrapper">
-          <NuxtLink :to="component.url" class="btn cbd-btn-more-content"
+          <NuxtLink
+            :to="component.url"
+            :notification="component"
+            class="btn cbd-btn-more-content"
             >View {{ component.type }}</NuxtLink
           >
         </div>

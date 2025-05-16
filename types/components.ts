@@ -74,6 +74,12 @@ interface componentNotification extends componentBase {
   recipient?: string[];
   themes?: availableLanguages;
   fulltext?: availableLanguages;
+  files?: {
+    type: string;
+    language: string;
+    url: string;
+    name: string;
+  }[];
 }
 
 interface componentStatement extends componentBase {}
@@ -178,6 +184,7 @@ export interface componentNotificationRaw {
   fulltext_FR_s: string;
   fulltext_RU_s: string;
   fulltext_ZH_s: string;
+  files_ss?: string[];
 }
 
 export interface componentMeetingRaw {

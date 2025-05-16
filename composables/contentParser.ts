@@ -1,8 +1,25 @@
 export default function contentParser(content: string = "") {
   const config = useRuntimeConfig();
 
+  // Paragraphs
+  content = `<p>${content}</p>`;
+  const paragraphs = new RegExp("\\r\\n\\r\\n", "g");
+  const urlRegex = new RegExp(
+    "^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*",
+    "g"
+  );
+  const fileRegex = new RegExp(
+    "^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*([\w-]+)(\.\w+)+(?!.*(\w+)(\.\w+)+)",
+    "g"
+  );
+
+  const modifiedContent = new DOMParser().parseFromString(
+    content.replaceAll(paragraphs, "</p><p>"),
+    "text/html"
+  );
+
   const convertedContent = {
-    content: new DOMParser().parseFromString(content, "text/html"),
+    content: modifiedContent,
   };
 
   // Columns
