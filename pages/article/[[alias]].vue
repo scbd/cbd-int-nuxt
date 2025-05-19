@@ -14,12 +14,13 @@ const articleParams: searchParams = {
 
 await getArticles(articleParams);
 
-watch(activeLanguage, async () => {
-  await getArticles(articleParams);
-});
-
 definePageMeta({
   layout: "content",
+  pageType: "componentArticle",
+});
+
+watch(activeLanguage, async () => {
+  await getArticles(articleParams);
 });
 </script>
 <template>

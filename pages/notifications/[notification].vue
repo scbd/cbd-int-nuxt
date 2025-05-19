@@ -41,6 +41,7 @@ await getNotifications(notificationsParams);
 
 definePageMeta({
   layout: "content",
+  pageType: "componentNotification",
 });
 </script>
 <template>
