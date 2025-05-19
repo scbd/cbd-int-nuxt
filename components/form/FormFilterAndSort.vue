@@ -8,8 +8,13 @@ const props = defineProps<{
   searchParams: searchParams;
 }>();
 
+const params = ref<searchParams>(props.searchParams);
+const selected = ref(new Date().getFullYear());
+
 const searchHandler = async () => {
-  await getNotifications(props.searchParams);
+  params.value.q = `schema_s:notification AND symbol_s:${selected.value}-*`;
+  console.log(params.value);
+  await getNotifications(params.value);
 };
 </script>
 <template>
@@ -57,18 +62,15 @@ const searchHandler = async () => {
             <option value="">Option 2</option>
             <option value="">Option 3</option>
           </select> -->
-          <select name="" id="" class="form-select">
-            <option value="" selected disabled>Year</option>
+          <select v-model="selected" name="" id="" class="form-select">
             <template
-              v-for="year of [
-                ...Array(new Date().getFullYear() + 1).keys(),
-              ].slice(1991)"
+              v-for="year of [...Array(new Date().getFullYear() + 1).keys()]
+                .slice(1991)
+                .reverse()"
             >
               <option
                 :value="year"
-                @select="
-                  searchParams.q = `schema_s:notification AND symbol_s:${year}-*`
-                "
+                :selected="year === new Date().getFullYear() ? true : false"
               >
                 {{ year }}
               </option>
@@ -106,12 +108,13 @@ const searchHandler = async () => {
           </div>
         </div>
       </div>
-      <input
+      <button
         class="btn cbd-btn-primary"
-        type="submit"
-        value="Search"
-        @submit="searchHandler()"
-      />
+        type="button"
+        @click="searchHandler()"
+      >
+        Search
+      </button>
     </form>
   </div>
 </template>
