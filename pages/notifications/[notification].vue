@@ -30,10 +30,7 @@ const notificationsParams: searchParams = {
     "fulltext_??_s",
     "files_ss",
   ],
-  sort: {
-    params: "date_s",
-    direction: "desc",
-  },
+  sort: ["date_s desc"],
   rows: 1,
 };
 

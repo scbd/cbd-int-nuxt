@@ -76,7 +76,7 @@ export default function getComponents() {
 
     const params = new URLSearchParams({
       "page[limit]": searchParameters.rows.toString(),
-      sort: `${searchParameters.sort?.direction === "desc" ? "-" : ""}${searchParameters.sort?.params ?? "created"}`,
+      sort: `${searchParameters.sort ? searchParameters.sort : "-created"}`,
     });
 
     try {
@@ -172,8 +172,8 @@ export default function getComponents() {
     const params = new URLSearchParams({
       q: "schema_s:meeting",
       fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
+      sort: searchParameters.sort
+        ? searchParameters.sort?.flat().join(", ")
         : "abs(ms(startDate_dt,NOW)) asc",
       rows: (searchParameters.rows || 4).toString(),
     });
@@ -245,8 +245,8 @@ export default function getComponents() {
     const params = new URLSearchParams({
       q: searchParameters.q,
       fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
+      sort: searchParameters.sort
+        ? searchParameters.sort?.flat().join(", ")
         : "abs(ms(startDate_dt,NOW)) asc",
       rows: (searchParameters.rows || 4).toString(),
     });
@@ -324,8 +324,8 @@ export default function getComponents() {
     const params = new URLSearchParams({
       q: "schema_s:statement",
       fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
+      sort: searchParameters.sort
+        ? searchParameters.sort?.flat().join(", ")
         : "abs(ms(startDate_dt,NOW)) asc",
       rows: (searchParameters.rows || 4).toString(),
     });
@@ -430,9 +430,9 @@ export default function getComponents() {
     const params = new URLSearchParams({
       q: "schema_s:nbsap",
       fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
-        : "abs(ms(submittedDate_s,NOW)) asc",
+      sort: searchParameters.sort
+        ? searchParameters.sort?.flat().join(", ")
+        : "abs(ms(startDate_dt,NOW)) asc",
       rows: (searchParameters.rows || 4).toString(),
     });
 

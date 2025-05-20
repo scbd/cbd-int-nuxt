@@ -17,10 +17,7 @@ export interface availableLanguages {
 export interface searchParams {
   q: string;
   fl?: string | string[];
-  sort?: {
-    params?: string;
-    direction?: string;
-  };
+  sort?: string[];
   rows: string | number;
   optional?: {
     status?: string;

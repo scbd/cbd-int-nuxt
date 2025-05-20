@@ -8,13 +8,66 @@ const props = defineProps<{
   searchParams: searchParams;
 }>();
 
-const params = ref<searchParams>(props.searchParams);
-const selected = ref(new Date().getFullYear());
+const inputFilterTitle = ref<string>();
+const inputFilterReference = ref<string>();
+const selectFilterYear = ref<number>(new Date().getFullYear());
+const selectSortName = ref<string>("asc");
+const selectSortDate = ref<string>("desc");
 
 const searchHandler = async () => {
-  params.value.q = `schema_s:notification AND symbol_s:${selected.value}-*`;
-  console.log(params.value);
-  await getNotifications(params.value);
+  let paramQuery = props.searchParams.q;
+  let paramSort = [];
+
+  if (selectFilterYear.value) {
+    paramQuery = `${props.searchParams.q} AND symbol_s:${selectFilterYear.value}-*`;
+  }
+
+  if (inputFilterTitle.value) {
+    const titles: string[] = inputFilterTitle.value.split(" ");
+    paramQuery = `${paramQuery} AND title_${activeLanguage.value!.active_language.slice(0, 2).toUpperCase()}_s:(`;
+
+    for await (const title of titles) {
+      if (title !== titles[titles.length - 1]) {
+        paramQuery = `${paramQuery}*${title}* AND `;
+      } else {
+        paramQuery = `${paramQuery}*${title}*`;
+      }
+    }
+    paramQuery = `${paramQuery})`;
+  }
+  if (inputFilterReference.value) {
+    const references: string[] = inputFilterReference.value.split(" ");
+    paramQuery = `${paramQuery} AND reference_s:(`;
+    for await (const reference of references) {
+      if (reference !== references[references.length - 1]) {
+        paramQuery = `${paramQuery}*${reference}* AND `;
+      } else {
+        paramQuery = `${paramQuery}*${reference}*`;
+      }
+    }
+    paramQuery = `${paramQuery})`;
+  }
+  const params: searchParams = {
+    q: paramQuery,
+    fl: props.searchParams.fl,
+    rows: props.searchParams.rows,
+  };
+
+  if (selectSortDate.value) {
+    paramSort?.push(`date_s ${selectSortDate.value}`);
+  }
+
+  if (selectSortName.value) {
+    paramSort?.push(
+      `title_${activeLanguage.value!.active_language.slice(0, 2).toUpperCase()}_s ${selectSortDate.value}`
+    );
+  }
+
+  params.q = paramQuery;
+  params.sort = paramSort;
+
+  console.log(params);
+  await getNotifications(params);
 };
 </script>
 <template>
@@ -33,11 +86,21 @@ const searchHandler = async () => {
     <form action="#" id="searchForm" class="filter-and-sort-form collapse show">
       <label for="fsTitle">
         Title Contains
-        <input id="fsTitle" type="text" class="form-control" />
+        <input
+          v-model="inputFilterTitle"
+          id="fsTitle"
+          type="text"
+          class="form-control"
+        />
       </label>
-      <label for="fsKeywords">
-        Keywords
-        <input id="fsKeywords" type="text" class="form-control" />
+      <label for="fsReference">
+        Reference
+        <input
+          v-model="inputFilterReference"
+          id="fsReference"
+          type="text"
+          class="form-control"
+        />
       </label>
 
       <div class="filter-row row">
@@ -62,7 +125,7 @@ const searchHandler = async () => {
             <option value="">Option 2</option>
             <option value="">Option 3</option>
           </select> -->
-          <select v-model="selected" name="" id="" class="form-select">
+          <select v-model="selectFilterYear" name="" id="" class="form-select">
             <template
               v-for="year of [...Array(new Date().getFullYear() + 1).keys()]
                 .slice(1991)
@@ -80,30 +143,45 @@ const searchHandler = async () => {
       </div>
 
       <div class="filter-row row">
-        <div class="form_section-options column">
+        <!-- <div class="form_section-options column">
           <label class="form_section-header" for="fsLanguage">Language</label>
           <select name="fsLanguage" id="fsLanguage" class="form-select">
-            <option value="" selected>English</option>
-            <option value="">Arabic</option>
-            <option value="">Chinese</option>
-            <option value="">French</option>
-            <option value="">Russian</option>
-            <option value="">Spanish</option>
+            <ClientOnly>
+              <option
+                v-for="language in languages"
+                :value="language.langCode"
+                :selected="
+                  language.langCode === activeLanguage!.active_language
+                    ? true
+                    : false
+                "
+              >
+                {{ language.label }}
+              </option>
+            </ClientOnly>
           </select>
-        </div>
+        </div> -->
 
         <div class="form_section-options column">
           <div class="form_section-header">Sort</div>
           <div class="form_section-options">
-            <select class="form-select">
-              <option value="" selected disabled>Name</option>
-              <option value="">Name ASC</option>
-              <option value="">Name DSC</option>
+            <select
+              v-model="selectSortName"
+              id="sortName"
+              name="sortName"
+              class="form-select"
+            >
+              <option value="asc" selected>Name ASC</option>
+              <option value="desc">Name DSC</option>
             </select>
-            <select class="form-select">
-              <option value="" selected disabled>Date</option>
-              <option value="">Date ASC</option>
-              <option value="">Date DSC</option>
+            <select
+              v-model="selectSortDate"
+              id="sortDate"
+              name="sortDate"
+              class="form-select"
+            >
+              <option value="asc" selected>Date ASC</option>
+              <option value="desc" selec>Date DSC</option>
             </select>
           </div>
         </div>
