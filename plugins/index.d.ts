@@ -5,6 +5,7 @@ declare module "#app" {
       | "componentArticle"
       | "componentGbf"
       | "componentMeeting"
+      | "componentNbsap"
       | "componentNotification"
       | "componentStatement"
       | "componentPortal";

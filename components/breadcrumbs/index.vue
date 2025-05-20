@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { componentSanitized } from "~/types/components";
+import type {
+  componentSanitized,
+  availableLanguages,
+} from "~/types/components";
 import type { page } from "~/types/page";
 const props = defineProps<{
   content?: componentSanitized[];
@@ -17,7 +20,9 @@ const routeArray = route.fullPath.split("/").slice(1, -1);
         <NuxtLink to="/"> Home </NuxtLink>
       </li>
       <li v-for="(step, index) in routeArray" class="breadcrumb-item">
-        <a :href="route.fullPath.replace(step[index - 1], '')">{{ step }}</a>
+        <NuxtLink :to="`/${routeArray.slice(0, index + 1).join('/')}`">{{
+          step
+        }}</NuxtLink>
       </li>
 
       <li v-if="page" class="breadcrumb-item active" aria-current="page">
@@ -25,11 +30,17 @@ const routeArray = route.fullPath.split("/").slice(1, -1);
       </li>
 
       <li
+        v-if="content"
         v-for="crumbs in content"
         class="breadcrumb-item active"
         aria-current="page"
       >
-        {{ crumbs.title }}
+        {{
+          crumbs.symbol ??
+          (crumbs.title as availableLanguages)[
+            activeLanguage!.active_language.slice(0, 2)
+          ]
+        }}
       </li>
     </ol>
   </nav>

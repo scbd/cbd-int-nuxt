@@ -10,17 +10,24 @@ const route = useRoute();
         <NavigationMegamenu />
       </nav>
     </header>
-    {{ route.meta.componentType }}
     <ClientOnly>
-      <template
-        v-if="
-          route.meta.pageType === 'page' ||
-          route.meta.pageType === 'componentMeeting' ||
-          route.meta.pageType === 'componentNotification' ||
-          route.meta.pageType === 'componentStatement'
-        "
-      >
+      <template v-if="route.meta.pageType === 'page'">
         <Breadcrumbs :page="referencedPage" />
+      </template>
+      <template v-else-if="route.meta.pageType === 'componentMeeting'">
+        <Breadcrumbs :content="referencedMeetings" />
+      </template>
+      <template v-else-if="route.meta.pageType === 'componentNotification'">
+        <Breadcrumbs :content="referencedNotifications" />
+      </template>
+      <template v-else-if="route.meta.pageType === 'componentStatement'">
+        <Breadcrumbs :content="referencedStatements" />
+      </template>
+      <template v-else-if="route.meta.pageType === 'componentNbsap'">
+        <Breadcrumbs :content="referencedNbsaps" />
+      </template>
+      <template v-else-if="route.meta.pageType === 'componentPortal'">
+        <Breadcrumbs :content="referencedPortals" />
       </template>
       <template v-else-if="route.meta.pageType === 'componentArticle'">
         <Breadcrumbs :content="referencedArticles" />

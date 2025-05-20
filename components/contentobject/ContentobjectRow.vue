@@ -48,7 +48,7 @@ const props = defineProps<{
         />
       </div>
       <NuxtLink
-        to="#"
+        :to="`/${componentType}s`"
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
       >
