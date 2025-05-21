@@ -14,13 +14,28 @@ const selectFilterYear = ref<number>(0);
 const selectSortName = ref<string>("asc");
 const selectSortDate = ref<string>("desc");
 
+const query: { title?: string; year: number; recipient?: string } = {
+  year: 0,
+};
+const displayQuery = ref(query);
+
+if (props.searchParams.q.includes("recipient_ss")) {
+  displayQuery.value.recipient = props.searchParams.q.substring(
+    props.searchParams.q.indexOf("*") + 1,
+    props.searchParams.q.lastIndexOf("*")
+  );
+}
+
 const searchHandler = async () => {
   let paramQuery = `schema_s:notification`;
-  console.log(`INPUT ${paramQuery}`);
   let paramSort = [];
+
+  displayQuery.value.recipient = "";
 
   if (selectFilterYear.value > 0) {
     paramQuery = `${paramQuery} AND date_s:(${selectFilterYear.value}*)`;
+
+    displayQuery.value.year = selectFilterYear.value;
   }
 
   if (inputFilterTitle.value) {
@@ -35,6 +50,8 @@ const searchHandler = async () => {
       }
     }
     paramQuery = `${paramQuery})`;
+
+    displayQuery.value.title = inputFilterTitle.value;
   }
   if (inputFilterReference.value) {
     const references: string[] = inputFilterReference.value.split(" ");
@@ -63,8 +80,6 @@ const searchHandler = async () => {
       `title_${activeLanguage.value!.active_language.slice(0, 2).toUpperCase()}_s ${selectSortDate.value}`
     );
   }
-
-  console.log(`OUTPUT ${paramQuery}`);
 
   params.q = paramQuery;
   params.sort = paramSort;
@@ -178,5 +193,17 @@ const searchHandler = async () => {
         @click="searchHandler()"
       />
     </form>
+    <div class="search-terms">
+      <span class="fw-bold">Search Terms:</span>
+      <span v-show="displayQuery.title" class="badge bg-secondary">
+        Title contains - {{ displayQuery.title }}</span
+      >
+      <span v-show="displayQuery.year" class="badge bg-secondary">
+        Year - {{ displayQuery.year > 0 ? displayQuery.year : "Any" }}</span
+      >
+      <span v-show="displayQuery.recipient" class="badge bg-secondary">
+        Recipient - {{ displayQuery.recipient }}
+      </span>
+    </div>
   </div>
 </template>

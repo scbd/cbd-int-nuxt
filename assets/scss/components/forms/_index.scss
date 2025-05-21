@@ -2,6 +2,15 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+
+  .search-terms {
+    display: flex;
+    column-gap: 0.5rem;
+    .badge {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
 
 .filter-and-sort-form {

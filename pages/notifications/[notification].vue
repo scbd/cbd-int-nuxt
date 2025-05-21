@@ -130,7 +130,7 @@ definePageMeta({
                 :to="{
                   name: 'notifications',
                 }"
-                class="badge bg-secondary"
+                class="badge"
               >
                 {{ recipient }}
               </NuxtLink>
