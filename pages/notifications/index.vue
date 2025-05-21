@@ -7,7 +7,7 @@ const route = useRoute();
 const { getNotifications } = getComponents();
 
 const notificationsParams: searchParams = {
-  q: "schema_s:notification",
+  q: (route.meta.notificationQuery as string) ?? "schema_s:notification",
   fl: [
     "symbol_s",
     "date_s",
@@ -30,6 +30,7 @@ await getNotifications(notificationsParams);
 
 definePageMeta({
   layout: "serp",
+  acceptNotificationData: true,
 });
 </script>
 <template>

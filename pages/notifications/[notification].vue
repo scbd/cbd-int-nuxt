@@ -11,7 +11,7 @@ const { getNotifications } = getComponents();
 const route = useRoute();
 
 const props = defineProps<{
-  //   notification: componentSanitized;
+  notification?: componentSanitized;
 }>();
 
 const notificationsParams: searchParams = {
@@ -35,6 +35,33 @@ const notificationsParams: searchParams = {
 };
 
 await getNotifications(notificationsParams);
+
+const toNotificationsParams: searchParams = {
+  q: `schema_s:notification`,
+  fl: [
+    "symbol_s",
+    "date_s",
+    "actionDate_s",
+    "deadline_s",
+    "sender",
+    "reference_s",
+    "url_ss",
+    "recipient_ss",
+    "title_??_s",
+    "themes_??_ss",
+    "fulltext_??_s",
+    "files_ss",
+  ],
+  sort: ["date_s desc"],
+  rows: 1,
+};
+
+const router = useRouter();
+router.beforeEach(async (to) => {
+  if (to.meta.acceptNotificationData) {
+    to.meta.notificationQuery = toNotificationsParams.q;
+  }
+});
 
 definePageMeta({
   layout: "content",
@@ -93,9 +120,20 @@ definePageMeta({
             </div>
           </div>
           <div class="subjects-recipients">
-            <div v-show="notification.recipient">
+            <div v-show="notification.recipient" class="recipients">
               <span class="fw-bold">Recipient(s): </span>
-              {{ notification.recipient?.join(", ") }}
+              <NuxtLink
+                v-for="recipient of notification.recipient"
+                @click="
+                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:*${recipient}*`
+                "
+                :to="{
+                  name: 'notifications',
+                }"
+                class="badge bg-secondary"
+              >
+                {{ recipient }}
+              </NuxtLink>
             </div>
             <div
               v-show="

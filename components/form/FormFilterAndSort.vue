@@ -83,7 +83,12 @@ const searchHandler = async () => {
       Filter and Sort
     </button>
 
-    <form action="#" id="searchForm" class="filter-and-sort-form collapse show">
+    <form
+      @submit.prevent="null"
+      action="#"
+      id="searchForm"
+      class="filter-and-sort-form collapse show"
+    >
       <label for="fsTitle">
         Title Contains
         <input
@@ -93,7 +98,7 @@ const searchHandler = async () => {
           class="form-control"
         />
       </label>
-      <label for="fsReference">
+      <!-- <label for="fsReference">
         Reference
         <input
           v-model="inputFilterReference"
@@ -101,30 +106,11 @@ const searchHandler = async () => {
           type="text"
           class="form-control"
         />
-      </label>
+      </label> -->
 
       <div class="filter-row row">
         <div class="form_section-header">Filter</div>
         <div class="form_section-options">
-          <!-- <select name="" id="" class="form-select">
-            <option value="" selected disabled>Sector</option>
-            <option value="">CBD</option>
-            <option value="">Cartagena Protocol</option>
-            <option value="">Nagoya Protocol</option>
-            <option value="">Supplementary Protocol</option>
-          </select>
-          <select name="" id="" class="form-select">
-            <option value="" selected disabled>Subject</option>
-            <option value="">Subject 1</option>
-            <option value="">Subject 2</option>
-            <option value="">Subject 3</option>
-          </select>
-          <select name="" id="" class="form-select">
-            <option value="" selected disabled>Another Selection</option>
-            <option value="">Option 1</option>
-            <option value="">Option 2</option>
-            <option value="">Option 3</option>
-          </select> -->
           <select v-model="selectFilterYear" name="" id="" class="form-select">
             <template
               v-for="year of [...Array(new Date().getFullYear() + 1).keys()]
@@ -142,8 +128,8 @@ const searchHandler = async () => {
         </div>
       </div>
 
-      <div class="filter-row row">
-        <!-- <div class="form_section-options column">
+      <!-- <div class="filter-row row">
+        <div class="form_section-options column">
           <label class="form_section-header" for="fsLanguage">Language</label>
           <select name="fsLanguage" id="fsLanguage" class="form-select">
             <ClientOnly>
@@ -160,7 +146,7 @@ const searchHandler = async () => {
               </option>
             </ClientOnly>
           </select>
-        </div> -->
+        </div>
 
         <div class="form_section-options column">
           <div class="form_section-header">Sort</div>
@@ -185,14 +171,13 @@ const searchHandler = async () => {
             </select>
           </div>
         </div>
-      </div>
-      <button
+      </div> -->
+      <input
         class="btn cbd-btn-primary"
-        type="button"
+        type="submit"
+        value="Search"
         @click="searchHandler()"
-      >
-        Search
-      </button>
+      />
     </form>
   </div>
 </template>
