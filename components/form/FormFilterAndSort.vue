@@ -10,16 +10,17 @@ const props = defineProps<{
 
 const inputFilterTitle = ref<string>();
 const inputFilterReference = ref<string>();
-const selectFilterYear = ref<number>(new Date().getFullYear());
+const selectFilterYear = ref<number>(0);
 const selectSortName = ref<string>("asc");
 const selectSortDate = ref<string>("desc");
 
 const searchHandler = async () => {
-  let paramQuery = props.searchParams.q;
+  let paramQuery = `schema_s:notification`;
+  console.log(`INPUT ${paramQuery}`);
   let paramSort = [];
 
-  if (selectFilterYear.value) {
-    paramQuery = `${props.searchParams.q} AND symbol_s:${selectFilterYear.value}-*`;
+  if (selectFilterYear.value > 0) {
+    paramQuery = `${paramQuery} AND date_s:(${selectFilterYear.value}*)`;
   }
 
   if (inputFilterTitle.value) {
@@ -63,10 +64,11 @@ const searchHandler = async () => {
     );
   }
 
+  console.log(`OUTPUT ${paramQuery}`);
+
   params.q = paramQuery;
   params.sort = paramSort;
 
-  console.log(params);
   await getNotifications(params);
 };
 </script>
@@ -112,18 +114,15 @@ const searchHandler = async () => {
         <div class="form_section-header">Filter</div>
         <div class="form_section-options">
           <select v-model="selectFilterYear" name="" id="" class="form-select">
-            <template
+            <option :value="0" :selected="true">Any year</option>
+            <option
               v-for="year of [...Array(new Date().getFullYear() + 1).keys()]
                 .slice(1991)
                 .reverse()"
+              :value="year"
             >
-              <option
-                :value="year"
-                :selected="year === new Date().getFullYear() ? true : false"
-              >
-                {{ year }}
-              </option>
-            </template>
+              {{ year }}
+            </option>
           </select>
         </div>
       </div>
