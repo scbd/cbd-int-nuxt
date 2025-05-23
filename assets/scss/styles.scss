@@ -68,6 +68,14 @@ h2 {
   line-height: 1.25;
 }
 
+h1::first-letter,
+h2::first-letter,
+h3::first-letter,
+h4::first-letter,
+h5::first-letter {
+  text-transform: capitalize;
+}
+
 p + h2 {
   margin-top: 1.5rem;
 }
