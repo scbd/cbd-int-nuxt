@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const config = useRuntimeConfig();
 
-const handlerMissingImage = (component: componentSanitized) => {
+const handlerImage = (component: componentSanitized) => {
   const languages = ["ar", "en", "es", "fr", "ru", "zh"];
 
   let imgSrc = `${config.public.IMAGE_URL}/sites/default/files/${component.type}s${component.url?.slice(component.url?.lastIndexOf("/"))}`;
@@ -21,6 +21,11 @@ const handlerMissingImage = (component: componentSanitized) => {
     }
   }
   return `${imgSrc}.jpg`;
+};
+
+const handlerMissingImage = (event: Event) => {
+  const image: HTMLImageElement = event.target as HTMLImageElement;
+  image.src = "/images/content_replacement.svg";
 };
 
 const objectLocation = (
@@ -111,8 +116,8 @@ const objectLocation = (
       </div>
 
       <img
-        :src="handlerMissingImage(component)"
-        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        :src="handlerImage(component)"
+        @error="handlerMissingImage"
         class="content-image"
       />
 
@@ -181,8 +186,8 @@ const objectLocation = (
       </div>
 
       <img
-        :src="handlerMissingImage(component)"
-        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        :src="handlerImage(component)"
+        @error="handlerMissingImage"
         class="content-image"
       />
 
@@ -248,8 +253,8 @@ const objectLocation = (
       </div>
 
       <img
-        :src="handlerMissingImage(component)"
-        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        :src="handlerImage(component)"
+        @error="handlerMissingImage"
         class="content-image"
       />
 

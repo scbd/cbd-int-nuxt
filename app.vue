@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="body-replace">
+  <div>
     <NuxtRouteAnnouncer />
     <NuxtLayout></NuxtLayout>
   </div>

@@ -12,6 +12,7 @@ await getPages(params);
 
 definePageMeta({
   layout: "content",
+  pageType: "page",
 });
 </script>
 
