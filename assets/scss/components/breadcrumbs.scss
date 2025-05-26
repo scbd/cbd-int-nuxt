@@ -12,6 +12,13 @@
   }
 }
 
+.cus-article {
+  .breadcrumbs {
+    padding: 0;
+    background: transparent;
+  }
+}
+
 html:dir(rtl) {
   .breadcrumb-item + .breadcrumb-item::before {
     float: right;

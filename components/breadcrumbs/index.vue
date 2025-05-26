@@ -10,7 +10,9 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const routeArray = route.fullPath.split("/").slice(1, -1);
+const routeArray = route.fullPath
+  .split("/")
+  .filter((step) => step.trim() != "");
 </script>
 
 <template>
@@ -19,27 +21,37 @@ const routeArray = route.fullPath.split("/").slice(1, -1);
       <li class="breadcrumb-item">
         <NuxtLink to="/"> Home </NuxtLink>
       </li>
-      <li v-for="(step, index) in routeArray" class="breadcrumb-item">
-        <NuxtLink :to="`/${routeArray.slice(0, index + 1).join('/')}`">{{
-          step
-        }}</NuxtLink>
-      </li>
+      <template v-for="(step, index) in routeArray">
+        <li
+          v-if="step !== routeArray[routeArray.length - 1]"
+          class="breadcrumb-item"
+        >
+          <NuxtLink :to="`/${routeArray.slice(0, index + 1).join('/')}`">{{
+            step
+          }}</NuxtLink>
+        </li>
+      </template>
 
       <li v-if="page" class="breadcrumb-item active" aria-current="page">
         {{ page.title }}
       </li>
       <li
-        v-if="content"
+        v-else
         v-for="crumbs in content"
         class="breadcrumb-item active"
         aria-current="page"
       >
-        {{
-          crumbs.symbol ??
-          (crumbs.title as availableLanguages)[
-            activeLanguage!.active_language.slice(0, 2)
-          ]
-        }}
+        <template v-if="crumbs.type === 'article'">
+          {{ crumbs.title }}
+        </template>
+        <template v-else>
+          {{
+            crumbs.symbol ??
+            (crumbs.title as availableLanguages)[
+              activeLanguage!.active_language.slice(0, 2)
+            ]
+          }}
+        </template>
       </li>
     </ol>
   </nav>
