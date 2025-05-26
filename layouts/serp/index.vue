@@ -10,7 +10,6 @@
     </header>
 
     <main class="cus-main cus-serp d-flex flex-column" role="main">
-      <NavigationSubmenuHorizontal />
       <NuxtPage :page-key="(route) => route.fullPath" />
     </main>
     <Footer />
