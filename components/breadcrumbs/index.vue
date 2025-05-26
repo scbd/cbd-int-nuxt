@@ -10,27 +10,6 @@ const route = useRoute();
 const routeArray = route.fullPath
   .split("/")
   .filter((step) => step.trim() != "");
-
-const pathItems = ref<{
-  level1: number;
-  level2?: fetchedMenuItem;
-  level3?: fetchedMenuItem;
-  level4?: fetchedMenuItem;
-}>({ level1: 0 });
-
-if (props.submenuItems) {
-  for (const [level2Index, level2Item] of props.submenuItems.entries()) {
-    for (const [level3Index, level3Item] of level2Item.children.entries()) {
-      for (const [level4Index, level4Item] of level3Item.children.entries()) {
-        if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
-          pathItems.value.level2 = props.submenuItems[level2Index];
-          pathItems.value.level3 = level2Item.children[level3Index];
-          pathItems.value.level4 = level4Item;
-        }
-      }
-    }
-  }
-}
 </script>
 
 <template>
@@ -39,20 +18,38 @@ if (props.submenuItems) {
       <li class="breadcrumb-item">
         <NuxtLink to="/"> Home </NuxtLink>
       </li>
-      <li v-for="(step, index) in routeArray" class="breadcrumb-item">
-        <a :href="route.fullPath.replace(step[index - 1], '')">{{ step }}</a>
-      </li>
+      <template v-for="(step, index) in routeArray">
+        <li
+          v-if="step !== routeArray[routeArray.length - 1]"
+          class="breadcrumb-item"
+        >
+          <NuxtLink :to="`/${routeArray.slice(0, index + 1).join('/')}`">{{
+            step
+          }}</NuxtLink>
+        </li>
+      </template>
 
       <li v-if="page" class="breadcrumb-item active" aria-current="page">
         {{ page.title }}
       </li>
 
       <li
+        v-else
         v-for="crumbs in content"
         class="breadcrumb-item active"
         aria-current="page"
       >
-        {{ crumbs.title }}
+        <template v-if="crumbs.type === 'article'">
+          {{ crumbs.title }}
+        </template>
+        <template v-else>
+          {{
+            crumbs.symbol ??
+            (crumbs.title as availableLanguages)[
+              activeLanguage!.active_language.slice(0, 2)
+            ]
+          }}
+        </template>
       </li>
     </ol>
   </nav>
