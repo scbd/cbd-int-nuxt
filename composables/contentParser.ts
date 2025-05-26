@@ -1,31 +1,34 @@
-export default function contentParser(content: string = "") {
+export default function contentParser(
+  content: string = "",
+  contentObjectType: string = ""
+) {
   const config = useRuntimeConfig();
-
-  // Paragraphs
 
   const paragraphs = new RegExp("\\r\\n\\r\\n", "g");
 
-  const urlRegexp = /((https?|ftp):\/\/)[\w\/\-?=%.]+\.[a-zA-Z\/\-&?=%.]+/gi;
-  const emailRegexp =
-    /[a-z0-9!#$%&'*+\=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+  // const urlRegexp = /((https?|ftp):\/\/)[\w\/\-?=%.]+\.[a-zA-Z\/\-&?=%.]+/gi;
+  // const emailRegexp =
+  //   /[a-z0-9!#$%&'*+\=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
 
-  const urlArray = [...content.matchAll(urlRegexp)];
-  const emailArray = [...content.matchAll(emailRegexp)];
+  // const urlArray = [...content.matchAll(urlRegexp)];
+  // const emailArray = [...content.matchAll(emailRegexp)];
 
   content = `<p>${content}</p>`.replaceAll(paragraphs, "</p><p>");
 
-  for (const url of urlArray) {
-    content = content.replace(
-      url[0],
-      `<a href="${url[0]}" target="_blank">${url[0]}</a>`
-    );
-  }
-  for (const email of emailArray) {
-    content = content.replace(
-      email[0],
-      `<a href="mailto:${email[0]}" target="_blank">${email[0]}</a>`
-    );
-  }
+  // if (contentObjectType !== "page") {
+  //   for (const url of urlArray) {
+  //     content = content.replace(
+  //       url[0],
+  //       `<a href="${url[0]}" target="_blank">${url[0]}</a>`
+  //     );
+  //   }
+  //   for (const email of emailArray) {
+  //     content = content.replace(
+  //       email[0],
+  //       `<a href="mailto:${email[0]}" target="_blank">${email[0]}</a>`
+  //     );
+  //   }
+  // }
 
   const modifiedContent = new DOMParser().parseFromString(content, "text/html");
 

@@ -28,7 +28,10 @@ watch(activeLanguage, async () => {
     <article class="cus-article container-fluid d-flex flex-column">
       <ClientOnly>
         <template v-for="article in referencedArticles">
-          <section v-html="article.content" class="rendered-content"></section>
+          <section
+            v-html="contentParser(article.content)"
+            class="rendered-content"
+          ></section>
         </template>
       </ClientOnly>
     </article>
