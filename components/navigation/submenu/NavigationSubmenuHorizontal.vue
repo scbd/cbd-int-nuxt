@@ -4,30 +4,35 @@ import type { fetchedMenuItem } from "~/types/drupalMenu";
 const route = useRoute();
 
 const props = defineProps<{
-  submenuItems: fetchedMenuItem[];
-  submenuIndex: number;
+  submenuName: string;
 }>();
+await handlerSubmenuNavigation(props.submenuName);
+
+const submenuItems = ref<fetchedMenuItem[]>([]);
 
 const currentPath = route.path;
-const fullPath = route.fullPath;
-
-const displayChildren = ref<number>(props.submenuIndex);
-const itemSelected = ref<number>(props.submenuIndex);
+for await (const menuItem of submenu.value) {
+  for (const childItem of menuItem.children) {
+    if (currentPath.includes(childItem.link)) {
+      submenuItems.value.push(menuItem);
+    }
+  }
+}
 </script>
 <template>
   <div class="protocol-subnavigation accent-cbd">
     <nav class="navbar container-xxl">
       <ClientOnly>
-        <ul class="nav">
+        <ul class="nav" v-for="submenuItem in submenuItems">
           <div class="subnav-header">
-            <!-- <li class="nav-item selected">
-                <NuxtLink
-                  :to="submenuItem.link === '<nolink>' ? '' : submenuItem.link"
-                  class="nav-link"
-                >
-                  {{ submenuItem.title }}
-                </NuxtLink>
-              </li> -->
+            <li class="nav-item selected">
+              <NuxtLink
+                :to="submenuItem.link === '<nolink>' ? '' : submenuItem.link"
+                class="nav-link"
+              >
+                {{ submenuItem.title }}
+              </NuxtLink>
+            </li>
             <li class="nav-item">
               <button
                 class="btn cbd-btn-subnavigation"
@@ -53,20 +58,11 @@ const itemSelected = ref<number>(props.submenuIndex);
           </div>
           <div class="subnav-level-2-items collapse show" id="collapseSubnav">
             <li
-              v-for="(childItem, index) of submenu"
+              v-for="childItem of submenuItem.children"
               class="nav-item subnav-level-2-item"
-              :class="[
-                { show: childItem == submenu[itemSelected] },
-                { 'current-page': childItem == submenuItems[0] },
-              ]"
+              :class="route.path.includes(childItem.link) ? 'selected' : ''"
             >
-              <NuxtLink
-                :to="childItem.link === '<nolink>' ? '' : childItem.link"
-                class="nav-link"
-                @click="
-                  displayChildren = index;
-                  itemSelected = index;
-                "
+              <NuxtLink :to="childItem.link" class="nav-link"
                 >{{ childItem.title }}
               </NuxtLink>
               <ul
@@ -90,21 +86,6 @@ const itemSelected = ref<number>(props.submenuIndex);
               </ul>
             </li>
           </div>
-        </ul>
-        <ul class="subnav-level-3-items nav">
-          <li
-            v-for="(childItem, index) of submenu[displayChildren].children"
-            class="nav-item"
-            :class="[
-              {
-                'current-page': fullPath.includes(childItem.link),
-              },
-            ]"
-          >
-            <NuxtLink class="nav-link" :to="childItem.link">{{
-              childItem.title
-            }}</NuxtLink>
-          </li>
         </ul>
       </ClientOnly>
     </nav>
