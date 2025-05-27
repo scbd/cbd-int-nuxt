@@ -17,14 +17,14 @@ const fullPath = route.fullPath;
         <template v-for="submenuItem in submenuItems">
           <ul class="nav">
             <div class="subnav-header">
-              <li class="nav-item selected">
+              <!-- <li class="nav-item selected">
                 <NuxtLink
                   :to="submenuItem.link === '<nolink>' ? '' : submenuItem.link"
                   class="nav-link"
                 >
                   {{ submenuItem.title }}
                 </NuxtLink>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <button
                   class="btn cbd-btn-subnavigation"
@@ -50,11 +50,15 @@ const fullPath = route.fullPath;
             </div>
             <div class="subnav-level-2-items collapse show" id="collapseSubnav">
               <li
-                v-for="childItem of submenuItem.children"
+                v-for="childItem of submenu"
                 class="nav-item subnav-level-2-item"
-                :class="fullPath.includes(childItem.link) ? 'selected' : ''"
+                :class="
+                  childItem.title.includes(submenuItem.title) ? 'selected' : ''
+                "
               >
-                <NuxtLink :to="childItem.link" class="nav-link"
+                <NuxtLink
+                  :to="childItem.link === '<nolink>' ? '' : childItem.link"
+                  class="nav-link"
                   >{{ childItem.title }}
                 </NuxtLink>
                 <ul
@@ -77,19 +81,15 @@ const fullPath = route.fullPath;
             </div>
           </ul>
           <ul class="subnav-level-3-items nav">
-            <template v-for="childItem of submenuItem.children">
-              <li
-                v-for="grandchildItem of childItem.children"
-                class="nav-item"
-                :class="
-                  fullPath.includes(grandchildItem.link) ? 'selected' : ''
-                "
-              >
-                <NuxtLink class="nav-link" :to="grandchildItem.link">{{
-                  grandchildItem.title
-                }}</NuxtLink>
-              </li>
-            </template>
+            <li
+              v-for="childItem of submenuItem.children"
+              class="nav-item"
+              :class="fullPath.includes(childItem.link) ? 'selected' : ''"
+            >
+              <NuxtLink class="nav-link" :to="childItem.link">{{
+                childItem.title
+              }}</NuxtLink>
+            </li>
           </ul>
         </template>
       </ClientOnly>
