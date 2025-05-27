@@ -1,21 +1,13 @@
 .cus-main {
-    flex-grow: 2;
+  flex-grow: 2;
+  // display: flex;
+  // justify-content: center;
+  // row-gap: 2rem;
+
+  .main-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     row-gap: 2rem;
-
-    .region-content {
-        display: flex;
-        flex-direction: column;
-        row-gap: 2rem;
-
-        // Possibly temporary. Maybe (-n + 1)
-        [class*="componentcbd-int"]:nth-last-of-type(-n + 2) {
-
-            .content-row {
-                padding-bottom: 0;
-                box-shadow: none;
-            }
-        }
-    }
+  }
 }
