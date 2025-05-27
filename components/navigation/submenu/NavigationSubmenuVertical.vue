@@ -25,7 +25,7 @@ const handleVerticalNavigation = ref(false);
             v-if="fullPath.includes(level3Item.link)"
             class="aside-nav-header nav-item"
           >
-            <NuxtLink :to="level3Item.link">{{ level3Item.title }}</NuxtLink>
+            {{ level3Item.title }}
           </li>
           <li v-for="level4Item of level3Item.children" class="nav-item">
             <NuxtLink

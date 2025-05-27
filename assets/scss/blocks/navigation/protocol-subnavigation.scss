@@ -16,34 +16,18 @@
   .nav-item {
     .nav-link {
       color: var(--bs-body-color);
-      &.show {
-        cursor: default;
-      }
       &:hover {
-        color: var(--cbd-content-accent);
-      }
-      &:not([href]) {
-        cursor: pointer;
-      }
-    }
-    &.show {
-      .nav-link {
         color: var(--cbd-content-accent);
       }
     }
   }
 
-  .nav-item.current-page {
+  .nav-item.selected {
     background-color: var(--cbd-content-accent);
     .nav-link {
       color: var(--bs-tertiary-color);
       &:hover {
         color: var(--bs-tertiary-color);
-      }
-    }
-    &.show {
-      .nav-link {
-        cursor: default;
       }
     }
   }
@@ -53,7 +37,7 @@
     display: flex;
     column-gap: 0.5rem;
 
-    .nav-item:first-of-type:not(.current-page) {
+    .nav-item:first-of-type:not(.selected) {
       .nav-link {
         padding-left: 0;
       }
@@ -86,9 +70,8 @@
   .subnav-level-3-items {
     margin-top: 0.5rem;
     flex-direction: row;
-    justify-content: space-evenly;
     flex-wrap: nowrap;
-    .nav-item.current-page {
+    .nav-item.selected {
       background-color: transparent;
       .nav-link {
         color: var(--cbd-content-accent);
