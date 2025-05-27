@@ -1,33 +1,5 @@
 <script setup lang="ts">
-import type { fetchedMenuItem } from "~/types/drupalMenu";
-
 const route = useRoute();
-
-const submenuItems = ref<fetchedMenuItem[]>([]);
-
-if (referencedPage.value?.field_menu) {
-  await handlerSubmenuNavigation(referencedPage.value.field_menu);
-
-  const currentPath = route.path;
-  const fullPath = route.fullPath;
-
-  for await (const menuItem of submenu.value) {
-    for (const childItem of menuItem.children) {
-      if (currentPath.includes(childItem.link)) {
-        submenuItems.value.push(menuItem);
-      } else {
-        for (const grandchildItem of childItem.children) {
-          if (
-            currentPath.includes(grandchildItem.link) ||
-            fullPath.includes(grandchildItem.link)
-          ) {
-            submenuItems.value.push(menuItem);
-          }
-        }
-      }
-    }
-  }
-}
 </script>
 
 <template>
@@ -64,10 +36,6 @@ if (referencedPage.value?.field_menu) {
       :class="route.meta.pageType === 'page' ? 'cus-internal-page' : ''"
       role="main"
     >
-      <NavigationSubmenuHorizontal
-        v-if="referencedPage && route.fullPath.includes(referencedPage.url)"
-        :submenu-items="submenuItems"
-      />
       <NuxtPage :page-key="(route) => route.fullPath" />
     </main>
     <Footer />
