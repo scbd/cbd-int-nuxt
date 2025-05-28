@@ -13,7 +13,6 @@ import {
   type searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
-import contentParser from "~/composables/contentParser";
 
 export const referencedArticles = ref<componentSanitized[]>([]);
 export const articlesStatus = ref<componentStatus>({ status: "pending" });
@@ -150,7 +149,7 @@ export default function getComponents() {
             }
           }
 
-          article.content = contentParser(article.content);
+          article.content = article.content;
         }
 
         const articlesList: componentSanitized[] = dataMapped;

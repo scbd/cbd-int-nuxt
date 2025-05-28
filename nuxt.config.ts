@@ -8,7 +8,7 @@ export default defineNuxtConfig({
       cert: "./keys/localhost.pem",
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@nuxt/image"],
+  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@nuxt/image", 'nuxt-gtag'],
   i18n: {
     locales: [
       { code: 'ar', iso: 'ar-SA',  dir: 'rtl', file: 'ar.json' },
@@ -18,12 +18,14 @@ export default defineNuxtConfig({
       { code: 'ru', iso: 'ru-RU',              file: 'ru.json' },
       { code: 'zh', iso: 'zh-CN',              file: 'zh.json' },
     ],
-    defaultLocale: 'en',
-    detectBrowserLanguage : {
-      alwaysRedirect: true,
-      fallbackLocale: 'en'
+      defaultLocale: 'en',
+      detectBrowserLanguage : {
+          alwaysRedirect: true,
+          fallbackLocale: 'en'
     },
-    strategy: "prefix_and_default",
+  },
+  gtag: {
+    id: process.env.GTAG
   },
   runtimeConfig: {
     DRUPAL_CLIENT_SECRET: process.env.DRUPAL_CLIENT_SECRET,

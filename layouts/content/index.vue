@@ -11,10 +11,7 @@ const route = useRoute();
       </nav>
     </header>
     <ClientOnly>
-      <template v-if="route.meta.pageType === 'page'">
-        <Breadcrumbs :page="referencedPage" />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentMeeting'">
+      <template v-if="route.meta.pageType === 'componentMeeting'">
         <Breadcrumbs :content="referencedMeetings" />
       </template>
       <template v-else-if="route.meta.pageType === 'componentNotification'">
@@ -34,7 +31,11 @@ const route = useRoute();
         <HeroContent :article="referencedArticles" />
       </template>
     </ClientOnly>
-    <main class="cus-main d-flex flex-column" role="main">
+    <main
+      class="cus-main d-flex flex-column"
+      :class="route.meta.pageType === 'page' ? 'cus-internal-page' : ''"
+      role="main"
+    >
       <NuxtPage :page-key="(route) => route.fullPath" />
     </main>
     <Footer />

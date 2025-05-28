@@ -333,9 +333,10 @@ p + h2 {
       .nav-link {
         font-size: 1rem;
       }
-      .selected {
+      .show {
         .subnav-level-3-items {
           display: flex;
+          margin-top: 0;
           flex-direction: column;
           background-color: var(--bs-secondary-bg);
           box-shadow: 0 3px var(--cbd-content-accent);
@@ -343,8 +344,14 @@ p + h2 {
             &:not(:last-of-type) {
               box-shadow: 0 1px var(--bs-tertiary-bg);
             }
-            &.selected {
+            &.show {
               .nav-link {
+                color: var(--cbd-content-accent);
+              }
+            }
+            &.current-page {
+              .nav-link {
+                box-shadow: 0 1px var(--bs-tertiary-bg);
                 color: var(--cbd-content-accent);
               }
             }
@@ -356,6 +363,10 @@ p + h2 {
               }
             }
           }
+        }
+        &:not(.current-page) > .nav-link {
+          padding-bottom: 0.67rem;
+          box-shadow: 0 -3px inset var(--cbd-content-accent);
         }
       }
     }
