@@ -75,7 +75,7 @@ definePageMeta({
       <article class="cus-article container-fluid d-flex flex-column">
         <ClientOnly>
           <template v-if="route.meta.pageType === 'page'">
-            <Breadcrumbs :page="referencedPage" />
+            <Breadcrumbs :page="referencedPage" :submenu-items="submenuItems" />
           </template>
         </ClientOnly>
         <ClientOnly>
