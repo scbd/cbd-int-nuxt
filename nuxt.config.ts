@@ -9,6 +9,22 @@ export default defineNuxtConfig({
     },
   },
   modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@nuxt/image"],
+  i18n: {
+    locales: [
+      { code: 'ar', iso: 'ar-SA',  dir: 'rtl', file: 'ar.json' },
+      { code: 'en', iso: 'en-US',              file: 'en.json' },
+      { code: 'fr', iso: 'fr-FR',              file: 'fr.json' },
+      { code: 'es', iso: 'es-ES',              file: 'es.json' },
+      { code: 'ru', iso: 'ru-RU',              file: 'ru.json' },
+      { code: 'zh', iso: 'zh-CN',              file: 'zh.json' },
+    ],
+    defaultLocale: 'en',
+    detectBrowserLanguage : {
+      alwaysRedirect: true,
+      fallbackLocale: 'en'
+    },
+    strategy: "prefix_and_default",
+  },
   runtimeConfig: {
     DRUPAL_CLIENT_SECRET: process.env.DRUPAL_CLIENT_SECRET,
     public: {
