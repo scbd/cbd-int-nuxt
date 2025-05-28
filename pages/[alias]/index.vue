@@ -13,48 +13,35 @@ const params: pageParamaters = {
 const currentPath = route.path;
 const fullPath = route.fullPath;
 
-// await getPages(params).then(async (page) => {
-//   if (page?.field_menu) {
-//     await handlerSubmenuNavigation(page.field_menu).then(async (submenu) => {
-//       if (submenu) {
-//         for (const menuItem of submenu) {
-//           for (const childItem of menuItem.children) {
-//             if (currentPath.includes(childItem.link)) {
-//               submenuItems.value.push(menuItem);
-//             } else {
-//               for (const grandchildItem of childItem.children) {
-//                 if (
-//                   currentPath.includes(grandchildItem.link) ||
-//                   fullPath.includes(grandchildItem.link)
-//                 ) {
-//                   submenuItems.value.push(menuItem);
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     });
-//   }
-// });
+const displayChildren = ref<number>(0);
+const displayVerticalNav = ref<boolean>(false);
 
 await getPages(params);
 if (referencedPage.value) {
   await handlerSubmenuNavigation(referencedPage.value.field_menu);
   if (submenu.value.length > 0) {
-    for (const menuItem of submenu.value) {
-      for (const childItem of menuItem.children) {
-        if (currentPath.includes(childItem.link)) {
-          submenuItems.value.push(menuItem);
+    for (const [index, level2Item] of submenu.value.entries()) {
+      for (const level3Item of level2Item.children) {
+        if (currentPath.includes(level3Item.link)) {
+          submenuItems.value.push(level2Item);
+          displayChildren.value = index;
         } else {
-          for (const grandchildItem of childItem.children) {
+          for (const level4Item of level3Item.children) {
             if (
-              currentPath.includes(grandchildItem.link) ||
-              fullPath.includes(grandchildItem.link)
+              currentPath.includes(level4Item.link) ||
+              fullPath.includes(level4Item.link)
             ) {
-              submenuItems.value.push(menuItem);
+              submenuItems.value.push(level2Item);
+              displayChildren.value = index;
             }
           }
+        }
+        if (
+          currentPath.includes(level3Item.link) &&
+          level3Item.children.length > 0
+        ) {
+          displayChildren.value = index;
+          displayVerticalNav.value = true;
         }
       }
     }
@@ -72,13 +59,22 @@ definePageMeta({
       <NavigationSubmenuHorizontal
         v-if="referencedPage && route.fullPath.includes(referencedPage.url)"
         :submenu-items="submenuItems"
+        :submenu-index="displayChildren"
       />
     </ClientOnly>
+
     <div class="container-xxl d-flex">
+      <ClientOnly>
+        <NavigationSubmenuVertical
+          v-if="referencedPage && displayVerticalNav"
+          :submenu-items="submenuItems"
+        />
+      </ClientOnly>
+
       <article class="cus-article container-fluid d-flex flex-column">
         <ClientOnly>
           <template v-if="route.meta.pageType === 'page'">
-            <Breadcrumbs :page="referencedPage" />
+            <Breadcrumbs :page="referencedPage" :submenu-items="submenuItems" />
           </template>
         </ClientOnly>
         <ClientOnly>
