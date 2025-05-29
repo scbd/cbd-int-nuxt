@@ -33,6 +33,7 @@ export default defineNuxtConfig({
   gtag: {
     id: process.env.GTAG
   },
+  site: { indexable: false },
   runtimeConfig: {
     DRUPAL_CLIENT_SECRET: process.env.DRUPAL_CLIENT_SECRET,
     public: {

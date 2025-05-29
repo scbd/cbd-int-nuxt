@@ -50,7 +50,6 @@ if (referencedPage.value) {
 
 definePageMeta({
   layout: "content",
-  pageType: "page",
 });
 </script>
 
