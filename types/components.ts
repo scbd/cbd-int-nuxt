@@ -16,12 +16,10 @@ export interface availableLanguages {
 
 export interface searchParams {
   q: string;
+  rows: string | number;
   fl?: string | string[];
   sort?: string[];
-  rows: string | number;
-  optional?: {
-    status?: string;
-  };
+  status?: string;
 }
 
 export interface componentSanitized
