@@ -8,7 +8,13 @@ export default defineNuxtConfig({
       cert: "./keys/localhost.pem",
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@nuxt/image", 'nuxt-gtag'],
+  modules: [
+    "@pinia/nuxt",
+    "@nuxtjs/i18n",
+    "@nuxt/image",
+    'nuxt-gtag',
+    '@nuxtjs/robots',
+  ],
   i18n: {
     locales: [
       { code: 'ar', iso: 'ar-SA',  dir: 'rtl', file: 'ar.json' },
