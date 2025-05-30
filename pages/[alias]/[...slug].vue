@@ -52,6 +52,12 @@ definePageMeta({
   layout: "content",
   pageType: "page",
 });
+
+watch(activeLanguage.value, async () => {
+  if (referencedPage.value) {
+    await handlerSubmenuNavigation(referencedPage.value.field_menu);
+  }
+});
 </script>
 
 <template>

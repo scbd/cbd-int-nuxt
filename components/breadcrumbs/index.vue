@@ -18,20 +18,31 @@ const routeArray = route.fullPath
   .filter((step) => step.trim() != "");
 
 const pathItems = ref<{
-  level1: number;
   level2?: fetchedMenuItem;
   level3?: fetchedMenuItem;
   level4?: fetchedMenuItem;
-}>({ level1: 0 });
+}>({ level2: props.submenuItems?.[0] });
 
 if (props.submenuItems) {
   for (const [level2Index, level2Item] of props.submenuItems.entries()) {
-    for (const [level3Index, level3Item] of level2Item.children.entries()) {
-      for (const [level4Index, level4Item] of level3Item.children.entries()) {
-        if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
+    if (level2Item.link.includes(routeArray[routeArray.length - 1])) {
+      pathItems.value.level2 = props.submenuItems[level2Index];
+    } else {
+      for (const [level3Index, level3Item] of level2Item.children.entries()) {
+        if (level3Item.link.includes(routeArray[routeArray.length - 1])) {
           pathItems.value.level2 = props.submenuItems[level2Index];
           pathItems.value.level3 = level2Item.children[level3Index];
-          pathItems.value.level4 = level4Item;
+        } else {
+          for (const [
+            level4Index,
+            level4Item,
+          ] of level3Item.children.entries()) {
+            if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
+              pathItems.value.level2 = props.submenuItems[level2Index];
+              pathItems.value.level3 = level2Item.children[level3Index];
+              pathItems.value.level4 = level4Item;
+            }
+          }
         }
       }
     }
