@@ -19,7 +19,7 @@ const handleVerticalNavigation = ref(false);
     :class="{ 'aside-collapsed': handleVerticalNavigation }"
   >
     <ul class="nav">
-      <template v-for="level2Item of submenuItems">
+      <template v-for="level2Item of submenu">
         <template v-for="level3Item of level2Item.children">
           <li
             v-if="fullPath.includes(level3Item.link)"

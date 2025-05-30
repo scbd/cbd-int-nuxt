@@ -2,11 +2,11 @@
 @use "../bootstrap/dist/css/bootstrap.min.css";
 
 // Sub theme styling.
-@use "variables_drupal";
+@use "variables-drupal";
 
 // Bootstrap overridden variables.
 // @see https://getbootstrap.com/docs/5.2/customize/sass/#variable-defaults.
-@use "variables_bootstrap";
+@use "variables-bootstrap";
 
 // Imports
 @use "overrides";

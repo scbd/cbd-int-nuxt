@@ -137,7 +137,7 @@
     </div>
     <ClientOnly v-else>
       <Loader
-        :class="megamenuStatus.status === 'error' ? 'error-loader' : ''"
+        :class="[{ 'error-loader': megamenuStatus.status === 'error' }]"
       />
     </ClientOnly>
   </div>

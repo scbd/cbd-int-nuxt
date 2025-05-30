@@ -28,11 +28,7 @@ const handlerMissingImage = (event: Event) => {
   image.src = "/images/content_replacement.svg";
 };
 
-const objectLocation = (
-  language: string,
-  city: string | undefined,
-  country: string | undefined
-) => {
+const objectLocation = (language: string, city?: string, country?: string) => {
   if (language === "ar") {
     return `${city ?? ""}${city && country ? "،" : ""} ${country ?? ""}`;
   } else if (language === "zh-hans") {
@@ -48,11 +44,7 @@ const objectLocation = (
     <div
       v-if="articlesStatus.status === 'OK'"
       class="content-object"
-      :class="[
-        component.type,
-        // objectInfo?.source ? `accent-${objectInfo.source}` : 'accent-cbd',
-        'accent-cbd',
-      ]"
+      :class="[component.type, 'accent-cbd']"
     >
       <img
         :src="component.image_cover?.url ?? '/images/content_replacement.svg'"
@@ -62,8 +54,8 @@ const objectLocation = (
       />
       <div class="information">
         <div class="taxonomy">
-          <div class="source">{{ /*objectInfo?.source ??*/ "CBD" }}</div>
-          <div class="type">{{ /*objectInfo?.type ??*/ "Article" }}</div>
+          <div class="source">{{ "CBD" }}</div>
+          <div class="type">{{ "Article" }}</div>
         </div>
         <div class="date">
           {{
@@ -144,9 +136,6 @@ const objectLocation = (
           )
         }}
       </div>
-      <!-- <div v-show="objectDescription" class="description">
-        {{ objectDescription }}
-      </div> -->
       <div class="read-on-wrapper">
         <NuxtLink :to="component.url" class="read-on"
           >View {{ component.type }}</NuxtLink
@@ -230,11 +219,7 @@ const objectLocation = (
     />
   </template>
 
-  <div
-    v-else-if="component.type === 'gbf-target'"
-    class="content-object"
-    :class="/*`gbf-target-${objectGBFtarget?.number}`*/ ''"
-  ></div>
+  <div v-else-if="component.type === 'gbf-target'" class="content-object"></div>
 
   <template v-else-if="component.type === 'statement'">
     <div
