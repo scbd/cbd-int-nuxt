@@ -14,8 +14,12 @@
   }
 
   .nav-item {
+    transition: box-shadow 0.25s ease-in;
     .nav-link {
       color: var(--bs-body-color);
+      transition:
+        color 0.25s ease-in,
+        padding-top 0.25s ease-in;
       &.show {
         cursor: default;
       }
@@ -26,24 +30,25 @@
         cursor: pointer;
       }
     }
-    &.show {
+    &.current-page {
+      background-color: var(--cbd-content-accent);
       .nav-link {
-        color: var(--cbd-content-accent);
-      }
-    }
-  }
-
-  .nav-item.current-page {
-    background-color: var(--cbd-content-accent);
-    .nav-link {
-      color: var(--bs-tertiary-color);
-      &:hover {
         color: var(--bs-tertiary-color);
+        &:hover {
+          color: var(--bs-tertiary-color);
+        }
+      }
+      &.show {
+        .nav-link {
+          cursor: default;
+        }
       }
     }
-    &.show {
+    &.show:not(.current-page) {
+      box-shadow: 0 -0.167rem inset var(--cbd-content-accent);
       .nav-link {
-        cursor: default;
+        padding-top: 0.33rem;
+        color: var(--cbd-content-accent);
       }
     }
   }
