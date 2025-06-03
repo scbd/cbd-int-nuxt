@@ -91,7 +91,12 @@ const itemSelected = ref<number>(props.submenuIndex);
             </li>
           </div>
         </ul>
-        <ul class="subnav-level-3-items nav">
+        <ul
+          class="subnav-level-3-items nav"
+          :class="{
+            'item-overflow': submenu[displayChildren].children.length > 8,
+          }"
+        >
           <li
             v-for="(childItem, index) of submenu[displayChildren].children"
             class="nav-item"

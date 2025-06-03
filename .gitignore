@@ -19,7 +19,6 @@ logs
 .idea
 keys
 .vscode
-.gitignore
 package-lock.json
 
 # Local env files

@@ -10,8 +10,9 @@ const params: pageParamaters = {
   alias: route.path,
 };
 
-const currentPath = route.path;
-const fullPath = route.fullPath;
+const routeArray = route.fullPath
+  .split("/")
+  .filter((step) => step.trim() != "");
 
 const displayChildren = ref<number>(0);
 const displayVerticalNav = ref<boolean>(false);
@@ -20,30 +21,39 @@ await getPages(params);
 if (referencedPage.value) {
   await handlerSubmenuNavigation(referencedPage.value.field_menu);
   if (submenu.value.length > 0) {
-    for (const [index, level2Item] of submenu.value.entries()) {
-      for (const level3Item of level2Item.children) {
-        if (currentPath.includes(level3Item.link)) {
-          submenuItems.value.push(level2Item);
-          displayChildren.value = index;
-        } else {
-          for (const level4Item of level3Item.children) {
-            if (
-              currentPath.includes(level4Item.link) ||
-              fullPath.includes(level4Item.link)
-            ) {
-              submenuItems.value.push(level2Item);
-              displayChildren.value = index;
+    submenuItems.value.length = 0;
+    for await (const [level2Index, level2Item] of submenu.value.entries()) {
+      if (
+        level2Item.link.includes(routeArray[routeArray.length - 1]) ||
+        level2Item.title.includes(routeArray[routeArray.length - 1])
+      ) {
+        displayChildren.value = level2Index;
+      } else {
+        for (const level3Item of level2Item.children) {
+          if (
+            level3Item.link.includes(routeArray[routeArray.length - 1]) ||
+            level3Item.title.includes(routeArray[routeArray.length - 1])
+          ) {
+            submenuItems.value.push(level2Item);
+            displayChildren.value = level2Index;
+          } else {
+            for (const level4Item of level3Item.children) {
+              if (
+                level4Item.link.includes(routeArray[routeArray.length - 1]) ||
+                level4Item.title.includes(routeArray[routeArray.length - 1])
+              ) {
+                submenuItems.value.push(level2Item);
+                displayChildren.value = level2Index;
+                displayVerticalNav.value = true;
+              }
             }
           }
         }
-        if (
-          currentPath.includes(level3Item.link) &&
-          level3Item.children.length > 0
-        ) {
-          displayChildren.value = index;
-          displayVerticalNav.value = true;
-        }
       }
+    }
+
+    if (submenuItems.value.length === 0) {
+      submenuItems.value = [submenu.value[0]];
     }
   }
 }
