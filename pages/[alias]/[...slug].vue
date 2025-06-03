@@ -42,6 +42,8 @@ if (referencedPage.value) {
         ) {
           displayChildren.value = index;
           displayVerticalNav.value = true;
+        } else {
+          submenuItems.value = submenu.value;
         }
       }
     }

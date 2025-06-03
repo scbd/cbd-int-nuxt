@@ -52,23 +52,23 @@ const handlerHeaderNavigation = async () => {
       "cbd-header",
       activeLanguage.value.active_language
     );
-    const menu_temp = menuData as fetchedMenu;
+    const menuTemp = menuData as fetchedMenu;
 
-    for (const menu_item of menu_temp.menu as fetchedMenuItem[]) {
-      const machine_name = menu_item.options!.attributes!.submenu!.slice(0, 32);
+    for (const menuItem of menuTemp.menu as fetchedMenuItem[]) {
+      const machineName = menuItem.options!.attributes!.submenu!.slice(0, 32);
 
       try {
         const submenuData: fetchedMenu | unknown = await getDrupalMenu(
-          machine_name,
+          machineName,
           activeLanguage.value.active_language
         );
         const submenuPlaceholder = submenuData as fetchedMenu;
-        menu_item.children.push(...submenuPlaceholder.menu);
+        menuItem.children.push(...submenuPlaceholder.menu);
       } catch (error) {
         console.error(error);
       }
     }
-    megamenu.value = menu_temp.menu;
+    megamenu.value = menuTemp.menu;
     megamenuStatus.value.status = "OK";
   } catch (error) {
     console.error(error);
@@ -84,28 +84,26 @@ export const handlerSubmenuNavigation = async (menuName: string) => {
       menuName,
       activeLanguage.value.active_language
     );
-    const menu_temp = menuData as fetchedMenu;
-    for (const menu_item of menu_temp.menu as fetchedMenuItem[]) {
-      if (menu_item.options?.attributes?.submenu) {
-        const machine_name = menu_item.options!.attributes!.submenu!.slice(
-          0,
-          32
-        );
+    const menuTemp = menuData as fetchedMenu;
+    for (const menuItem of menuTemp.menu as fetchedMenuItem[]) {
+      if (menuItem.options?.attributes?.submenu) {
+        const machineName = menuItem.options!.attributes!.submenu!.slice(0, 32);
 
         try {
           const submenuData: fetchedMenu | unknown = await getDrupalMenu(
-            machine_name,
+            machineName,
             activeLanguage.value.active_language
           );
           const submenuPlaceholder = submenuData as fetchedMenu;
-          menu_item.children.push(...submenuPlaceholder.menu);
+          menuItem.children.push(...submenuPlaceholder.menu);
         } catch (error) {
           console.error(error);
         }
       }
     }
-    submenu.value = menu_temp.menu;
+    submenu.value = menuTemp.menu;
     submenuStatus.value.status = "OK";
+    return submenu.value;
   } catch (error) {
     console.error(error);
     submenuStatus.value.status = "error";
