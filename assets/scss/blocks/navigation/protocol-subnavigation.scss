@@ -93,6 +93,12 @@
     flex-direction: row;
     justify-content: space-evenly;
     flex-wrap: nowrap;
+    &.item-overflow {
+      flex-wrap: wrap;
+      .nav-item {
+        flex-basis: 12.5%;
+      }
+    }
     .nav-item.current-page {
       background-color: transparent;
       .nav-link {
