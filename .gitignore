@@ -20,7 +20,6 @@ logs
 keys
 .vscode
 package-lock.json
-package.lock.json
 
 # Local env files
 .env
