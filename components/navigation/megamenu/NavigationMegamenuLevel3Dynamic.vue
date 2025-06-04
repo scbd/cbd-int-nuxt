@@ -6,6 +6,8 @@ import type { availableLanguages, searchParams } from "~/types/components";
 const { getArticles, getMeetings, getNotifications, getStatements } =
   getComponents();
 
+const languageSettings = useLanguageStore();
+
 const props = defineProps<{
   parent: fetchedMenuItem;
 }>();
@@ -85,7 +87,7 @@ if (componentObject.component?.includes("News")) {
   >
     <NuxtLink class="nav-link" :to="article.url">
       {{
-        Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
+        Intl.DateTimeFormat(languageSettings.active_language, {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -103,7 +105,7 @@ if (componentObject.component?.includes("News")) {
   >
     <NuxtLink class="nav-link" :to="meeting.url">
       {{
-        Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
+        Intl.DateTimeFormat(languageSettings.active_language, {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -112,7 +114,7 @@ if (componentObject.component?.includes("News")) {
       <template v-if="meeting.date_end">
         &nbsp;&ndash;&nbsp;
         {{
-          Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -121,9 +123,7 @@ if (componentObject.component?.includes("News")) {
       </template>
       <br />
       {{
-        (meeting.title as availableLanguages)[
-          activeLanguage!.active_language.slice(0, 2)
-        ]
+        (meeting.title as availableLanguages)[languageSettings.active_language]
       }}
     </NuxtLink>
   </li>
@@ -135,7 +135,7 @@ if (componentObject.component?.includes("News")) {
   >
     <NuxtLink class="nav-link" :to="notification.url">
       {{
-        Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
+        Intl.DateTimeFormat(languageSettings.active_language, {
           year: "numeric",
           month: "long",
           day: "2-digit",
@@ -143,7 +143,7 @@ if (componentObject.component?.includes("News")) {
       }}
       <br />
       {{
-        `${notification.symbol}: ${(notification.title as availableLanguages)[activeLanguage!.active_language.slice(0, 2)]}`
+        `${notification.symbol}: ${(notification.title as availableLanguages)[languageSettings.active_language]}`
       }}
     </NuxtLink>
   </li>
@@ -155,7 +155,7 @@ if (componentObject.component?.includes("News")) {
   >
     <NuxtLink class="nav-link" :to="statement.url">
       {{
-        Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
+        Intl.DateTimeFormat(languageSettings.active_language, {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -164,7 +164,7 @@ if (componentObject.component?.includes("News")) {
       <br />
       {{
         (statement.title as availableLanguages)[
-          activeLanguage!.active_language.slice(0, 2)
+          languageSettings.active_language
         ]
       }}
     </NuxtLink>

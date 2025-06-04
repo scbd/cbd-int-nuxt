@@ -8,6 +8,10 @@ useSeoMeta({
   description: () => t("page.description"),
   ogDescription: () => t("page.description"),
 });
+
+const languageSettings = useLanguageStore();
+
+setActiveLanguage(languageSettings.active_language ?? "en");
 </script>
 
 <template>

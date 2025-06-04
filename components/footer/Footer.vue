@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const languageSettings = useLanguageStore();
+</script>
 
 <template>
   <footer class="cus-footer d-flex flex-column">
@@ -68,7 +70,7 @@
                 rel="noopener noreferrer"
               >
                 <img
-                  :src="`/images/UNEP-logo-${activeLanguage?.active_language.slice(0, 2).toUpperCase()}.svg`"
+                  :src="`/images/UNEP-logo-${languageSettings.active_language.toUpperCase()}.svg`"
                   class="logo-footer-unep"
                   alt="UNEP Logo"
                 />

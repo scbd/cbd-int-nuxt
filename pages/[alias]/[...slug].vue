@@ -2,6 +2,7 @@
 import type { pageParamaters } from "~/types/page";
 import type { fetchedMenuItem } from "~/types/drupalMenu";
 import getPages from "~/composables/pageApi";
+import { useLanguageStore } from "~/stores/language";
 
 const route = useRoute();
 const submenuItems = ref<fetchedMenuItem[]>([]);
@@ -63,7 +64,9 @@ definePageMeta({
   pageType: "page",
 });
 
-watch(activeLanguage.value, async () => {
+const languageSettings = useLanguageStore();
+
+watch(languageSettings, async () => {
   if (referencedPage.value) {
     await handlerSubmenuNavigation(referencedPage.value.field_menu);
   }

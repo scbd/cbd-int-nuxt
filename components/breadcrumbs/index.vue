@@ -12,6 +12,8 @@ const props = defineProps<{
   submenuItems?: fetchedMenuItem[];
 }>();
 
+const languageSettings = useLanguageStore();
+
 const route = useRoute();
 const routeArray = route.fullPath
   .split("/")
@@ -122,7 +124,7 @@ if (props.submenuItems) {
             {{
               crumbs.symbol ??
               (crumbs.title as availableLanguages)[
-                activeLanguage!.active_language.slice(0, 2)
+                languageSettings.active_language
               ]
             }}
           </template>
