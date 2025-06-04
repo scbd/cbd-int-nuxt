@@ -2,11 +2,11 @@
 @use "../bootstrap/dist/css/bootstrap.min.css";
 
 // Sub theme styling.
-@use "variables_drupal";
+@use "variables-drupal";
 
 // Bootstrap overridden variables.
 // @see https://getbootstrap.com/docs/5.2/customize/sass/#variable-defaults.
-@use "variables_bootstrap";
+@use "variables-bootstrap";
 
 // Imports
 @use "overrides";
@@ -63,6 +63,14 @@ h1 {
 h2 {
   font-size: 1.67rem;
   line-height: 1.25;
+}
+
+h1::first-letter,
+h2::first-letter,
+h3::first-letter,
+h4::first-letter,
+h5::first-letter {
+  text-transform: capitalize;
 }
 
 p + h2 {
@@ -230,6 +238,10 @@ p + h2 {
     }
   }
 
+  .wp-block-columns {
+    flex-direction: column;
+  }
+
   html:dir(rtl) {
     .cus-internal-page {
       .cus-article,
@@ -321,9 +333,10 @@ p + h2 {
       .nav-link {
         font-size: 1rem;
       }
-      .selected {
+      .show {
         .subnav-level-3-items {
           display: flex;
+          margin-top: 0;
           flex-direction: column;
           background-color: var(--bs-secondary-bg);
           box-shadow: 0 3px var(--cbd-content-accent);
@@ -331,8 +344,14 @@ p + h2 {
             &:not(:last-of-type) {
               box-shadow: 0 1px var(--bs-tertiary-bg);
             }
-            &.selected {
+            &.show {
               .nav-link {
+                color: var(--cbd-content-accent);
+              }
+            }
+            &.current-page {
+              .nav-link {
+                box-shadow: 0 1px var(--bs-tertiary-bg);
                 color: var(--cbd-content-accent);
               }
             }
@@ -344,6 +363,10 @@ p + h2 {
               }
             }
           }
+        }
+        &:not(.current-page) > .nav-link {
+          padding-bottom: 0.67rem;
+          box-shadow: 0 -3px inset var(--cbd-content-accent);
         }
       }
     }

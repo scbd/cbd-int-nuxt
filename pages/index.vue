@@ -13,10 +13,7 @@ const {
 
 const articlesParams: searchParams = {
   q: "article",
-  sort: {
-    direction: "desc",
-    params: "changed",
-  },
+  sort: ["-changed"],
   rows: 4,
 };
 
@@ -33,10 +30,7 @@ const meetingsParams: searchParams = {
     "eventCountry_??_s",
     "status_s",
   ],
-  sort: {
-    params: "abs(ms(startDate_dt,NOW))",
-    direction: "asc",
-  },
+  sort: ["abs(ms(startDate_dt,NOW)) asc"],
   rows: 4,
 };
 
@@ -55,30 +49,21 @@ const notificationsParams: searchParams = {
     "themes_??_ss",
     "fulltext_??_s",
   ],
-  sort: {
-    params: "date_s",
-    direction: "desc",
-  },
+  sort: ["date_s desc"],
   rows: 4,
 };
 
 const statementsParams: searchParams = {
   q: "schema_s:statement",
   fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
-  sort: {
-    params: "date_s",
-    direction: "desc",
-  },
+  sort: ["date_s desc"],
   rows: 4,
 };
 
 const nbsapsParams: searchParams = {
   q: "schema_s:nbsap",
   fl: ["submittedDate_s", "url_ss", "title_??_s"],
-  sort: {
-    params: "submittedDate_s",
-    direction: "desc",
-  },
+  sort: ["submittedDate_s desc"],
   rows: 4,
 };
 

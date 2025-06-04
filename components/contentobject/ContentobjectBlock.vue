@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const config = useRuntimeConfig();
 
-const handlerMissingImage = (component: componentSanitized) => {
+const handlerImage = (component: componentSanitized) => {
   const languages = ["ar", "en", "es", "fr", "ru", "zh"];
 
   let imgSrc = `${config.public.IMAGE_URL}/sites/default/files/${component.type}s${component.url?.slice(component.url?.lastIndexOf("/"))}`;
@@ -20,15 +20,15 @@ const handlerMissingImage = (component: componentSanitized) => {
       return imgSrc.replace(`-${language}.pdf`, ".jpg");
     }
   }
-  console.log(`${imgSrc}.jpg`);
   return `${imgSrc}.jpg`;
 };
 
-const objectLocation = (
-  language: string,
-  city: string | undefined,
-  country: string | undefined
-) => {
+const handlerMissingImage = (event: Event) => {
+  const image: HTMLImageElement = event.target as HTMLImageElement;
+  image.src = "/images/content_replacement.svg";
+};
+
+const objectLocation = (language: string, city?: string, country?: string) => {
   if (language === "ar") {
     return `${city ?? ""}${city && country ? "،" : ""} ${country ?? ""}`;
   } else if (language === "zh-hans") {
@@ -44,11 +44,7 @@ const objectLocation = (
     <div
       v-if="articlesStatus.status === 'OK'"
       class="content-object"
-      :class="[
-        component.type,
-        // objectInfo?.source ? `accent-${objectInfo.source}` : 'accent-cbd',
-        'accent-cbd',
-      ]"
+      :class="[component.type, 'accent-cbd']"
     >
       <img
         :src="component.image_cover?.url ?? '/images/content_replacement.svg'"
@@ -58,8 +54,8 @@ const objectLocation = (
       />
       <div class="information">
         <div class="taxonomy">
-          <div class="source">{{ /*objectInfo?.source ??*/ "CBD" }}</div>
-          <div class="type">{{ /*objectInfo?.type ??*/ "Article" }}</div>
+          <div class="source">{{ "CBD" }}</div>
+          <div class="type">{{ "Article" }}</div>
         </div>
         <div class="date">
           {{
@@ -112,8 +108,8 @@ const objectLocation = (
       </div>
 
       <img
-        :src="handlerMissingImage(component)"
-        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        :src="handlerImage(component)"
+        @error="handlerMissingImage"
         class="content-image"
       />
 
@@ -140,9 +136,6 @@ const objectLocation = (
           )
         }}
       </div>
-      <!-- <div v-show="objectDescription" class="description">
-        {{ objectDescription }}
-      </div> -->
       <div class="read-on-wrapper">
         <NuxtLink :to="component.url" class="read-on"
           >View {{ component.type }}</NuxtLink
@@ -182,8 +175,8 @@ const objectLocation = (
       </div>
 
       <img
-        :src="handlerMissingImage(component)"
-        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        :src="handlerImage(component)"
+        @error="handlerMissingImage"
         class="content-image"
       />
 
@@ -226,11 +219,7 @@ const objectLocation = (
     />
   </template>
 
-  <div
-    v-else-if="component.type === 'gbf-target'"
-    class="content-object"
-    :class="/*`gbf-target-${objectGBFtarget?.number}`*/ ''"
-  ></div>
+  <div v-else-if="component.type === 'gbf-target'" class="content-object"></div>
 
   <template v-else-if="component.type === 'statement'">
     <div
@@ -249,8 +238,8 @@ const objectLocation = (
       </div>
 
       <img
-        :src="handlerMissingImage(component)"
-        onerror="this.onerror=null; this.src='/images/content_replacement.svg'"
+        :src="handlerImage(component)"
+        @error="handlerMissingImage"
         class="content-image"
       />
 

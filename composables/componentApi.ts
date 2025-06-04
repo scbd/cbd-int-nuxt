@@ -13,7 +13,6 @@ import {
   type searchParams,
 } from "~/types/components";
 import type { componentStatus } from "~/types/componentStatus";
-import contentParser from "~/composables/contentParser";
 
 export const referencedArticles = ref<componentSanitized[]>([]);
 export const articlesStatus = ref<componentStatus>({ status: "pending" });
@@ -40,9 +39,7 @@ export default function getComponents() {
     let uuid = "";
 
     if (searchParameters.q === "content-page") {
-      const params = new URLSearchParams({
-        path: [searchParameters.fl].flat().toString(),
-      });
+      const params = `path=${encodeURIComponent([searchParameters.fl].flat().toString())}`;
 
       try {
         const response = await fetch(
@@ -74,10 +71,15 @@ export default function getComponents() {
       }
     }
 
-    const params = new URLSearchParams({
+    const params = Object.entries({
       "page[limit]": searchParameters.rows.toString(),
-      sort: `${searchParameters.sort?.direction === "desc" ? "-" : ""}${searchParameters.sort?.params ?? "created"}`,
-    });
+      sort: `${searchParameters.sort ? searchParameters.sort : "-created"}`,
+    })
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
 
     try {
       const response = await fetch(
@@ -150,7 +152,7 @@ export default function getComponents() {
             }
           }
 
-          article.content = contentParser(article.content);
+          article.content = article.content;
         }
 
         const articlesList: componentSanitized[] = dataMapped;
@@ -169,25 +171,20 @@ export default function getComponents() {
   const getMeetings = async (searchParameters: searchParams) => {
     meetingsStatus.value.status = "pending";
 
-    const params = new URLSearchParams({
-      q: "schema_s:meeting",
-      fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
-        : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (searchParameters.rows || 4).toString(),
-    });
+    const params = Object.entries(searchParameters)
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
 
     try {
-      const response = await fetch(
-        `${config.public.SOLR_QUERY}?${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${config.public.SOLR_QUERY}?${params}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const meetingsRaw: { response: componentRequest } =
@@ -242,14 +239,14 @@ export default function getComponents() {
   };
 
   const getNotifications = async (searchParameters: searchParams) => {
-    const params = new URLSearchParams({
-      q: "schema_s:notification",
-      fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
-        : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (searchParameters.rows || 4).toString(),
-    });
+    notificationsStatus.value.status = "pending";
+
+    const params = Object.entries(searchParameters)
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
 
     try {
       const response = await fetch(
@@ -302,6 +299,7 @@ export default function getComponents() {
             ru: rawData.fulltext_RU_s,
             zh: rawData.fulltext_ZH_s,
           },
+          files: JSON.parse(rawData.files_ss?.[0] ?? "{}"),
         })
       );
 
@@ -320,14 +318,12 @@ export default function getComponents() {
   const getStatements = async (searchParameters: searchParams) => {
     statementsStatus.value.status = "pending";
 
-    const params = new URLSearchParams({
-      q: "schema_s:statement",
-      fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
-        : "abs(ms(startDate_dt,NOW)) asc",
-      rows: (searchParameters.rows || 4).toString(),
-    });
+    const params = Object.entries(searchParameters)
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
 
     try {
       const response = await fetch(
@@ -426,14 +422,12 @@ export default function getComponents() {
   const getNbsaps = async (searchParameters: searchParams) => {
     nbsapsStatus.value.status = "pending";
 
-    const params = new URLSearchParams({
-      q: "schema_s:nbsap",
-      fl: searchParameters.fl?.toString() || "",
-      sort: searchParameters.sort?.params
-        ? `${searchParameters.sort.params} ${searchParameters.sort?.direction || "asc"}`
-        : "abs(ms(submittedDate_s,NOW)) asc",
-      rows: (searchParameters.rows || 4).toString(),
-    });
+    const params = Object.entries(searchParameters)
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
 
     try {
       const response = await fetch(

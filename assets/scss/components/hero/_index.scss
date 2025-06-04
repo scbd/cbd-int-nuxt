@@ -45,6 +45,15 @@
         background-color: transparent;
       }
     }
+    & ~ .cus-main {
+      .cus-article {
+        section:first-of-type {
+          h1:first-of-type {
+            display: none;
+          }
+        }
+      }
+    }
   }
   .featured-item {
     width: 100%;

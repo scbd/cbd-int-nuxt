@@ -6,9 +6,16 @@
   background: var(--bs-secondary-bg);
   .breadcrumb {
     margin-bottom: 0;
-    .breadcrumb-item:not(:last-of-type) {
+    .breadcrumb-item::first-letter {
       text-transform: capitalize;
     }
+  }
+}
+
+.cus-article {
+  .breadcrumbs {
+    padding: 0;
+    background: transparent;
   }
 }
 

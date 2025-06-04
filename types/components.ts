@@ -16,15 +16,10 @@ export interface availableLanguages {
 
 export interface searchParams {
   q: string;
-  fl?: string | string[];
-  sort?: {
-    params?: string;
-    direction?: string;
-  };
   rows: string | number;
-  optional?: {
-    status?: string;
-  };
+  fl?: string | string[];
+  sort?: string[];
+  status?: string;
 }
 
 export interface componentSanitized
@@ -74,6 +69,12 @@ interface componentNotification extends componentBase {
   recipient?: string[];
   themes?: availableLanguages;
   fulltext?: availableLanguages;
+  files?: {
+    type: string;
+    language: string;
+    url: string;
+    name: string;
+  }[];
 }
 
 interface componentStatement extends componentBase {}
@@ -178,6 +179,7 @@ export interface componentNotificationRaw {
   fulltext_FR_s: string;
   fulltext_RU_s: string;
   fulltext_ZH_s: string;
+  files_ss?: string[];
 }
 
 export interface componentMeetingRaw {

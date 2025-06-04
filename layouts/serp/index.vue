@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <div class="body-replace">
     <header class="cus-navigation">
@@ -6,8 +8,9 @@
         <NavigationMegamenu />
       </nav>
     </header>
-    <main class="cus-main cus-landing-page d-flex flex-column" role="main">
-      <NuxtPage />
+
+    <main class="cus-main cus-serp d-flex flex-column" role="main">
+      <NuxtPage :page-key="(route) => route.fullPath" />
     </main>
     <Footer />
   </div>

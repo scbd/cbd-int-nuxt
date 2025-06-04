@@ -41,7 +41,7 @@ const props = defineProps<{
     </div>
   </div>
 
-  <div
+  <!-- <div
     class="cus-hero"
     v-else-if="Array.isArray(article) && article.length === 1"
   >
@@ -77,7 +77,7 @@ const props = defineProps<{
         </div>
       </NuxtLink>
     </div>
-  </div>
+  </div> -->
 
   <div v-else class="cus-hero triple-features">
     <div class="featured-item featured-primary" :class="'accent-cbd'">

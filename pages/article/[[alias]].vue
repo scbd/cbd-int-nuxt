@@ -14,12 +14,13 @@ const articleParams: searchParams = {
 
 await getArticles(articleParams);
 
-watch(activeLanguage, async () => {
-  await getArticles(articleParams);
-});
-
 definePageMeta({
   layout: "content",
+  pageType: "componentArticle",
+});
+
+watch(activeLanguage, async () => {
+  await getArticles(articleParams);
 });
 </script>
 <template>
@@ -27,7 +28,10 @@ definePageMeta({
     <article class="cus-article container-fluid d-flex flex-column">
       <ClientOnly>
         <template v-for="article in referencedArticles">
-          <section v-html="article.content" class="rendered-content"></section>
+          <section
+            v-html="contentParser(article.content)"
+            class="rendered-content"
+          ></section>
         </template>
       </ClientOnly>
     </article>
