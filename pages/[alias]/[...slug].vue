@@ -2,9 +2,10 @@
 import type { pageParamaters } from "~/types/page";
 import type { fetchedMenuItem } from "~/types/drupalMenu";
 import getPages from "~/composables/pageApi";
-import { useLanguageStore } from "~/stores/language";
 
 const route = useRoute();
+const languageSettings = useLanguageStore();
+
 const submenuItems = ref<fetchedMenuItem[]>([]);
 
 const params: pageParamaters = {
@@ -63,8 +64,6 @@ definePageMeta({
   layout: "content",
   pageType: "page",
 });
-
-const languageSettings = useLanguageStore();
 
 watch(languageSettings, async () => {
   if (referencedPage.value) {

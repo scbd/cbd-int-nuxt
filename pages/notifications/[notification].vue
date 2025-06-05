@@ -9,6 +9,7 @@ import getComponents from "~/composables/componentApi";
 
 const { getNotifications } = getComponents();
 const route = useRoute();
+const languageSettings = useLanguageStore();
 
 const props = defineProps<{
   notification?: componentSanitized;
@@ -78,33 +79,27 @@ definePageMeta({
           <div class="information">
             <div class="date">
               {{
-                Intl.DateTimeFormat(
-                  activeLanguage!.active_language.slice(0, 2),
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                ).format(notification.date)
+                Intl.DateTimeFormat(languageSettings.active_language, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(notification.date)
               }}
               <template v-if="notification.date_end">
                 &nbsp;&ndash;&nbsp;
                 {{
-                  Intl.DateTimeFormat(
-                    activeLanguage!.active_language.slice(0, 2),
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  ).format(notification.date_end)
+                  Intl.DateTimeFormat(languageSettings.active_language, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }).format(notification.date_end)
                 }}
               </template>
             </div>
             <div v-show="notification.date_action" class="action-required">
               {{
                 `Action required: 
-            ${Intl.DateTimeFormat(activeLanguage!.active_language.slice(0, 2), {
+            ${Intl.DateTimeFormat(languageSettings.active_language, {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -114,7 +109,7 @@ definePageMeta({
             <div class="description">
               {{
                 (notification.title as availableLanguages)[
-                  activeLanguage!.active_language.slice(0, 2)
+                  languageSettings.active_language
                 ]
               }}
             </div>
@@ -138,14 +133,14 @@ definePageMeta({
             <div
               v-show="
                 (notification.themes as availableLanguages)[
-                  activeLanguage!.active_language.slice(0, 2)
+                  languageSettings.active_language
                 ]
               "
               class="subjects"
             >
               <span class="fw-bold">Subject(s): </span>
               {{
-                `${(notification.themes as availableLanguages)[activeLanguage!.active_language.slice(0, 2)]}`
+                `${(notification.themes as availableLanguages)[languageSettings.active_language]}`
               }}
             </div>
           </div>
@@ -162,7 +157,7 @@ definePageMeta({
                   :to="file.url"
                 >
                   {{
-                    new Intl.DisplayNames(activeLanguage!.active_language, {
+                    new Intl.DisplayNames(languageSettings.active_language, {
                       type: "language",
                     }).of(file.language)
                   }}:
@@ -187,7 +182,7 @@ definePageMeta({
           v-html="
             contentParser(
               (notification.fulltext as availableLanguages)[
-                activeLanguage!.active_language.slice(0, 2)
+                languageSettings.active_language
               ]
             )
           "
