@@ -11,6 +11,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
       const tokenData = await getDrupalToken()
       drupalToken.value = tokenData;
+      console.log('Token valid until:', new Date(tokenData.timeout).toLocaleString())
     } catch (error) {
       console.error('Error:', error)
     }
