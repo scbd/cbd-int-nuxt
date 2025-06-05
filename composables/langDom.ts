@@ -1,10 +1,8 @@
 import type { componentStatus } from "~/types/componentStatus";
 import type { drupalLanguage } from "~/types/drupalLanguages";
 import type { fetchedMenu, fetchedMenuItem } from "~/types/drupalMenu";
-import type { userSettings } from "~/types/userSettings";
 
 export const languages = ref<drupalLanguage[]>([]);
-export const activeLanguage = ref<userSettings>({ active_language: "en" });
 export const megamenu = ref<fetchedMenuItem[]>([]);
 export const submenu = ref<fetchedMenuItem[]>([]);
 export const footerMenu = ref<fetchedMenuItem[]>([]);
@@ -14,10 +12,12 @@ export const footerMenuStatus = ref<componentStatus>({ status: "pending" });
 export const megamenuStatus = ref<componentStatus>({ status: "pending" });
 export const submenuStatus = ref<componentStatus>({ status: "pending" });
 
-export const setActiveLanguage = async (langCode: string) => {
+export const setActiveLanguage = async (langCode: string = "en") => {
+  const languageSettings = useLanguageStore();
+
   try {
     await setLanguage(langCode).then(() => {
-      activeLanguage.value.active_language = langCode;
+      languageSettings.setActiveLanguage(langCode);
     });
 
     await getLanguages();
@@ -29,11 +29,13 @@ export const setActiveLanguage = async (langCode: string) => {
 };
 
 const getLanguages = async () => {
+  const languageSettings = useLanguageStore();
+
   languageStatus.value.status = "pending";
 
   try {
     const languageData = await getDrupalLanguages(
-      activeLanguage.value.active_language
+      languageSettings.active_language
     );
     languages.value = languageData;
 
@@ -45,12 +47,14 @@ const getLanguages = async () => {
 };
 
 const handlerHeaderNavigation = async () => {
+  const languageSettings = useLanguageStore();
+
   megamenuStatus.value.status = "pending";
 
   try {
     const menuData: fetchedMenu | unknown = await getDrupalMenu(
       "cbd-header",
-      activeLanguage.value.active_language
+      languageSettings.active_language
     );
     const menuTemp = menuData as fetchedMenu;
 
@@ -60,7 +64,7 @@ const handlerHeaderNavigation = async () => {
       try {
         const submenuData: fetchedMenu | unknown = await getDrupalMenu(
           machineName,
-          activeLanguage.value.active_language
+          languageSettings.active_language
         );
         const submenuPlaceholder = submenuData as fetchedMenu;
         menuItem.children.push(...submenuPlaceholder.menu);
@@ -77,12 +81,14 @@ const handlerHeaderNavigation = async () => {
 };
 
 export const handlerSubmenuNavigation = async (menuName: string) => {
+  const languageSettings = useLanguageStore();
+
   submenuStatus.value.status = "pending";
 
   try {
     const menuData: fetchedMenu | unknown = await getDrupalMenu(
       menuName,
-      activeLanguage.value.active_language
+      languageSettings.active_language
     );
     const menuTemp = menuData as fetchedMenu;
     for (const menuItem of menuTemp.menu as fetchedMenuItem[]) {
@@ -92,7 +98,7 @@ export const handlerSubmenuNavigation = async (menuName: string) => {
         try {
           const submenuData: fetchedMenu | unknown = await getDrupalMenu(
             machineName,
-            activeLanguage.value.active_language
+            languageSettings.active_language
           );
           const submenuPlaceholder = submenuData as fetchedMenu;
           menuItem.children.push(...submenuPlaceholder.menu);
@@ -111,11 +117,13 @@ export const handlerSubmenuNavigation = async (menuName: string) => {
 };
 
 const handlerFooterNavigation = async () => {
+  const languageSettings = useLanguageStore();
+
   footerMenuStatus.value.status = "pending";
   try {
     const footerData: fetchedMenu | unknown = await getDrupalMenu(
       "cbd-footer",
-      activeLanguage.value.active_language
+      languageSettings.active_language
     );
     const footerPlaceholder = footerData as fetchedMenu;
     footerMenu.value = footerPlaceholder.menu;

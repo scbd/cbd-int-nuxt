@@ -2,6 +2,8 @@
 import getComponents from "~/composables/componentApi";
 import type { searchParams, componentSanitized } from "~/types/components";
 
+const languageSettings = useLanguageStore();
+
 const {
   getArticles,
   getMeetings,
@@ -81,7 +83,7 @@ const sortedUpdates = updates
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
 
-watch(activeLanguage, async () => {
+watch(languageSettings, async () => {
   await getArticles(articlesParams);
   await getPortals();
 });

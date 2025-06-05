@@ -12,7 +12,8 @@ export const pageStatus = ref<componentStatus>({ status: "pending" });
 
 export default async function getPages(pageParamaters: pageParamaters) {
   const config = useRuntimeConfig();
-  const langCode = activeLanguage.value?.active_language;
+  const languageSettings = useLanguageStore();
+  const langCode = languageSettings.active_language;
 
   const params = new URLSearchParams({
     path: pageParamaters.alias,

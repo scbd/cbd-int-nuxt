@@ -36,7 +36,7 @@ definePageMeta({
 <template>
   <article class="cus-article container-xxl d-flex flex-column">
     <section>
-      <h1>{{ route.name }}</h1>
+      <h1>Notifications</h1>
       <p>Search Criteria</p>
     </section>
     <section>

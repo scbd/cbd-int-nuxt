@@ -10,28 +10,32 @@ export default defineNuxtConfig({
   },
   modules: [
     "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/i18n",
     "@nuxt/image",
-    'nuxt-gtag',
-    '@nuxtjs/robots',
+    "nuxt-gtag",
+    "@nuxtjs/robots",
   ],
+  pinia: {
+    storesDirs: ["./stores/**"],
+  },
   i18n: {
     locales: [
-      { code: 'ar', iso: 'ar-SA',  dir: 'rtl', file: 'ar.json' },
-      { code: 'en', iso: 'en-US',              file: 'en.json' },
-      { code: 'fr', iso: 'fr-FR',              file: 'fr.json' },
-      { code: 'es', iso: 'es-ES',              file: 'es.json' },
-      { code: 'ru', iso: 'ru-RU',              file: 'ru.json' },
-      { code: 'zh', iso: 'zh-CN',              file: 'zh.json' },
+      { code: "ar", iso: "ar-SA", dir: "rtl", file: "ar.json" },
+      { code: "en", iso: "en-US", file: "en.json" },
+      { code: "fr", iso: "fr-FR", file: "fr.json" },
+      { code: "es", iso: "es-ES", file: "es.json" },
+      { code: "ru", iso: "ru-RU", file: "ru.json" },
+      { code: "zh", iso: "zh-CN", file: "zh.json" },
     ],
-      defaultLocale: 'en',
-      detectBrowserLanguage : {
-          alwaysRedirect: true,
-          fallbackLocale: 'en'
+    defaultLocale: "en",
+    detectBrowserLanguage: {
+      alwaysRedirect: true,
+      fallbackLocale: "en",
     },
   },
   gtag: {
-    id: process.env.GTAG
+    id: process.env.GTAG,
   },
   site: { indexable: false },
   runtimeConfig: {

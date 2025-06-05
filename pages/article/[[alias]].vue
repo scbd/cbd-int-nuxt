@@ -2,6 +2,8 @@
 import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
+const languageSettings = useLanguageStore();
+
 const { getArticles } = getComponents();
 
 const route = useRoute();
@@ -19,7 +21,7 @@ definePageMeta({
   pageType: "componentArticle",
 });
 
-watch(activeLanguage, async () => {
+watch(languageSettings, async () => {
   await getArticles(articleParams);
 });
 </script>
