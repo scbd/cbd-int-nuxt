@@ -29,6 +29,7 @@ if (referencedPage.value) {
         level2Item.link.includes(routeArray[routeArray.length - 1]) ||
         level2Item.title.includes(routeArray[routeArray.length - 1])
       ) {
+        submenuItems.value.push(level2Item);
         displayChildren.value = level2Index;
       } else {
         for (const level3Item of level2Item.children) {
@@ -38,6 +39,9 @@ if (referencedPage.value) {
           ) {
             submenuItems.value.push(level2Item);
             displayChildren.value = level2Index;
+            if (level3Item.children.length > 0) {
+              displayVerticalNav.value = true;
+            }
           } else {
             for (const level4Item of level3Item.children) {
               if (
