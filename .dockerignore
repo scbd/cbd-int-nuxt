@@ -1,8 +1,5 @@
 # Nuxt dev/build outputs
-Dockerfile
-.dockerignore
 .gitignore
-.git
 .output
 .data
 .nuxt
@@ -27,4 +24,4 @@ keys
 .vscode
 
 # Local env files
-.env
+.env*
