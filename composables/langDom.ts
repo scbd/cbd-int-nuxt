@@ -12,7 +12,7 @@ export const footerMenuStatus = ref<componentStatus>({ status: "pending" });
 export const megamenuStatus = ref<componentStatus>({ status: "pending" });
 export const submenuStatus = ref<componentStatus>({ status: "pending" });
 
-export const setActiveLanguage = async (langCode: string) => {
+export const setActiveLanguage = async (langCode: string = "en") => {
   const languageSettings = useLanguageStore();
 
   try {

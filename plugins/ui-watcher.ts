@@ -5,6 +5,10 @@ export default defineNuxtPlugin({
   async setup(nuxtApp) {},
 
   hooks: {
+    "app:beforeMount"() {
+      const languageSettings = useLanguageStore();
+      setActiveLanguage(languageSettings.active_language);
+    },
     "page:finish"() {
       useHead({
         script: [
