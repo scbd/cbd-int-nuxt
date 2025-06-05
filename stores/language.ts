@@ -1,6 +1,6 @@
 export const useLanguageStore = defineStore("languageStore", {
   state: () => {
-    const active_language = ref("");
+    const active_language = ref("en");
     return { active_language };
   },
   persist: {

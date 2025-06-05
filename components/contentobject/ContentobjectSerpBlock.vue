@@ -64,57 +64,48 @@ const objectLocation = (
         <div class="information">
           <div class="date">
             {{
-              Intl.DateTimeFormat(
-                languageSettings.active_language.slice(0, 2),
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              ).format(component.date)
+              Intl.DateTimeFormat(languageSettings.active_language, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(component.date)
             }}
             <template v-if="component.date_end">
               &nbsp;&ndash;&nbsp;
               {{
-                Intl.DateTimeFormat(
-                  languageSettings.active_language.slice(0, 2),
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                ).format(component.date_end)
+                Intl.DateTimeFormat(languageSettings.active_language, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(component.date_end)
               }}
             </template>
           </div>
 
           <NuxtLink class="title" :to="component.url">
             {{
-              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language]}`
             }}
           </NuxtLink>
           <div v-show="component.date_action" class="action-required">
             {{
               `Action required: 
-            ${Intl.DateTimeFormat(
-              languageSettings.active_language.slice(0, 2),
-              {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }
-            ).format(component.date_action)}`
+            ${Intl.DateTimeFormat(languageSettings.active_language, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(component.date_action)}`
             }}
           </div>
           <div v-show="component.themes" class="subjects">
             {{
-              `Subject(s): ${(component.themes as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+              `Subject(s): ${(component.themes as availableLanguages)[languageSettings.active_language]}`
             }}
           </div>
           <div class="description">
             {{
               (component.fulltext as availableLanguages)[
-                languageSettings.active_language.slice(0, 2)
+                languageSettings.active_language
               ]
             }}
           </div>
@@ -125,9 +116,7 @@ const objectLocation = (
             <div class="files-available">
               <NuxtLink
                 v-for="file in component.files"
-                v-show="
-                  file.language === languageSettings.active_language.slice(0, 2)
-                "
+                v-show="file.language === languageSettings.active_language"
                 class="btn"
                 target="_blank"
                 :to="file.url"
