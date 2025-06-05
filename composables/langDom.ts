@@ -17,7 +17,7 @@ export const setActiveLanguage = async (langCode: string = "en") => {
 
   try {
     await setLanguage(langCode).then(() => {
-      languageSettings.setActiveLanguage(langCode.slice(0, 2));
+      languageSettings.setActiveLanguage(langCode);
     });
 
     await getLanguages();

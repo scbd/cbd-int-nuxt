@@ -7,7 +7,7 @@ const languageSettings = useLanguageStore();
     <NuxtLink v-if="languageStatus.status === 'OK'" to="/" class="navbar-brand">
       <img
         class="cus-logo"
-        :src="`/images/CBD-logo-${languageSettings.active_language.toUpperCase()}.png`"
+        :src="`/images/CBD-logo-${languageSettings.active_language.slice(0, 2).toUpperCase()}.png`"
         alt="Convention of Biological Diversity Logo"
       />
     </NuxtLink>

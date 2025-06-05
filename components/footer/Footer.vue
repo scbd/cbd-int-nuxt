@@ -70,7 +70,7 @@ const languageSettings = useLanguageStore();
                 rel="noopener noreferrer"
               >
                 <img
-                  :src="`/images/UNEP-logo-${languageSettings.active_language.toUpperCase()}.svg`"
+                  :src="`/images/UNEP-logo-${languageSettings.active_language.slice(0, 2).toUpperCase()}.svg`"
                   class="logo-footer-unep"
                   alt="UNEP Logo"
                 />

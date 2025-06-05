@@ -90,7 +90,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language, {
+          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -99,7 +99,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
         <template v-if="component.date_end">
           &nbsp;&ndash;&nbsp;
           {{
-            Intl.DateTimeFormat(languageSettings.active_language, {
+            Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -117,7 +117,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
       <div class="title">
         {{
           (component.title as availableLanguages)[
-            languageSettings.active_language
+            languageSettings.active_language.slice(0, 2)
           ]
         }}
       </div>
@@ -129,10 +129,10 @@ const objectLocation = (language: string, city?: string, country?: string) => {
           objectLocation(
             languageSettings.active_language,
             (component.event_city as availableLanguages)[
-              languageSettings.active_language
+              languageSettings.active_language.slice(0, 2)
             ],
             (component.event_country as availableLanguages)[
-              languageSettings.active_language
+              languageSettings.active_language.slice(0, 2)
             ]
           )
         }}
@@ -157,7 +157,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language, {
+          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -166,7 +166,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
         <template v-if="component.date_end">
           &nbsp;&ndash;&nbsp;
           {{
-            Intl.DateTimeFormat(languageSettings.active_language, {
+            Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -183,13 +183,13 @@ const objectLocation = (language: string, city?: string, country?: string) => {
 
       <div class="title">
         {{
-          `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language]}`
+          `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
         }}
       </div>
       <div v-show="component.date_action" class="action-required">
         {{
           `Action required: 
-          ${Intl.DateTimeFormat(languageSettings.active_language, {
+          ${Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -198,13 +198,13 @@ const objectLocation = (language: string, city?: string, country?: string) => {
       </div>
       <div v-show="component.themes" class="subjects">
         {{
-          `Subject(s): ${(component.themes as availableLanguages)[languageSettings.active_language]}`
+          `Subject(s): ${(component.themes as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
         }}
       </div>
       <div class="description">
         {{
           (component.fulltext as availableLanguages)[
-            languageSettings.active_language
+            languageSettings.active_language.slice(0, 2)
           ]
         }}
       </div>
@@ -230,7 +230,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language, {
+          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -247,7 +247,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
       <div class="title">
         {{
           (component.title as availableLanguages)[
-            languageSettings.active_language
+            languageSettings.active_language.slice(0, 2)
           ]
         }}
       </div>
@@ -291,7 +291,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language, {
+          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -301,7 +301,7 @@ const objectLocation = (language: string, city?: string, country?: string) => {
       <div class="title">
         {{
           (component.title as availableLanguages)[
-            languageSettings.active_language
+            languageSettings.active_language.slice(0, 2)
           ]
         }}
       </div>

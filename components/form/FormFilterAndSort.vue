@@ -202,8 +202,8 @@ const searchHandler = async () => {
       <span v-show="displayQuery.year" class="badge bg-secondary">
         Year - {{ displayQuery.year > 0 ? displayQuery.year : "Any" }}</span
       >
-      <span v-show="displayQuery.recipient" class="badge bg-secondary">
-        Recipient - {{ displayQuery.recipient }}
+      <span v-if="displayQuery.recipient" class="badge bg-secondary">
+        Recipient - {{ decodeURIComponent(displayQuery.recipient) }}
       </span>
     </div>
   </div>
