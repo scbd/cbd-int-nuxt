@@ -22,4 +22,4 @@ keys
 .vscode
 
 # Local env files
-.env*
+.env
