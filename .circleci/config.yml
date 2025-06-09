@@ -1,7 +1,7 @@
 version: 2.1
+
 jobs:
   build:
-    context: docker-hub
     working_directory: ~/scbd/cbd-int-nuxt
     docker:
       - image: cimg/base:2022.09
@@ -21,3 +21,10 @@ jobs:
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build:
+          context: docker-hub
