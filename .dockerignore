@@ -1,5 +1,8 @@
 # Nuxt dev/build outputs
+Dockerfile
+.dockerignore
 .gitignore
+.git
 .output
 .data
 .nuxt
