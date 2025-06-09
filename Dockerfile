@@ -19,6 +19,5 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-# CMD ["node", "-r", "dotenv/config", ".output/server/index.mjs"]
-CMD ["./entrypoint.sh"]
+CMD ["node", "-r", "dotenv/config", ".output/server/index.mjs"]
 
