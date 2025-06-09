@@ -1,99 +1,22 @@
-version: 2
-
-_defaults: &defaults
-  machine:
-    enabled: true
-    image: default
-  working_directory: ~/scbd/cbd-int-nuxt
-  parallelism: 1
-
-_run:
-  buildDocker: &buildDocker
-    name: Build docker image
-    command: |
-      docker info
-      docker login -u $DOCKER_USER -p $DOCKER_PASS
-      docker build -t output --build-arg VERSION=$CIRCLE_SHA1 --build-arg BRANCH=${CIRCLE_BRANCH:-master} --build-arg TAG=$CIRCLE_TAG .
-
+version: 2.1
 jobs:
   build:
-    <<: *defaults
+    working_directory: ~/scbd/cbd-int-nuxt
+    docker:
+      - image: cimg/base:2022.09
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     steps:
       - checkout
-      - run: *buildDocker
-
-  build-deploy-branches:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: *buildDocker
-      - deploy:
-          name: Deploy build to docker hub
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Docker image
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker tag output scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH
+            docker build -t scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH .
+      - run:
+          name: Push application Docker image
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH
-
-  build_and_deploy_releases:
-    <<: *defaults
-    environment:
-      NODE_ENV: production
-    steps:
-      - checkout
-      - run: *buildDocker
-      - deploy:
-          name: Deploy release build to docker hub
-          command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker tag output scbd/$CIRCLE_PROJECT_REPONAME:release-${CIRCLE_BRANCH//release\//}
-            docker push scbd/$CIRCLE_PROJECT_REPONAME:release-${CIRCLE_BRANCH//release\//}
-
-  build_and_deploy_tags:
-    <<: *defaults
-    environment:
-      NODE_ENV: production
-    steps:
-      - checkout
-      - run: *buildDocker
-      - deploy:
-          name: Deploy tag build to docker hub
-          command: |
-            if [ "${CIRCLE_PROJECT_USERNAME}" == 'scbd' ]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker tag output scbd/$CIRCLE_PROJECT_REPONAME:${CIRCLE_TAG//v/}
-              docker tag output scbd/$CIRCLE_PROJECT_REPONAME:latest
-              docker push scbd/$CIRCLE_PROJECT_REPONAME:${CIRCLE_TAG//v/}
-              docker push scbd/$CIRCLE_PROJECT_REPONAME:latest
-            else
-              eval "echo Branch:"{$CIRCLE_BRANCH}" User:"{$CIRCLE_PROJECT_USERNAME}
-              echo "Invalid tag, only scbd tags allowed"
-            fi
-workflows:
-  version: 2
-  build_and_deploy:
-    jobs:
-      - build:
-          filters:
-            branches:
-              ignore:
-                - /^(master|dev|stg)$/
-                - /^release\/.*/
-            tags:
-              ignore:
-                - /^v?[0-9]+(\.[0-9]+)*$/
-
-      - build-deploy-branches:
-          filters:
-            branches:
-              only: /^(master|dev|stg)$/
-      - build_and_deploy_releases:
-          filters:
-            branches:
-              only:
-                - /^release\/.*/
-      - build_and_deploy_tags:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v?[0-9]+(\.[0-9]+)*$/
