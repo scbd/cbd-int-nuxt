@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const languageSettings = useLanguageStore();
+</script>
 
 <template>
   <div class="cus-options container-fluid justify-content-end">
@@ -17,7 +19,7 @@
           <NuxtLink
             v-for="language in languages"
             :key="language.langCode"
-            v-show="activeLanguage?.active_language === language.langCode"
+            v-show="languageSettings.active_language === language.langCode"
             to="#"
             class="nav-link current-lang"
             role="button"
@@ -37,7 +39,7 @@
             <li
               v-for="language in languages"
               :key="language.langCode"
-              v-show="activeLanguage?.active_language !== language.langCode"
+              v-show="languageSettings.active_language !== language.langCode"
             >
               <NuxtLink
                 class="dropdown-item"

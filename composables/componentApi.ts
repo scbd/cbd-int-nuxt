@@ -29,12 +29,13 @@ export const nbsapsStatus = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
   const config = useRuntimeConfig();
+  const languageSettings = useLanguageStore();
 
   const drupalToken = useState<drupalToken>("drupal_token").value;
 
   const getArticles = async (searchParameters: searchParams) => {
     articlesStatus.value.status = "pending";
-    const langCode = activeLanguage.value?.active_language;
+    const langCode = languageSettings.active_language;
 
     let uuid = "";
 
@@ -372,11 +373,12 @@ export default function getComponents() {
 
   const getPortals = async () => {
     portalsStatus.value.status = "pending";
+    const languageSettings = useLanguageStore();
 
     const drupalToken = useState<drupalToken>("drupal_token").value;
 
     try {
-      const langCode = activeLanguage.value?.active_language;
+      const langCode = languageSettings.active_language;
 
       const response = await fetch(
         `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/menu_link_content/cbd-portals`,

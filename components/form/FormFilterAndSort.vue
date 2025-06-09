@@ -3,6 +3,7 @@ import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
 const { getNotifications } = getComponents();
+const languageSettings = useLanguageStore();
 
 const props = defineProps<{
   searchParams: searchParams;
@@ -40,7 +41,7 @@ const searchHandler = async () => {
 
   if (inputFilterTitle.value) {
     const titles: string[] = inputFilterTitle.value.split(" ");
-    paramQuery = `${paramQuery} AND title_${activeLanguage.value!.active_language.slice(0, 2).toUpperCase()}_s:(`;
+    paramQuery = `${paramQuery} AND title_${languageSettings.active_language.toUpperCase()}_s:(`;
 
     for await (const title of titles) {
       if (title !== titles[titles.length - 1]) {
@@ -77,7 +78,7 @@ const searchHandler = async () => {
 
   if (selectSortName.value) {
     paramSort?.push(
-      `title_${activeLanguage.value!.active_language.slice(0, 2).toUpperCase()}_s ${selectSortDate.value}`
+      `title_${languageSettings.active_language.toUpperCase()}_s ${selectSortDate.value}`
     );
   }
 
@@ -201,8 +202,8 @@ const searchHandler = async () => {
       <span v-show="displayQuery.year" class="badge bg-secondary">
         Year - {{ displayQuery.year > 0 ? displayQuery.year : "Any" }}</span
       >
-      <span v-show="displayQuery.recipient" class="badge bg-secondary">
-        Recipient - {{ displayQuery.recipient }}
+      <span v-if="displayQuery.recipient" class="badge bg-secondary">
+        Recipient - {{ decodeURIComponent(displayQuery.recipient) }}
       </span>
     </div>
   </div>
