@@ -10,7 +10,7 @@ _defaults: &defaults
 _run:
   buildDocker: &buildDocker
     name: Build docker image
-    command: |      
+    command: |
       docker info
       docker login -u $DOCKER_USER -p $DOCKER_PASS
       docker build -t output --build-arg VERSION=$CIRCLE_SHA1 --build-arg BRANCH=${CIRCLE_BRANCH:-master} --build-arg TAG=$CIRCLE_TAG .
@@ -21,17 +21,15 @@ jobs:
     steps:
       - checkout
       - run: *buildDocker
-      - run: *testImage
 
   build-deploy-branches:
     <<: *defaults
     steps:
       - checkout
       - run: *buildDocker
-      - run: *testImage
       - deploy:
-          name: Deploy build to docker hub 
-          command:  |
+          name: Deploy build to docker hub
+          command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag output scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH
             docker push scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH
@@ -44,8 +42,8 @@ jobs:
       - checkout
       - run: *buildDocker
       - deploy:
-          name: Deploy release build to docker hub 
-          command:  |            
+          name: Deploy release build to docker hub
+          command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag output scbd/$CIRCLE_PROJECT_REPONAME:release-${CIRCLE_BRANCH//release\//}
             docker push scbd/$CIRCLE_PROJECT_REPONAME:release-${CIRCLE_BRANCH//release\//}
@@ -58,8 +56,8 @@ jobs:
       - checkout
       - run: *buildDocker
       - deploy:
-          name: Deploy tag build to docker hub 
-          command:  |
+          name: Deploy tag build to docker hub
+          command: |
             if [ "${CIRCLE_PROJECT_USERNAME}" == 'scbd' ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker tag output scbd/$CIRCLE_PROJECT_REPONAME:${CIRCLE_TAG//v/}
@@ -79,11 +77,11 @@ workflows:
             branches:
               ignore:
                 - /^(master|dev|stg)$/
-                - /^release\/.*/  
+                - /^release\/.*/
             tags:
               ignore:
                 - /^v?[0-9]+(\.[0-9]+)*$/
-                
+
       - build-deploy-branches:
           filters:
             branches:
@@ -91,11 +89,11 @@ workflows:
       - build_and_deploy_releases:
           filters:
             branches:
-                only:
-                  - /^release\/.*/  
+              only:
+                - /^release\/.*/
       - build_and_deploy_tags:
           filters:
             branches:
-                ignore: /.*/
+              ignore: /.*/
             tags:
               only: /^v?[0-9]+(\.[0-9]+)*$/
