@@ -12,8 +12,6 @@ COPY . ./
 RUN npm install --prefix assets/bootstrap
 RUN npm run dist --prefix assets/bootstrap
 RUN npm run build
-RUN chmod +x entrypoint.sh
-
 
 ENV PORT=3000
 
