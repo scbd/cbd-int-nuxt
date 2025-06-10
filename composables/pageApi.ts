@@ -1,10 +1,5 @@
-import type {
-  pageRequest,
-  pageRaw,
-  page,
-  pageParamaters,
-  pagePath,
-} from "~/types/page";
+import type { pageRequest, pageRaw, page, pageParamaters } from "~/types/page";
+import type { drupalEntityPath } from "~/types/drupalEntityApi";
 import type { componentStatus } from "~/types/componentStatus";
 
 export const referencedPage = ref<page>();
@@ -33,7 +28,7 @@ export default async function getPages(pageParamaters: pageParamaters) {
     );
 
     if (response.ok) {
-      const pagePath: pagePath = await response.json();
+      const pagePath: drupalEntityPath = await response.json();
 
       try {
         const response = await fetch(

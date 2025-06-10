@@ -220,7 +220,25 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     />
   </template>
 
-  <div v-else-if="component.type === 'gbf-target'" class="content-object"></div>
+  <template v-else-if="component.type === 'GBF Target'">
+    <div
+      v-if="gbfTargetsStatus.status === 'OK'"
+      class="content-object gbf-target"
+    >
+      <div class="header">
+        <div class="information">
+          <div class="title">{{ component.title }}</div>
+          <div class="description" v-if="component.summary">
+            {{ component.summary }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="notificationsStatus.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
 
   <template v-else-if="component.type === 'statement'">
     <div

@@ -1,7 +1,12 @@
 export interface componentRequest {
   numFound?: number;
   start?: number;
-  data?: componentArticleRaw | componentArticleRaw[] | componentPortalRaw[];
+  data?:
+    | componentArticleRaw
+    | componentArticleRaw[]
+    | componentGbfTargetRaw
+    | componentGbfTargetRaw[]
+    | componentPortalRaw[];
   docs?: [];
 }
 
@@ -26,8 +31,9 @@ export interface componentSanitized
   extends componentArticle,
     componentMeeting,
     componentNotification,
-    componentPortal,
+    componentGbfTarget,
     componentStatement,
+    componentPortal,
     componentNbsap {
   type: string;
 }
@@ -77,10 +83,17 @@ interface componentNotification extends componentBase {
   }[];
 }
 
+interface componentGbfTarget extends componentBase {
+  date_edited?: Date;
+  content?: string;
+  summary?: string;
+  field_menu?: string;
+}
+
 interface componentStatement extends componentBase {}
 
 interface componentPortal extends componentBase {
-  date_changed?: Date;
+  date_edited?: Date;
   image?: {
     url: string;
     width?: number;
@@ -106,7 +119,6 @@ export interface componentArticleRaw {
     sticky: boolean;
     path: {
       alias: string;
-      langcode: string;
     };
     body: {
       processed: string;
@@ -206,6 +218,23 @@ export interface componentMeetingRaw {
   eventCountry_FR_s: string;
   eventCountry_RU_s: string;
   eventCountry_ZH_s: string;
+}
+
+export interface componentGbfTargetRaw {
+  attributes: {
+    langcode: string;
+    title: string;
+    created: string;
+    changed: string;
+    path: {
+      alias: string;
+    };
+    body: {
+      processed: string;
+      summary?: string;
+    };
+    field_menu: string;
+  };
 }
 
 export interface componentStatementRaw {

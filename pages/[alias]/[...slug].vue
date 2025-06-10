@@ -2,6 +2,7 @@
 import type { pageParamaters } from "~/types/page";
 import type { fetchedMenuItem } from "~/types/drupalMenu";
 import getPages from "~/composables/pageApi";
+import type { RefSymbol } from "@vue/reactivity";
 
 const route = useRoute();
 const languageSettings = useLanguageStore();
@@ -25,18 +26,12 @@ if (referencedPage.value) {
   if (submenu.value.length > 0) {
     submenuItems.value.length = 0;
     for await (const [level2Index, level2Item] of submenu.value.entries()) {
-      if (
-        level2Item.link.includes(routeArray[routeArray.length - 1]) ||
-        level2Item.title.includes(routeArray[routeArray.length - 1])
-      ) {
+      if (level2Item.link.includes(routeArray[routeArray.length - 1])) {
         submenuItems.value.push(level2Item);
         displayChildren.value = level2Index;
       } else {
         for (const level3Item of level2Item.children) {
-          if (
-            level3Item.link.includes(routeArray[routeArray.length - 1]) ||
-            level3Item.title.includes(routeArray[routeArray.length - 1])
-          ) {
+          if (level3Item.link.includes(routeArray[routeArray.length - 1])) {
             submenuItems.value.push(level2Item);
             displayChildren.value = level2Index;
             if (level3Item.children.length > 0) {
@@ -44,10 +39,7 @@ if (referencedPage.value) {
             }
           } else {
             for (const level4Item of level3Item.children) {
-              if (
-                level4Item.link.includes(routeArray[routeArray.length - 1]) ||
-                level4Item.title.includes(routeArray[routeArray.length - 1])
-              ) {
+              if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
                 submenuItems.value.push(level2Item);
                 displayChildren.value = level2Index;
                 displayVerticalNav.value = true;
@@ -73,6 +65,24 @@ watch(languageSettings, async () => {
   if (referencedPage.value) {
     await handlerSubmenuNavigation(referencedPage.value.field_menu);
   }
+});
+
+const embedIframe = useTemplateRef("embedIframe");
+
+onMounted(() => {
+  // embedIframe.value!.style.height = `${embedIframe.value?.contentWindow?.document.body.scrollHeight}px`;
+  window.addEventListener(
+    "message",
+    (event) => {
+      if (event.origin == "https://ort.cbd.int") {
+        const message: { height: number; type: string } = JSON.parse(
+          event.data
+        );
+        embedIframe.value!.style.height = `${message.height}px`;
+      }
+    },
+    false
+  );
 });
 </script>
 
@@ -106,6 +116,14 @@ watch(languageSettings, async () => {
             class="rendered-content"
           ></section>
         </ClientOnly>
+        <section v-if="referencedPage?.field_menu === 'cbd-gbf'">
+          <h2>National targets submitted to the Secretariat</h2>
+          <iframe
+            ref="embedIframe"
+            class="embedIframe"
+            :src="`https://ort.cbd.int/${languageSettings.active_language}/national-targets/analyzer?embed=true&recordTypes=nationalTarget7&globalTargets=GBF-TARGET-${Number(routeArray[routeArray.length - 1]) < 10 ? '0' + routeArray[routeArray.length - 1] : routeArray[routeArray.length - 1]}`"
+          ></iframe>
+        </section>
       </article>
     </div>
   </div>

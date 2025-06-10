@@ -11,7 +11,10 @@ const props = defineProps<{
   <ClientOnly>
     <section
       class="content-row d-flex flex-column"
-      :class="componentType === 'update' ? 'recent-updates' : componentType"
+      :class="[
+        componentType === 'update' ? 'recent-updates' : componentType,
+        { 'gbf-targets': componentType === 'GBF Target' },
+      ]"
     >
       <div class="row-title">Recent {{ componentType }}s</div>
       <div class="content-wrapper d-flex">
@@ -30,6 +33,11 @@ const props = defineProps<{
           v-else-if="componentType === 'notification'"
           v-for="notification in components"
           :component="notification"
+        />
+        <ContentobjectBlock
+          v-else-if="componentType === 'GBF Target'"
+          v-for="gbfTarget in components"
+          :component="gbfTarget"
         />
         <ContentobjectBlock
           v-else-if="componentType === 'statement'"

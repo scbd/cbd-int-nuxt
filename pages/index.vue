@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import getComponents from "~/composables/componentApi";
+import getComponents, {
+  referencedGbfTargets,
+} from "~/composables/componentApi";
 import type { searchParams, componentSanitized } from "~/types/components";
+import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
 
 const languageSettings = useLanguageStore();
 
@@ -8,15 +11,16 @@ const {
   getArticles,
   getMeetings,
   getNotifications,
+  getGbfTargets,
   getStatements,
   getPortals,
   getNbsaps,
 } = getComponents();
 
-const articlesParams: searchParams = {
-  q: "article",
+const articlesParams: drupalEntitySearchParams = {
+  entity: "article",
   sort: ["-changed"],
-  rows: 4,
+  limit: 4,
 };
 
 const meetingsParams: searchParams = {
@@ -55,6 +59,16 @@ const notificationsParams: searchParams = {
   rows: 4,
 };
 
+const gbfTargetsParams: drupalEntitySearchParams = {
+  entity: "gbf-targets",
+  conditions: {
+    "filter[field_menu][operator]": "CONTAINS",
+    "filter[field_menu][value]": "cbd-gbf",
+  },
+  sort: ["-changed"],
+  limit: 4,
+};
+
 const statementsParams: searchParams = {
   q: "schema_s:statement",
   fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
@@ -75,6 +89,7 @@ const articles = (await getArticles(articlesParams)) ?? [];
 const meetings = (await getMeetings(meetingsParams)) ?? [];
 const notifications = (await getNotifications(notificationsParams)) ?? [];
 await getStatements(statementsParams);
+await getGbfTargets(gbfTargetsParams);
 await getPortals();
 await getNbsaps(nbsapsParams);
 
@@ -85,6 +100,7 @@ const sortedUpdates = updates
 
 watch(languageSettings, async () => {
   await getArticles(articlesParams);
+  await getGbfTargets(gbfTargetsParams);
   await getPortals();
 });
 
@@ -108,6 +124,10 @@ definePageMeta({
       <ContentobjectRow
         component-type="notification"
         :components="referencedNotifications"
+      />
+      <ContentobjectRow
+        component-type="GBF Target"
+        :components="referencedGbfTargets"
       />
       <ContentobjectRow
         component-type="statement"
