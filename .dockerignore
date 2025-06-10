@@ -1,10 +1,15 @@
 # Nuxt dev/build outputs
+Dockerfile
+.dockerignore
+.gitignore
+.git
 .output
 .data
 .nuxt
 .nitro
 .cache
 dist
+*.tar
 
 # Node dependencies
 node_modules
@@ -22,5 +27,3 @@ keys
 
 # Local env files
 .env
-.env.*
-!.env.example
