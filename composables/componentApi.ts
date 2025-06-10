@@ -454,7 +454,7 @@ export default function getComponents() {
             type: "statement",
             symbol: rawData.symbol_s,
             date: new Date(rawData.date_s),
-            url: rawData.url_ss[0],
+            url: Array(rawData.url_ss).flat().join("") ?? "",
             title: {
               ar: rawData.title_AR_s,
               en: rawData.title_EN_s,
