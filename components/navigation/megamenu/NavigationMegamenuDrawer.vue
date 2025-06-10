@@ -11,7 +11,10 @@ const props = defineProps<{
     <ul class="mega-menu-drawer-internal nav">
       <li class="sections-header">Sections</li>
       <li class="level-1-item nav-item">
-        <NuxtLink class="nav-link" :to="parent.link">
+        <NuxtLink
+          class="nav-link"
+          :to="parent.link !== '<nolink>' ? parent.link : ''"
+        >
           {{ parent.title }}
         </NuxtLink>
       </li>

@@ -12,7 +12,10 @@ const props = defineProps<{
     class="level-2-item nav-item"
     :class="level2_item.children.length > 8 ? 'level-3-items-2-col' : ''"
   >
-    <NuxtLink class="nav-link" :to="level2_item.link">
+    <NuxtLink
+      class="nav-link"
+      :to="level2_item.link !== '<nolink>' ? level2_item.link : ''"
+    >
       {{ level2_item.title }}
     </NuxtLink>
 
