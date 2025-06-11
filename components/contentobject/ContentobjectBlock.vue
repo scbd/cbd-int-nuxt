@@ -38,6 +38,23 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     return `${city}${city && country ? "," : ""} ${country ?? ""}`;
   }
 };
+
+const gbfTargetRef = ref<string[]>([]);
+
+if (props.component.type === "GBF Target") {
+  const titleSplit = (props.component.title as string).split("-");
+
+  let targetNumber: number | string = Number(
+    titleSplit[0].trim().split(" ")[1]
+  );
+
+  if (targetNumber < 10) {
+    targetNumber = `0${targetNumber}`;
+  }
+  titleSplit.unshift(targetNumber as string);
+
+  gbfTargetRef.value = titleSplit;
+}
 </script>
 
 <template>
@@ -224,15 +241,32 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     <div
       v-if="gbfTargetsStatus.status === 'OK'"
       class="content-object gbf-target"
+      :class="`gbf-${gbfTargetRef[1].replace(' ', '-').toLowerCase()}`"
     >
-      <div class="header">
+      <div
+        class="header"
+        :style="`background-image: url(${config.public.IMAGE_URL}/sites/default/files/gbf/GBF_Targets-${gbfTargetRef[0]}.png)`"
+      >
         <div class="information">
-          <div class="title">{{ component.title }}</div>
-          <div class="description" v-if="component.summary">
+          <div class="title">{{ gbfTargetRef[1] }}</div>
+          <div v-if="component.summary" class="description">
             {{ component.summary }}
+          </div>
+          <div v-else>
+            {{ gbfTargetRef[2].trim() }}
           </div>
         </div>
       </div>
+      <div class="resources"></div>
+      <div class="links">
+        <NuxtLink to="#">Why is this target important?</NuxtLink>
+        <NuxtLink to="#">Target Explanation</NuxtLink>
+        <NuxtLink to="#">Guiding Questions</NuxtLink>
+        <NuxtLink to="#">Links to other elements</NuxtLink>
+        <NuxtLink to="#">Relevant Resources</NuxtLink>
+        <NuxtLink to="#">Indicators</NuxtLink>
+      </div>
+      <NuxtLink to="#" class="view-target">View Target</NuxtLink>
     </div>
     <Loader
       v-else
