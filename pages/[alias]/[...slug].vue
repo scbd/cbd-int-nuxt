@@ -16,6 +16,12 @@ const routeArray = route.fullPath
   .split("/")
   .filter((step) => step.trim() != "");
 
+const pathItems = ref<{
+  level2?: number;
+  level3?: number;
+  level4?: number;
+}>({});
+
 const displayChildren = ref<number>(0);
 const displayVerticalNav = ref<boolean>(false);
 
@@ -28,20 +34,29 @@ if (referencedPage.value) {
       if (level2Item.link.includes(routeArray[routeArray.length - 1])) {
         submenuItems.value.push(level2Item);
         displayChildren.value = level2Index;
+        pathItems.value.level2 = level2Index;
       } else {
-        for (const level3Item of level2Item.children) {
+        for (const [level3Index, level3Item] of level2Item.children.entries()) {
           if (level3Item.link.includes(routeArray[routeArray.length - 1])) {
             submenuItems.value.push(level2Item);
             displayChildren.value = level2Index;
+            pathItems.value.level2 = level2Index;
+            pathItems.value.level3 = level3Index;
             if (level3Item.children.length > 0) {
               displayVerticalNav.value = true;
             }
           } else {
-            for (const level4Item of level3Item.children) {
+            for (const [
+              level4Index,
+              level4Item,
+            ] of level3Item.children.entries()) {
               if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
                 submenuItems.value.push(level2Item);
                 displayChildren.value = level2Index;
                 displayVerticalNav.value = true;
+                pathItems.value.level2 = level2Index;
+                pathItems.value.level3 = level3Index;
+                pathItems.value.level4 = level4Index;
               }
             }
           }
@@ -105,7 +120,7 @@ onMounted(() => {
       <article class="cus-article container-fluid d-flex flex-column">
         <ClientOnly>
           <template v-if="route.meta.pageType === 'page'">
-            <Breadcrumbs :page="referencedPage" :submenu-items="submenuItems" />
+            <Breadcrumbs :page="referencedPage" :path-items="pathItems" />
           </template>
         </ClientOnly>
         <ClientOnly>

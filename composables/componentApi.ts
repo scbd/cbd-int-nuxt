@@ -39,107 +39,6 @@ export default function getComponents() {
 
   const drupalToken = useState<drupalToken>("drupal_token").value;
 
-  const getGbfTargets = async (searchParameters: drupalEntitySearchParams) => {
-    gbfTargetsStatus.value.status = "pending";
-    const langCode = languageSettings.active_language;
-
-    let uuid = "";
-
-    if (searchParameters.entity === "gbf-target") {
-      const params = `path=${encodeURIComponent([searchParameters.fl].flat().toString())}`;
-
-      try {
-        const response = await fetch(
-          `${config.public.DRUPAL_URL}/router/translate-path?${params}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.ok) {
-          const gbfTargetResponse: drupalEntityPath = await response.json();
-          uuid = gbfTargetResponse.entity.uuid;
-        } else {
-          referencedGbfTargets.value = [];
-          throw new Error(response.statusText, {
-            cause: { url: response.url, statusCode: response.status },
-          });
-        }
-      } catch (error: any) {
-        console.error(error);
-        throw createError({
-          statusCode: error.cause.statusCode,
-          statusMessage: error.message,
-          cause: error.cause.url,
-          fatal: true,
-        });
-      }
-    }
-
-    const params = `${Object.entries({
-      "page[limit]": searchParameters.limit,
-      sort: `${searchParameters.sort ? searchParameters.sort : "-created"}`,
-    })
-      .map(
-        ([prop, value]) =>
-          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
-      )
-      .join("&")}${
-      searchParameters.conditions
-        ? "&" +
-          Object.entries(searchParameters.conditions)
-            .map(
-              ([prop, value]) =>
-                `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
-            )
-            .join("&")
-        : ""
-    }`;
-
-    try {
-      const response = await fetch(
-        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/page${uuid ? "/" + uuid : ""}?${params}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${drupalToken.token_type} ${drupalToken.access_token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const gbfTargetRaw: componentRequest = await response.json();
-
-        const dataMapped = (gbfTargetRaw.data as componentGbfTargetRaw[])!.map(
-          (rawData: componentGbfTargetRaw): componentSanitized => ({
-            type: "GBF Target",
-            title: rawData.attributes.title,
-            url: rawData.attributes.path.alias,
-            date: new Date(rawData.attributes.created),
-            date_edited: new Date(rawData.attributes.changed),
-            field_menu: rawData.attributes.field_menu,
-            content: rawData.attributes.body.processed,
-            summary: rawData.attributes.body.summary,
-          })
-        );
-
-        const gbfTargetsList: componentSanitized[] = dataMapped;
-
-        referencedGbfTargets.value = gbfTargetsList;
-        gbfTargetsStatus.value.status = "OK";
-
-        return gbfTargetsList;
-      }
-    } catch (error) {
-      console.error(error);
-      gbfTargetsStatus.value.status = "error";
-    }
-  };
-
   const getArticles = async (searchParameters: drupalEntitySearchParams) => {
     articlesStatus.value.status = "pending";
     const langCode = languageSettings.active_language;
@@ -421,6 +320,107 @@ export default function getComponents() {
     } catch (error) {
       console.error(error);
       notificationsStatus.value.status = "error";
+    }
+  };
+
+  const getGbfTargets = async (searchParameters: drupalEntitySearchParams) => {
+    gbfTargetsStatus.value.status = "pending";
+    const langCode = languageSettings.active_language;
+
+    let uuid = "";
+
+    if (searchParameters.entity === "gbf-target") {
+      const params = `path=${encodeURIComponent([searchParameters.fl].flat().toString())}`;
+
+      try {
+        const response = await fetch(
+          `${config.public.DRUPAL_URL}/router/translate-path?${params}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const gbfTargetResponse: drupalEntityPath = await response.json();
+          uuid = gbfTargetResponse.entity.uuid;
+        } else {
+          referencedGbfTargets.value = [];
+          throw new Error(response.statusText, {
+            cause: { url: response.url, statusCode: response.status },
+          });
+        }
+      } catch (error: any) {
+        console.error(error);
+        throw createError({
+          statusCode: error.cause.statusCode,
+          statusMessage: error.message,
+          cause: error.cause.url,
+          fatal: true,
+        });
+      }
+    }
+
+    const params = `${Object.entries({
+      "page[limit]": searchParameters.limit,
+      sort: `${searchParameters.sort ? searchParameters.sort : "-created"}`,
+    })
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&")}${
+      searchParameters.conditions
+        ? "&" +
+          Object.entries(searchParameters.conditions)
+            .map(
+              ([prop, value]) =>
+                `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+            )
+            .join("&")
+        : ""
+    }`;
+
+    try {
+      const response = await fetch(
+        `${config.public.DRUPAL_URL}/${langCode !== "en" ? (langCode + "/").toString() : ""}jsonapi/node/page${uuid ? "/" + uuid : ""}?${params}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${drupalToken.token_type} ${drupalToken.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const gbfTargetRaw: componentRequest = await response.json();
+
+        const dataMapped = (gbfTargetRaw.data as componentGbfTargetRaw[])!.map(
+          (rawData: componentGbfTargetRaw): componentSanitized => ({
+            type: "GBF Target",
+            title: rawData.attributes.title,
+            url: rawData.attributes.path.alias,
+            date: new Date(rawData.attributes.created),
+            date_edited: new Date(rawData.attributes.changed),
+            field_menu: rawData.attributes.field_menu,
+            content: rawData.attributes.body.processed,
+            summary: rawData.attributes.body.summary,
+          })
+        );
+
+        const gbfTargetsList: componentSanitized[] = dataMapped;
+
+        referencedGbfTargets.value = gbfTargetsList;
+        gbfTargetsStatus.value.status = "OK";
+
+        return gbfTargetsList;
+      }
+    } catch (error) {
+      console.error(error);
+      gbfTargetsStatus.value.status = "error";
     }
   };
 

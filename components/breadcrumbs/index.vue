@@ -3,13 +3,16 @@ import type {
   componentSanitized,
   availableLanguages,
 } from "~/types/components";
-import type { fetchedMenuItem } from "~/types/drupalMenu";
 import type { page } from "~/types/page";
 
 const props = defineProps<{
   content?: componentSanitized[];
   page?: page;
-  submenuItems?: fetchedMenuItem[];
+  pathItems?: {
+    level2?: number;
+    level3?: number;
+    level4?: number;
+  };
 }>();
 
 const languageSettings = useLanguageStore();
@@ -18,62 +21,6 @@ const route = useRoute();
 const routeArray = route.fullPath
   .split("/")
   .filter((step) => step.trim() != "");
-
-const pathItems = ref<{
-  level2?: fetchedMenuItem;
-  level3?: fetchedMenuItem;
-  level4?: fetchedMenuItem;
-}>({ level2: props.submenuItems?.[0] });
-
-if (props.page && props.submenuItems) {
-  for (const [level2Index, level2Item] of props.submenuItems.entries()) {
-    if (level2Item.link === props.page.url) {
-      pathItems.value.level2 = props.submenuItems[level2Index];
-    } else {
-      for (const [level3Index, level3Item] of level2Item.children.entries()) {
-        if (level3Item.link === props.page.url) {
-          pathItems.value.level2 = props.submenuItems[level2Index];
-          pathItems.value.level3 = level2Item.children[level3Index];
-        } else {
-          for (const [
-            level4Index,
-            level4Item,
-          ] of level3Item.children.entries()) {
-            if (level4Item.link === props.page.url) {
-              pathItems.value.level2 = props.submenuItems[level2Index];
-              pathItems.value.level3 = level2Item.children[level3Index];
-              pathItems.value.level4 = level4Item;
-            }
-          }
-        }
-      }
-    }
-  }
-} else if (props.submenuItems) {
-  for (const [level2Index, level2Item] of props.submenuItems.entries()) {
-    if (level2Item.link.includes(routeArray[routeArray.length - 1])) {
-      pathItems.value.level2 = props.submenuItems[level2Index];
-    } else {
-      for (const [level3Index, level3Item] of level2Item.children.entries()) {
-        if (level3Item.link.includes(routeArray[routeArray.length - 1])) {
-          pathItems.value.level2 = props.submenuItems[level2Index];
-          pathItems.value.level3 = level2Item.children[level3Index];
-        } else {
-          for (const [
-            level4Index,
-            level4Item,
-          ] of level3Item.children.entries()) {
-            if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
-              pathItems.value.level2 = props.submenuItems[level2Index];
-              pathItems.value.level3 = level2Item.children[level3Index];
-              pathItems.value.level4 = level4Item;
-            }
-          }
-        }
-      }
-    }
-  }
-}
 </script>
 
 <template>
@@ -83,42 +30,56 @@ if (props.page && props.submenuItems) {
         <NuxtLink to="/"> Home </NuxtLink>
       </li>
 
-      <template v-if="pathItems.level2">
-        <li v-if="pathItems.level2.children" class="breadcrumb-item">
+      <template v-if="pathItems?.level2">
+        <li
+          v-if="submenu[pathItems.level2].link !== route.path"
+          class="breadcrumb-item"
+        >
           <NuxtLink
             :to="
-              pathItems.level2.link !== '<nolink>' ? pathItems.level2.link : ''
+              submenu[pathItems.level2].link !== '<nolink>'
+                ? submenu[pathItems.level2].link
+                : ''
             "
-            >{{ pathItems.level2.title }}</NuxtLink
+            >{{ submenu[pathItems.level2].title }}</NuxtLink
           >
         </li>
         <li v-else class="breadcrumb-item active" aria-current="page">
-          {{ pathItems.level2.title }}
+          {{ submenu[pathItems.level2].title }}
         </li>
-
-        <li v-if="pathItems.level3 && pathItems.level4" class="breadcrumb-item">
-          <NuxtLink
-            :to="
-              pathItems.level3.link !== '<nolink>' ? pathItems.level3.link : ''
+        <template v-if="pathItems.level3">
+          <li
+            v-if="
+              submenu[pathItems.level2].children[pathItems.level3].link !==
+              route.path
             "
-            >{{ pathItems.level3.title }}</NuxtLink
+            class="breadcrumb-item"
           >
-        </li>
-        <li
-          v-else-if="pathItems.level3 && !pathItems.level4"
-          class="breadcrumb-item active"
-          aria-current="page"
-        >
-          {{ pathItems.level3.title }}
-        </li>
-
-        <li
-          v-if="pathItems.level4"
-          class="breadcrumb-item active"
-          aria-current="page"
-        >
-          {{ pathItems.level4.title }}
-        </li>
+            <NuxtLink
+              :to="
+                submenu[pathItems.level2].children[pathItems.level3].link !==
+                '<nolink>'
+                  ? submenu[pathItems.level2].children[pathItems.level3].link
+                  : ''
+              "
+              >{{
+                submenu[pathItems.level2].children[pathItems.level3].title
+              }}</NuxtLink
+            >
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ submenu[pathItems.level2].children[pathItems.level3].title }}
+          </li>
+        </template>
+        <template v-if="pathItems.level3 && pathItems.level4">
+          <li class="breadcrumb-item active" aria-current="page">
+            {{
+              submenu[pathItems.level2].children[pathItems.level3].children[
+                pathItems.level4
+              ].title
+            }}
+          </li>
+        </template>
       </template>
       <template v-else>
         <template v-for="(step, index) in routeArray">

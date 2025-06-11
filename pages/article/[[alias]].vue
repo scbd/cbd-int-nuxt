@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
+import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
 
 const languageSettings = useLanguageStore();
 
@@ -8,10 +8,10 @@ const { getArticles } = getComponents();
 
 const route = useRoute();
 
-const articleParams: searchParams = {
-  q: "content-page",
+const articleParams: drupalEntitySearchParams = {
+  entity: "content-page",
   fl: route.fullPath,
-  rows: 1,
+  limit: 1,
 };
 
 await getArticles(articleParams);
