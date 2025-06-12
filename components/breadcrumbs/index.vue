@@ -8,7 +8,7 @@ import type { page } from "~/types/page";
 const props = defineProps<{
   content?: componentSanitized[];
   page?: page;
-  pathItems?: {
+  submenuItemIndex?: {
     level2?: number;
     level3?: number;
     level4?: number;
@@ -21,6 +21,7 @@ const route = useRoute();
 const routeArray = route.fullPath
   .split("/")
   .filter((step) => step.trim() != "");
+const routePath = route.fullPath.replace(/\/+$/, "");
 </script>
 
 <template>
@@ -30,53 +31,62 @@ const routeArray = route.fullPath
         <NuxtLink to="/"> Home </NuxtLink>
       </li>
 
-      <template v-if="pathItems?.level2">
+      <template
+        v-if="submenuItemIndex?.level2 || submenuItemIndex?.level2 === 0"
+      >
         <li
-          v-if="submenu[pathItems.level2].link !== route.path"
+          v-if="submenu[submenuItemIndex.level2].link !== routePath"
           class="breadcrumb-item"
         >
           <NuxtLink
             :to="
-              submenu[pathItems.level2].link !== '<nolink>'
-                ? submenu[pathItems.level2].link
+              submenu[submenuItemIndex.level2].link !== '<nolink>'
+                ? submenu[submenuItemIndex.level2].link
                 : ''
             "
-            >{{ submenu[pathItems.level2].title }}</NuxtLink
+            >{{ submenu[submenuItemIndex.level2].title }}</NuxtLink
           >
         </li>
         <li v-else class="breadcrumb-item active" aria-current="page">
-          {{ submenu[pathItems.level2].title }}
+          {{ submenu[submenuItemIndex.level2].title }}
         </li>
-        <template v-if="pathItems.level3">
+        <template v-if="submenuItemIndex.level3">
           <li
             v-if="
-              submenu[pathItems.level2].children[pathItems.level3].link !==
-              route.path
+              submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
+                .link !== routePath
             "
             class="breadcrumb-item"
           >
             <NuxtLink
               :to="
-                submenu[pathItems.level2].children[pathItems.level3].link !==
-                '<nolink>'
-                  ? submenu[pathItems.level2].children[pathItems.level3].link
+                submenu[submenuItemIndex.level2].children[
+                  submenuItemIndex.level3
+                ].link !== '<nolink>'
+                  ? submenu[submenuItemIndex.level2].children[
+                      submenuItemIndex.level3
+                    ].link
                   : ''
               "
               >{{
-                submenu[pathItems.level2].children[pathItems.level3].title
-              }}</NuxtLink
-            >
+                submenu[submenuItemIndex.level2].children[
+                  submenuItemIndex.level3
+                ].title
+              }}
+            </NuxtLink>
           </li>
-          <li class="breadcrumb-item active" aria-current="page">
-            {{ submenu[pathItems.level2].children[pathItems.level3].title }}
+          <li v-else class="breadcrumb-item active" aria-current="page">
+            {{
+              submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
+                .title
+            }}
           </li>
         </template>
-        <template v-if="pathItems.level3 && pathItems.level4">
+        <template v-if="submenuItemIndex.level3 && submenuItemIndex.level4">
           <li class="breadcrumb-item active" aria-current="page">
             {{
-              submenu[pathItems.level2].children[pathItems.level3].children[
-                pathItems.level4
-              ].title
+              submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
+                .children[submenuItemIndex.level4].title
             }}
           </li>
         </template>

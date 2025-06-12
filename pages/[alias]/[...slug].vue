@@ -120,7 +120,7 @@ onMounted(() => {
       <article class="cus-article container-fluid d-flex flex-column">
         <ClientOnly>
           <template v-if="route.meta.pageType === 'page'">
-            <Breadcrumbs :page="referencedPage" :path-items="pathItems" />
+            <Breadcrumbs :page="referencedPage" :submenuItemIndex="pathItems" />
           </template>
         </ClientOnly>
         <ClientOnly>
