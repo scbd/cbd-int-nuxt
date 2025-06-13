@@ -56,7 +56,11 @@ const props = defineProps<{
         />
       </div>
       <NuxtLink
-        :to="`/${componentType}s`"
+        :to="
+          componentType === 'GBF Target'
+            ? '/gbf/targets'
+            : { path: `/${componentType}s` }
+        "
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
       >

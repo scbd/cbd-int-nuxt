@@ -248,12 +248,18 @@ if (props.component.type === "GBF Target") {
         :style="`background-image: url(${config.public.IMAGE_URL}/sites/default/files/gbf/GBF_Targets-${gbfTargetRef[0]}.png)`"
       >
         <div class="information">
-          <div class="title">{{ gbfTargetRef[1] }}</div>
-          <div v-if="component.summary" class="description">
-            {{ component.summary }}
+          <div class="title">
+            <NuxtLink :to="component.url">
+              {{ gbfTargetRef[1] }}
+            </NuxtLink>
           </div>
-          <div v-else>
-            {{ gbfTargetRef[2].trim() }}
+          <div v-if="component.summary" class="description">
+            <NuxtLink :to="component.url">{{ component.summary }}</NuxtLink>
+          </div>
+          <div v-else class="description">
+            <NuxtLink :to="component.url">{{
+              gbfTargetRef[2].trim()
+            }}</NuxtLink>
           </div>
         </div>
       </div>
@@ -266,7 +272,7 @@ if (props.component.type === "GBF Target") {
         <NuxtLink to="#">Relevant Resources</NuxtLink>
         <NuxtLink to="#">Indicators</NuxtLink>
       </div>
-      <NuxtLink to="#" class="view-target">View Target</NuxtLink>
+      <NuxtLink :to="component.url" class="view-target">View Target</NuxtLink>
     </div>
     <Loader
       v-else
