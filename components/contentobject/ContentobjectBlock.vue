@@ -265,12 +265,12 @@ if (props.component.type === "GBF Target") {
       </div>
       <div class="resources"></div>
       <div class="links">
-        <NuxtLink to="#">Why is this target important?</NuxtLink>
-        <NuxtLink to="#">Target Explanation</NuxtLink>
-        <NuxtLink to="#">Guiding Questions</NuxtLink>
-        <NuxtLink to="#">Links to other elements</NuxtLink>
-        <NuxtLink to="#">Relevant Resources</NuxtLink>
-        <NuxtLink to="#">Indicators</NuxtLink>
+        <NuxtLink :to="component.url">Why is this target important?</NuxtLink>
+        <NuxtLink :to="component.url">Target Explanation</NuxtLink>
+        <NuxtLink :to="component.url">Guiding Questions</NuxtLink>
+        <NuxtLink :to="component.url">Links to other elements</NuxtLink>
+        <NuxtLink :to="component.url">Relevant Resources</NuxtLink>
+        <NuxtLink :to="component.url">Indicators</NuxtLink>
       </div>
       <NuxtLink :to="component.url" class="view-target">View Target</NuxtLink>
     </div>
