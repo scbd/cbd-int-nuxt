@@ -38,6 +38,23 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     return `${city}${city && country ? "," : ""} ${country ?? ""}`;
   }
 };
+
+const gbfTargetRef = ref<string[]>([]);
+
+if (props.component.type === "GBF Target") {
+  const titleSplit = (props.component.title as string).split("-");
+
+  let targetNumber: number | string = Number(
+    titleSplit[0].trim().split(" ")[1]
+  );
+
+  if (targetNumber < 10) {
+    targetNumber = `0${targetNumber}`;
+  }
+  titleSplit.unshift(targetNumber as string);
+
+  gbfTargetRef.value = titleSplit;
+}
 </script>
 
 <template>
@@ -220,7 +237,48 @@ const objectLocation = (language: string, city?: string, country?: string) => {
     />
   </template>
 
-  <div v-else-if="component.type === 'gbf-target'" class="content-object"></div>
+  <template v-else-if="component.type === 'GBF Target'">
+    <div
+      v-if="gbfTargetsStatus.status === 'OK'"
+      class="content-object gbf-target"
+      :class="`gbf-${gbfTargetRef[1].replace(' ', '-').toLowerCase()}`"
+    >
+      <div
+        class="header"
+        :style="`background-image: url(${config.public.IMAGE_URL}/sites/default/files/gbf/GBF_Targets-${gbfTargetRef[0]}.png)`"
+      >
+        <div class="information">
+          <div class="title">
+            <NuxtLink :to="component.url">
+              {{ gbfTargetRef[1] }}
+            </NuxtLink>
+          </div>
+          <div v-if="component.summary" class="description">
+            <NuxtLink :to="component.url">{{ component.summary }}</NuxtLink>
+          </div>
+          <div v-else class="description">
+            <NuxtLink :to="component.url">{{
+              gbfTargetRef[2].trim()
+            }}</NuxtLink>
+          </div>
+        </div>
+      </div>
+      <div class="resources"></div>
+      <div class="links">
+        <NuxtLink :to="component.url">Why is this target important?</NuxtLink>
+        <NuxtLink :to="component.url">Target Explanation</NuxtLink>
+        <NuxtLink :to="component.url">Guiding Questions</NuxtLink>
+        <NuxtLink :to="component.url">Links to other elements</NuxtLink>
+        <NuxtLink :to="component.url">Relevant Resources</NuxtLink>
+        <NuxtLink :to="component.url">Indicators</NuxtLink>
+      </div>
+      <NuxtLink :to="component.url" class="view-target">View Target</NuxtLink>
+    </div>
+    <Loader
+      v-else
+      :class="notificationsStatus.status === 'error' ? 'error-loader' : ''"
+    />
+  </template>
 
   <template v-else-if="component.type === 'statement'">
     <div

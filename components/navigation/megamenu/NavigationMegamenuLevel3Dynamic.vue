@@ -2,6 +2,7 @@
 import type { fetchedMenuItem } from "~/types/drupalMenu";
 import getComponents from "~/composables/componentApi";
 import type { availableLanguages, searchParams } from "~/types/components";
+import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
 
 const { getArticles, getMeetings, getNotifications, getStatements } =
   getComponents();
@@ -20,10 +21,10 @@ const componentObject = {
 if (componentObject.component?.includes("News")) {
   try {
     if (!referencedArticles.value.length) {
-      const search_params: searchParams = {
-        q: "article",
+      const search_params: drupalEntitySearchParams = {
+        entity: "article",
         sort: ["-changed"],
-        rows: 3,
+        limit: 3,
       };
       await getArticles(search_params);
     }

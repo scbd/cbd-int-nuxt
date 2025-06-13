@@ -11,7 +11,10 @@ const props = defineProps<{
   <ClientOnly>
     <section
       class="content-row d-flex flex-column"
-      :class="componentType === 'update' ? 'recent-updates' : componentType"
+      :class="[
+        componentType === 'update' ? 'recent-updates' : componentType,
+        { 'gbf-targets': componentType === 'GBF Target' },
+      ]"
     >
       <div class="row-title">Recent {{ componentType }}s</div>
       <div class="content-wrapper d-flex">
@@ -32,6 +35,11 @@ const props = defineProps<{
           :component="notification"
         />
         <ContentobjectBlock
+          v-else-if="componentType === 'GBF Target'"
+          v-for="gbfTarget in components"
+          :component="gbfTarget"
+        />
+        <ContentobjectBlock
           v-else-if="componentType === 'statement'"
           v-for="statement in components"
           :component="statement"
@@ -48,7 +56,11 @@ const props = defineProps<{
         />
       </div>
       <NuxtLink
-        :to="`/${componentType}s`"
+        :to="
+          componentType === 'GBF Target'
+            ? '/gbf/targets'
+            : { path: `/${componentType}s` }
+        "
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
       >

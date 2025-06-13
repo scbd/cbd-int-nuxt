@@ -31,13 +31,13 @@ if (referencedPage.value) {
   if (submenu.value.length > 0) {
     submenuItems.value.length = 0;
     for await (const [level2Index, level2Item] of submenu.value.entries()) {
-      if (level2Item.link.includes(routeArray[routeArray.length - 1])) {
+      if (level2Item.link === route.path) {
         submenuItems.value.push(level2Item);
         displayChildren.value = level2Index;
         pathItems.value.level2 = level2Index;
       } else {
         for (const [level3Index, level3Item] of level2Item.children.entries()) {
-          if (level3Item.link.includes(routeArray[routeArray.length - 1])) {
+          if (level3Item.link === route.path) {
             submenuItems.value.push(level2Item);
             displayChildren.value = level2Index;
             pathItems.value.level2 = level2Index;
@@ -50,7 +50,7 @@ if (referencedPage.value) {
               level4Index,
               level4Item,
             ] of level3Item.children.entries()) {
-              if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
+              if (level4Item.link === route.path) {
                 submenuItems.value.push(level2Item);
                 displayChildren.value = level2Index;
                 displayVerticalNav.value = true;
@@ -98,7 +98,6 @@ onMounted(() => {
   );
 });
 </script>
-
 <template>
   <div class="main-wrapper">
     <ClientOnly>
@@ -120,7 +119,7 @@ onMounted(() => {
       <article class="cus-article container-fluid d-flex flex-column">
         <ClientOnly>
           <template v-if="route.meta.pageType === 'page'">
-            <Breadcrumbs :page="referencedPage" :submenuItemIndex="pathItems" />
+            <Breadcrumbs :page="referencedPage" :submenu-items="submenuItems" />
           </template>
         </ClientOnly>
         <ClientOnly>

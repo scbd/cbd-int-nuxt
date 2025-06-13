@@ -124,7 +124,7 @@ const languageSettings = useLanguageStore();
           >
             <NuxtLink
               class="nav-link dropdown-toggle"
-              :to="level1_item.link"
+              :to="level1_item.link !== '<nolink>' ? level1_item.link : ''"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
