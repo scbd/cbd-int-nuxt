@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     },
   },
   gtag: {
-    id: process.env.GTAG,
+    id: '',
   },
   site: { indexable: false },
   runtimeConfig: {
@@ -45,6 +45,7 @@ export default defineNuxtConfig({
       DRUPAL_CLIENT_ID: "",
       DRUPAL_SCOPE: "",
       SOLR_QUERY: "",
+      FRONTEND_URL: "",
       IMAGE_URL: "",
     },
   },

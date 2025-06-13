@@ -1,0 +1,30 @@
+version: 2.1
+
+jobs:
+  build:
+    working_directory: ~/scbd/cbd-int-nuxt
+    docker:
+      - image: cimg/base:2022.09
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH .
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push scbd/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build:
+          context: docker-hub
