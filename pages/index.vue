@@ -65,7 +65,7 @@ const gbfTargetsParams: drupalEntitySearchParams = {
     "filter[field_menu][operator]": "CONTAINS",
     "filter[field_menu][value]": "cbd-gbf",
   },
-  sort: ["-changed"],
+  sort: ["changed"],
   limit: 4,
 };
 
