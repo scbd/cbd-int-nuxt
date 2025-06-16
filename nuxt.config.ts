@@ -33,9 +33,10 @@ export default defineNuxtConfig({
       alwaysRedirect: true,
       fallbackLocale: "en",
     },
+    strategy: "no_prefix",
   },
   gtag: {
-    id: '',
+    id: "",
   },
   site: { indexable: false },
   runtimeConfig: {
