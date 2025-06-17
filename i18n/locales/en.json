@@ -1,6 +1,113 @@
-{ 
-    "page": {
-        "title": "Convention on Biological Diversity",
-        "description": "The Convention on Biological Diversity (CBD) is the first global agreement to cover all aspects of biological diversity: the conservation of biological diversity, the sustainable use of its components and the fair and equitable sharing of benefits arising from the use of genetic resources."
+{
+  "page": {
+    "title": "Convention on Biological Diversity",
+    "description": "The Convention on Biological Diversity (CBD) is the first global agreement to cover all aspects of biological diversity: the conservation of biological diversity, the sustainable use of its components and the fair and equitable sharing of benefits arising from the use of genetic resources.",
+
+    "gbf": {
+      "targets_submitted": "National targets submitted to the Secretariat"
     }
+  },
+
+  "navigation": {
+    "options_menu": {
+      "search": "Search",
+      "search_icon": "Search the Convention on Biological Diversity for relevant information",
+      "language_icon": "Change the language of the Convention on Biological Diversity website to one of the United Nations's official languages",
+      "login": "Login",
+      "login_icon": "Login to your Convention on Biological Diversity account",
+      "settings": "Settings",
+      "settings_icon": "Modify your Convention on Biological Diversity website settings"
+    },
+    "social_media": {
+      "follow": "Follow us on social media"
+    },
+    "sidebar": {
+      "menu_open": "Open menu",
+      "menu_close": "Close menu"
+    }
+  },
+
+  "components": {
+    "updates": {
+      "name": "update",
+      "name_plural": "updates",
+      "recent": "Recent updates",
+      "more": "More updates"
+    },
+    "articles": {
+      "name": "article",
+      "name_plural": "articles",
+      "recent": "Recent articles",
+      "more": "More articles",
+      "view": "Read on"
+    },
+    "meetings": {
+      "name": "meeting",
+      "name_plural": "meetings",
+      "recent": "Recent meetings",
+      "more": "More meetings",
+      "view": "View meeting"
+    },
+    "notifications": {
+      "name": "notifcation",
+      "name_plural": "notifcations",
+      "recent": "Recent notifications",
+      "more": "More notifications",
+      "view": "View notification",
+      "action_required": "Action required",
+      "subjects": "Subject(s)",
+      "recipients": "Recipient(s)",
+      "download": "Download notification in available languages",
+      "download_pdf": "Download this notification as a PDF.",
+      "download_doc": "Download this notification as a DOC."
+    },
+    "GBF_Targets": {
+      "name": "GBF target",
+      "name_plural": "GBF targets",
+      "recent": "Recent GBF targets",
+      "more": "More GBF targets",
+      "view": "View GBF target",
+      "quick_links": {
+        "important": "Why is this target important?",
+        "explanation": "Target explanation",
+        "guiding_questions": "Guiding questions",
+        "links": "Links to other elements",
+        "relevant_resources": "Relevant resources",
+        "indicators": "Indidcators"
+      }
+    },
+    "statements": {
+      "name": "statement",
+      "name_plural": "statements",
+      "recent": "Recent statements",
+      "more": "More statements",
+      "view": "View statement"
+    },
+    "portals": {
+      "name": "portal",
+      "name_plural": "portals",
+      "recent": "Recent portals",
+      "more": "More portals",
+      "view": "View portal"
+    },
+    "nbsaps": {
+      "name": "NBSAP",
+      "name_plural": "NBSAPs",
+      "recent": "Recent NBSAPs",
+      "more": "All submissions",
+      "view": "Read NBSAP"
+    }
+  },
+
+  "forms": {
+    "search_criteria": "Search Criteria",
+    "filter_and_sort": "Filter and Sort",
+    "title_contains": "Title Contains",
+    "filter": "Filter",
+    "search": "Search",
+    "search_terms": "Search Terms",
+    "files": "Files",
+    "year": "Year",
+    "year_any": "Any year"
+  }
 }

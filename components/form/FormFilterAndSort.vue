@@ -4,6 +4,7 @@ import getComponents from "~/composables/componentApi";
 
 const { getNotifications } = getComponents();
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 
 const props = defineProps<{
   searchParams: searchParams;
@@ -98,7 +99,7 @@ const searchHandler = async () => {
       data-bs-target="#searchForm"
       aria-controls="searchForm"
     >
-      Filter and Sort
+      {{ t("forms.filter_and_sort") }}
     </button>
 
     <form
@@ -108,7 +109,7 @@ const searchHandler = async () => {
       class="filter-and-sort-form collapse show"
     >
       <label for="fsTitle">
-        Title Contains
+        {{ t("forms.title_contains") }}
         <input
           v-model="inputFilterTitle"
           id="fsTitle"
@@ -127,10 +128,12 @@ const searchHandler = async () => {
       </label> -->
 
       <div class="filter-row row">
-        <div class="form_section-header">Filter</div>
+        <div class="form_section-header">{{ t("forms.filter") }}</div>
         <div class="form_section-options">
           <select v-model="selectFilterYear" name="" id="" class="form-select">
-            <option :value="0" :selected="true">Any year</option>
+            <option :value="0" :selected="true">
+              {{ t("forms.year_any") }}
+            </option>
             <option
               v-for="year of [...Array(new Date().getFullYear() + 1).keys()]
                 .slice(1991)
@@ -190,20 +193,24 @@ const searchHandler = async () => {
       <input
         class="btn cbd-btn-primary"
         type="submit"
-        value="Search"
+        :value="t('forms.search')"
         @click="searchHandler()"
       />
     </form>
     <div class="search-terms">
-      <span class="fw-bold">Search Terms:</span>
+      <span class="fw-bold">{{ t("forms.search_terms") }}:</span>
       <span v-show="displayQuery.title" class="badge bg-secondary">
-        Title contains - {{ displayQuery.title }}</span
+        {{ t("forms.title_contains") }} - {{ displayQuery.title }}</span
       >
       <span v-show="displayQuery.year" class="badge bg-secondary">
-        Year - {{ displayQuery.year > 0 ? displayQuery.year : "Any" }}</span
+        {{ t("forms.year") }} -
+        {{
+          displayQuery.year > 0 ? displayQuery.year : t("forms.year_any")
+        }}</span
       >
       <span v-if="displayQuery.recipient" class="badge bg-secondary">
-        Recipient - {{ decodeURIComponent(displayQuery.recipient) }}
+        {{ t("components.notifications.recipients") }} -
+        {{ decodeURIComponent(displayQuery.recipient) }}
       </span>
     </div>
   </div>

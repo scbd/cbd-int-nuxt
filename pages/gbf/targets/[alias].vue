@@ -5,6 +5,7 @@ import getPages from "~/composables/pageApi";
 
 const route = useRoute();
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 
 const submenuItems = ref<fetchedMenuItem[]>([]);
 
@@ -129,7 +130,7 @@ onMounted(() => {
           ></section>
         </ClientOnly>
         <section v-if="referencedPage?.field_menu === 'cbd-gbf'">
-          <h2>National targets submitted to the Secretariat</h2>
+          <h2>{{ t("page.gbf.targets_submitted") }}</h2>
           <iframe
             ref="embedIframe"
             class="embedIframe"

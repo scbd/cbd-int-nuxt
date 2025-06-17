@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const config = useRuntimeConfig();
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 
 const handlerImage = (component: componentSanitized) => {
   const languages = ["ar", "en", "es", "fr", "ru", "zh"];
@@ -73,7 +74,7 @@ if (props.component.type === "GBF Target") {
       <div class="information">
         <div class="taxonomy">
           <div class="source">{{ "CBD" }}</div>
-          <div class="type">{{ "Article" }}</div>
+          <div class="type">{{ t("components.articles.name") }}:</div>
         </div>
         <div class="date">
           {{
@@ -90,7 +91,9 @@ if (props.component.type === "GBF Target") {
         {{ component.content ?? "Description Placeholder" }}
       </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="component.url" class="read-on">Read on</NuxtLink>
+        <NuxtLink :to="component.url" class="read-on">{{
+          t("components.articles.view")
+        }}</NuxtLink>
       </div>
     </div>
     <Loader
@@ -155,9 +158,9 @@ if (props.component.type === "GBF Target") {
         }}
       </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="component.url" class="read-on"
-          >View {{ component.type }}</NuxtLink
-        >
+        <NuxtLink :to="component.url" class="read-on">{{
+          t("components.meetings.view")
+        }}</NuxtLink>
       </div>
     </div>
     <Loader
@@ -204,18 +207,21 @@ if (props.component.type === "GBF Target") {
         }}
       </div>
       <div v-show="component.date_action" class="action-required">
+        {{ t("components.notifications.action_required") }}:
         {{
-          `Action required: 
-          ${Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }).format(component.date_action)}`
+          }).format(component.date_action)
         }}
       </div>
       <div v-show="component.themes" class="subjects">
+        {{ t("components.notifications.subjects") }}:
         {{
-          `Subject(s): ${(component.themes as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+          (component.themes as availableLanguages)[
+            languageSettings.active_language.slice(0, 2)
+          ]
         }}
       </div>
       <div class="description">
@@ -226,9 +232,9 @@ if (props.component.type === "GBF Target") {
         }}
       </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="component.url" class="read-on"
-          >View {{ component.type }}</NuxtLink
-        >
+        <NuxtLink :to="component.url" class="read-on">{{
+          t("components.notifications.view")
+        }}</NuxtLink>
       </div>
     </div>
     <Loader
@@ -265,14 +271,28 @@ if (props.component.type === "GBF Target") {
       </div>
       <div class="resources"></div>
       <div class="links">
-        <NuxtLink :to="component.url">Why is this target important?</NuxtLink>
-        <NuxtLink :to="component.url">Target Explanation</NuxtLink>
-        <NuxtLink :to="component.url">Guiding Questions</NuxtLink>
-        <NuxtLink :to="component.url">Links to other elements</NuxtLink>
-        <NuxtLink :to="component.url">Relevant Resources</NuxtLink>
-        <NuxtLink :to="component.url">Indicators</NuxtLink>
+        <NuxtLink :to="component.url">{{
+          t("components.GBF_Targets.quick_links.important")
+        }}</NuxtLink>
+        <NuxtLink :to="component.url">{{
+          t("components.GBF_Targets.quick_links.explanation")
+        }}</NuxtLink>
+        <NuxtLink :to="component.url">{{
+          t("components.GBF_Targets.quick_links.guiding_questions")
+        }}</NuxtLink>
+        <NuxtLink :to="component.url">{{
+          t("components.GBF_Targets.quick_links.links")
+        }}</NuxtLink>
+        <NuxtLink :to="component.url">{{
+          t("components.GBF_Targets.quick_links.relevant_resources")
+        }}</NuxtLink>
+        <NuxtLink :to="component.url">{{
+          t("components.GBF_Targets.quick_links.indicators")
+        }}</NuxtLink>
       </div>
-      <NuxtLink :to="component.url" class="view-target">View Target</NuxtLink>
+      <NuxtLink :to="component.url" class="view-target">{{
+        t("components.GBF_Targets.view")
+      }}</NuxtLink>
     </div>
     <Loader
       v-else
@@ -310,9 +330,9 @@ if (props.component.type === "GBF Target") {
         }}
       </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="component.url" class="read-on" target="_blank"
-          >View {{ component.type }}</NuxtLink
-        >
+        <NuxtLink :to="component.url" class="read-on" target="_blank">{{
+          t("components.statements.view")
+        }}</NuxtLink>
       </div>
     </div>
     <Loader
@@ -334,6 +354,11 @@ if (props.component.type === "GBF Target") {
         />
         <div class="title">{{ component.title }}</div>
       </NuxtLink>
+      <div class="read-on-wrapper">
+        <NuxtLink :to="component.url" class="read-on">{{
+          t("components.portals.view")
+        }}</NuxtLink>
+      </div>
     </div>
     <Loader
       v-else
@@ -364,9 +389,9 @@ if (props.component.type === "GBF Target") {
         }}
       </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="component.url" class="read-on" target="_blank"
-          >Read {{ component.type }}</NuxtLink
-        >
+        <NuxtLink :to="component.url" class="read-on" target="_blank">{{
+          t("components.nbsaps.view")
+        }}</NuxtLink>
       </div>
     </div>
     <Loader

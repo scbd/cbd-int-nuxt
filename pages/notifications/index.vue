@@ -3,6 +3,7 @@ import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
 const route = useRoute();
+const { t } = useI18n();
 
 const { getNotifications } = getComponents();
 
@@ -36,8 +37,8 @@ definePageMeta({
 <template>
   <article class="cus-article container-xxl d-flex flex-column">
     <section>
-      <h1>Notifications</h1>
-      <p>Search Criteria</p>
+      <h1>{{ t("components.notifications.name_plural") }}</h1>
+      <p>{{ t("forms.search_criteria") }}</p>
     </section>
     <section>
       <FormFilterAndSort :search-params="notificationsParams" />

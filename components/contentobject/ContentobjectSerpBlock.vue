@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const config = useRuntimeConfig();
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 
 const handlerImage = (component: componentSanitized) => {
   const languages = ["ar", "en", "es", "fr", "ru", "zh"];
@@ -94,21 +95,24 @@ const objectLocation = (
             }}
           </NuxtLink>
           <div v-show="component.date_action" class="action-required">
+            {{ t("components.notifications.action_required") }}:
             {{
-              `Action required: 
-            ${Intl.DateTimeFormat(
-              languageSettings.active_language.slice(0, 2),
-              {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }
-            ).format(component.date_action)}`
+              Intl.DateTimeFormat(
+                languageSettings.active_language.slice(0, 2),
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              ).format(component.date_action)
             }}
           </div>
           <div v-show="component.themes" class="subjects">
+            {{ t("components.notifications.subjects") }}:
             {{
-              `Subject(s): ${(component.themes as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+              (component.themes as availableLanguages)[
+                languageSettings.active_language.slice(0, 2)
+              ]
             }}
           </div>
           <div class="description">
@@ -121,7 +125,7 @@ const objectLocation = (
         </div>
         <template v-if="component.files?.length">
           <div class="files">
-            <div class="files-title">Files</div>
+            <div class="files-title">{{ t("forms.files") }}</div>
             <div class="files-available">
               <NuxtLink
                 v-for="file in component.files"
@@ -135,12 +139,12 @@ const objectLocation = (
                 <img
                   v-show="file.type.includes('pdf')"
                   src="/images/icons/icon_file-pdf.svg"
-                  :alt="`Download ${component.title} Notification as a PDF Document`"
+                  :alt="t('components.notifications.download_pdf')"
                 />
                 <img
                   v-show="file.type.includes('doc')"
                   src="/images/icons/icon_file-pdf.svg"
-                  :alt="`Download ${component.title} Notification as a DOC Document`"
+                  :alt="t('components.notifications.download_doc')"
                 />
               </NuxtLink>
             </div>
@@ -151,7 +155,9 @@ const objectLocation = (
             :to="component.url"
             :notification="component"
             class="btn cbd-btn-more-content"
-            >View {{ component.type }}</NuxtLink
+            >{{
+              t(`components.${component.type.replace(" ", "_")}s.view`)
+            }}</NuxtLink
           >
         </div>
       </div>
