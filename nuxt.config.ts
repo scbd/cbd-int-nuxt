@@ -46,6 +46,7 @@ export default defineNuxtConfig({
       DRUPAL_CLIENT_ID: "",
       DRUPAL_SCOPE: "",
       SOLR_QUERY: "",
+      SOLR_THESAURUS: "",
       FRONTEND_URL: "",
       IMAGE_URL: "",
     },
