@@ -3,6 +3,7 @@
     "title": "Convention on Biological Diversity",
     "description": "The Convention on Biological Diversity (CBD) is the first global agreement to cover all aspects of biological diversity: the conservation of biological diversity, the sustainable use of its components and the fair and equitable sharing of benefits arising from the use of genetic resources."
   },
+
   "navigation": {
     "options_menu": {
       "search": "Search",
@@ -98,9 +99,9 @@
   },
 
   "content_pages": {
-        "gbf": {
-            "targets_submitted": "National targets submitted to the Secretariat"
-        }
+    "gbf": {
+      "targets_submitted": "National targets submitted to the Secretariat"
+    }
   },
 
   "forms": {
