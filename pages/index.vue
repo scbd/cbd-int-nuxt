@@ -98,6 +98,8 @@ const sortedUpdates = updates
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
 
+const gbfSliceInt = Math.floor(Math.random() * 19);
+
 watch(languageSettings, async () => {
   await getArticles(articlesParams);
   await getGbfTargets(gbfTargetsParams);
@@ -111,7 +113,7 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <Hero :article="referencedArticles" />
+    <Hero :articles="referencedArticles" />
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">
@@ -127,7 +129,7 @@ definePageMeta({
       />
       <ContentobjectRow
         component-type="GBF Target"
-        :components="referencedGbfTargets"
+        :components="referencedGbfTargets.slice(gbfSliceInt, gbfSliceInt + 3)"
       />
       <ContentobjectRow
         component-type="statement"

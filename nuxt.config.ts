@@ -46,7 +46,6 @@ export default defineNuxtConfig({
       DRUPAL_CLIENT_ID: "",
       DRUPAL_SCOPE: "",
       GAIA: "",
-      SOLR_QUERY: "",
       FRONTEND_URL: "",
       IMAGE_URL: ""
     },

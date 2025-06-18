@@ -43,16 +43,16 @@ const objectLocation = (language: string, city?: string, country?: string) => {
 const gbfTargetRef = ref<string[]>([]);
 
 if (props.component.type === "GBF Target") {
-  const titleSplit = (props.component.title as string).split("-");
+  const title =
+    props.component.title_short?.[languageSettings.active_language] ??
+    props.component.title_short!.en;
+  const titleSplit = title?.split(".");
+  const targetTitle = titleSplit?.[0].replace(/GBF-T0|GBF-T/, "Target ");
+  const targetImage = titleSplit?.[0].replace("-T", "_Targets-");
 
-  let targetNumber: number | string = Number(
-    titleSplit[0].trim().split(" ")[1]
-  );
-
-  if (targetNumber < 10) {
-    targetNumber = `0${targetNumber}`;
-  }
-  titleSplit.unshift(targetNumber as string);
+  titleSplit![0] = targetTitle;
+  titleSplit[1] = titleSplit[1].trim();
+  titleSplit.push(targetImage);
 
   gbfTargetRef.value = titleSplit;
 }
@@ -247,24 +247,20 @@ if (props.component.type === "GBF Target") {
     <div
       v-if="gbfTargetsStatus.status === 'OK'"
       class="content-object gbf-target"
-      :class="`gbf-${gbfTargetRef[1].replace(' ', '-').toLowerCase()}`"
+      :class="`gbf-target-${component.identifier?.slice(-2)}`"
     >
       <div
         class="header"
-        :style="`background-image: url(${config.public.IMAGE_URL}/sites/default/files/gbf/GBF_Targets-${gbfTargetRef[0]}.png)`"
+        :style="`background-image: url(${config.public.IMAGE_URL}/sites/default/files/gbf/${gbfTargetRef[2]}.png)`"
       >
         <div class="information">
           <div class="title">
-            <NuxtLink :to="component.url">
-              {{ gbfTargetRef[1] }}
-            </NuxtLink>
+            <NuxtLink :to="component.url"> {{ gbfTargetRef[0] }} </NuxtLink>
           </div>
-          <div v-if="component.summary" class="description">
-            <NuxtLink :to="component.url">{{ component.summary }}</NuxtLink>
-          </div>
-          <div v-else class="description">
+          <div v-if="component.description_long" class="description">
             <NuxtLink :to="component.url">{{
-              gbfTargetRef[2].trim()
+              component.description_long[languageSettings.active_language] ??
+              component.description_long["en"]
             }}</NuxtLink>
           </div>
         </div>

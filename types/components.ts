@@ -84,10 +84,10 @@ interface componentNotification extends componentBase {
 }
 
 interface componentGbfTarget extends componentBase {
-  date_edited?: Date;
-  content?: string;
-  summary?: string;
-  field_menu?: string;
+  identifier?: string;
+  title_short?: availableLanguages;
+  description?: string;
+  description_long?: availableLanguages;
 }
 
 interface componentStatement extends componentBase {}
@@ -221,20 +221,12 @@ export interface componentMeetingRaw {
 }
 
 export interface componentGbfTargetRaw {
-  attributes: {
-    langcode: string;
-    title: string;
-    created: string;
-    changed: string;
-    path: {
-      alias: string;
-    };
-    body: {
-      processed: string;
-      summary?: string;
-    };
-    field_menu: string;
-  };
+  identifier: string;
+  name: string;
+  title: availableLanguages;
+  shortTitle: availableLanguages;
+  description: string;
+  longDescription: availableLanguages;
 }
 
 export interface componentStatementRaw {
