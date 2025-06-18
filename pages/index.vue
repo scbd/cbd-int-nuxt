@@ -113,7 +113,7 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <Hero :article="referencedArticles" />
+    <Hero :articles="referencedArticles" />
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">

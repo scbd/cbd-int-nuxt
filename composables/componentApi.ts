@@ -39,6 +39,9 @@ export default function getComponents() {
 
   const drupalToken = useState<drupalToken>("drupal_token").value;
 
+  const solrURI = "/api/v2013/index?";
+  const thesaurusURI = "/api/v2013/thesaurus/domains";
+
   const getArticles = async (searchParameters: drupalEntitySearchParams) => {
     articlesStatus.value.status = "pending";
     const langCode = languageSettings.active_language;
@@ -187,7 +190,7 @@ export default function getComponents() {
       .join("&");
 
     try {
-      const response = await fetch(`${config.public.SOLR_QUERY}?${params}`, {
+      const response = await fetch(`${config.public.GAIA}${solrURI}${params}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -258,7 +261,7 @@ export default function getComponents() {
 
     try {
       const response = await fetch(
-        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        `${config.public.GAIA}${solrURI}${params.toString()}`,
         {
           method: "GET",
           headers: {
@@ -329,7 +332,7 @@ export default function getComponents() {
 
     try {
       const response = await fetch(
-        `${config.public.SOLR_THESAURUS}/GBF-TARGETS/terms`,
+        `${config.public.GAIA}${thesaurusURI}/GBF-TARGETS/terms`,
         {
           method: "GET",
           headers: {
@@ -379,7 +382,7 @@ export default function getComponents() {
 
     try {
       const response = await fetch(
-        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        `${config.public.GAIA}${solrURI}${params.toString()}`,
         {
           method: "GET",
           headers: {
@@ -484,7 +487,7 @@ export default function getComponents() {
 
     try {
       const response = await fetch(
-        `${config.public.SOLR_QUERY}?${params.toString()}`,
+        `${config.public.GAIA}${solrURI}${params.toString()}`,
         {
           method: "GET",
           headers: {

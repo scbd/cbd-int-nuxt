@@ -130,7 +130,7 @@ onMounted(() => {
           ></section>
         </ClientOnly>
         <section v-if="referencedPage?.field_menu === 'cbd-gbf'">
-          <h2>{{ t("page.gbf.targets_submitted") }}</h2>
+          <h2>{{ t("content_pages.gbf.targets_submitted") }}</h2>
           <iframe
             ref="embedIframe"
             class="embedIframe"
