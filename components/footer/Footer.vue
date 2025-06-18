@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 </script>
 
 <template>
@@ -53,7 +54,7 @@ const languageSettings = useLanguageStore();
         </nav>
 
         <nav class="a-part-of">
-          <div class="nav-title">A Part Of</div>
+          <div class="nav-title">{{ t("navigation.footer.a_part_of") }}</div>
           <ul>
             <li>
               <NuxtLink to="//un.org" target="_blank" rel="noopener noreferrer"

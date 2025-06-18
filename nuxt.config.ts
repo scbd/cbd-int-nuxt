@@ -33,9 +33,10 @@ export default defineNuxtConfig({
       alwaysRedirect: true,
       fallbackLocale: "en",
     },
+    strategy: "no_prefix",
   },
   gtag: {
-    id: '',
+    id: "",
   },
   site: { indexable: false },
   runtimeConfig: {
@@ -44,9 +45,9 @@ export default defineNuxtConfig({
       DRUPAL_URL: "",
       DRUPAL_CLIENT_ID: "",
       DRUPAL_SCOPE: "",
-      SOLR_QUERY: "",
+      GAIA: "",
       FRONTEND_URL: "",
-      IMAGE_URL: "",
+      IMAGE_URL: ""
     },
   },
   css: ["~/assets/scss/styles.scss"],

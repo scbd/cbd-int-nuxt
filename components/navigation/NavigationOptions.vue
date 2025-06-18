@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 </script>
 
 <template>
@@ -9,9 +10,11 @@ const languageSettings = useLanguageStore();
         <NuxtLink class="nav-link" to="#" role="button">
           <NuxtImg
             src="/images/icons/icon_nav-search_outline.svg"
-            alt="Search Icon"
+            :alt="t('navigation.options_menu.search_icon')"
           />
-          <span class="nav-options-search-slot">Search</span>
+          <span class="nav-options-search-slot">{{
+            t("navigation.options_menu.search")
+          }}</span>
         </NuxtLink>
       </li>
       <li class="nav-item">
@@ -28,7 +31,7 @@ const languageSettings = useLanguageStore();
           >
             <NuxtImg
               src="/images/icons/icon_nav-language_outline.svg"
-              alt="Language Selection Icon"
+              :alt="t('navigation.options_menu.language_icon')"
             />
             <span class="nav-options-current-lang-slot">
               {{ language.label }}
@@ -56,18 +59,22 @@ const languageSettings = useLanguageStore();
         <NuxtLink class="nav-link" to="#" role="button">
           <NuxtImg
             src="/images/icons/icon_nav-account_outline.svg"
-            alt="Login Icon"
+            :alt="t('navigation.options_menu.login_icon')"
           />
-          <span class="nav-options-login-slot">Login</span>
+          <span class="nav-options-login-slot">{{
+            t("navigation.options_menu.login")
+          }}</span>
         </NuxtLink>
       </li>
       <li class="nav-item">
         <NuxtLink class="nav-link" to="#" role="button">
           <NuxtImg
             src="/images/icons/icon_nav-settings_outline.svg"
-            alt="Settings Icon"
+            :alt="t('navigation.options_menu.settings_icon')"
           />
-          <span class="nav-options-settings-slot">Settings</span>
+          <span class="nav-options-settings-slot">{{
+            t("navigation.options_menu.settings")
+          }}</span>
         </NuxtLink>
       </li>
     </ul>

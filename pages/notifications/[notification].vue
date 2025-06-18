@@ -10,6 +10,7 @@ import getComponents from "~/composables/componentApi";
 const { getNotifications } = getComponents();
 const route = useRoute();
 const languageSettings = useLanguageStore();
+const { t } = useI18n();
 
 const props = defineProps<{
   notification?: componentSanitized;
@@ -73,7 +74,9 @@ definePageMeta({
   <article class="cus-article container-xxl d-flex flex-column page-component">
     <ClientOnly>
       <section v-for="notification in referencedNotifications">
-        <h1>Notification {{ notification.symbol }}</h1>
+        <h1>
+          {{ t("components.notifications.name") }} {{ notification.symbol }}
+        </h1>
 
         <div class="content-object">
           <div class="information">
@@ -97,13 +100,13 @@ definePageMeta({
               </template>
             </div>
             <div v-show="notification.date_action" class="action-required">
+              {{ t("components.notifications.action_required") }}:
               {{
-                `Action required: 
-            ${Intl.DateTimeFormat(languageSettings.active_language, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(notification.date_action)}`
+                Intl.DateTimeFormat(languageSettings.active_language, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(notification.date_action)
               }}
             </div>
             <div class="description">
@@ -116,14 +119,16 @@ definePageMeta({
           </div>
           <div class="subjects-recipients">
             <div v-show="notification.recipient" class="recipients">
-              <span class="fw-bold">Recipient(s): </span>
+              <span class="fw-bold"
+                >{{ t("components.notifications.recipients") }}:
+              </span>
               <NuxtLink
                 v-for="recipient of notification.recipient"
                 @click="
                   toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${encodeURIComponent(recipient)}*)`
                 "
                 :to="{
-                  name: `notifications___en`,
+                  name: `notifications`,
                 }"
                 class="badge"
               >
@@ -138,7 +143,9 @@ definePageMeta({
               "
               class="subjects"
             >
-              <span class="fw-bold">Subject(s): </span>
+              <span class="fw-bold"
+                >{{ t("components.notifications.subjects") }}:
+              </span>
               {{
                 `${(notification.themes as availableLanguages)[languageSettings.active_language]}`
               }}
@@ -147,7 +154,7 @@ definePageMeta({
           <template v-if="notification.files?.length">
             <div class="files">
               <div class="files-title">
-                Download notification in available languages
+                {{ t("components.notifications.download") }}
               </div>
               <div class="files-available">
                 <NuxtLink
@@ -164,12 +171,12 @@ definePageMeta({
                   <img
                     v-show="file.type.includes('pdf')"
                     src="/images/icons/icon_file-pdf.svg"
-                    :alt="`Download ${notification.title} Notification as a PDF Document`"
+                    :alt="t('components.notifications.download_pdf')"
                   />
                   <img
                     v-show="file.type.includes('doc')"
                     src="/images/icons/icon_file-pdf.svg"
-                    :alt="`Download ${notification.title} Notification as a DOC Document`"
+                    :alt="t('components.notifications.download_doc')"
                   />
                 </NuxtLink>
               </div>

@@ -5,6 +5,8 @@ const props = defineProps<{
   componentType: string;
   components: componentSanitized[];
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -16,7 +18,9 @@ const props = defineProps<{
         { 'gbf-targets': componentType === 'GBF Target' },
       ]"
     >
-      <div class="row-title">Recent {{ componentType }}s</div>
+      <div class="row-title">
+        {{ t(`components.${componentType.replace(" ", "_")}s.recent`) }}
+      </div>
       <div class="content-wrapper d-flex">
         <ContentobjectBlock
           v-if="componentType === 'update'"
@@ -64,11 +68,7 @@ const props = defineProps<{
         class="btn cbd-btn cbd-btn-outline-more-content"
         role="button"
       >
-        {{
-          componentType === "nbsap"
-            ? "All submissions"
-            : `More ${componentType}s`
-        }}
+        {{ t(`components.${componentType.replace(" ", "_")}s.more`) }}
       </NuxtLink>
     </section>
   </ClientOnly>
