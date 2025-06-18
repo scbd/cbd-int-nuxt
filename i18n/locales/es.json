@@ -2,5 +2,116 @@
     "page": {
         "title": "Convenio sobre la Diversidad Biológica",
         "description": "El Convenio sobre la Diversidad Biológica (CDB) es el primer acuerdo mundial que abarca todos los aspectos de la diversidad biológica: la conservación de la diversidad biológica, la utilización sostenible de sus componentes y el reparto justo y equitativo de los beneficios derivados de la utilización de los recursos genéticos."
+  },
+  "navigation": {
+    "options_menu": {
+      "search": "Búsqueda",
+      "search_icon": "Buscar información pertinente en el Convenio sobre la Diversidad Biológica",
+      "language_icon": "Cambiar el idioma del sitio web del Convenio sobre la Diversidad Biológica a una de las lenguas oficiales de las Naciones Unidas.",
+      "login": "Acceso",
+      "login_icon": "Acceda a su cuenta del Convenio sobre la Diversidad Biológica",
+      "settings": "Configuraciones",
+      "settings_icon": "Modifique la configuración de su sitio web del Convenio sobre la Diversidad Biológica"
+    },
+    "social_media": {
+      "follow": "Síganos en las redes sociales"
+    },
+    "sidebar": {
+      "menu_open": "Abrir menú",
+      "menu_close": "Cerrar menú"
+    },
+    "footer": {
+      "a_part_of": "Una parte de"
     }
+  },
+
+  "components": {
+    "updates": {
+      "name": "actualización",
+      "name_plural": "actualizaciones",
+      "recent": "Actualizaciones recientes",
+      "more": "Más actualizaciones"
+    },
+    "articles": {
+      "name": "artículo",
+      "name_plural": "artículos",
+      "recent": "Artículos recientes",
+      "more": "Más artículos",
+      "view": "Leer más"
+    },
+    "meetings": {
+      "name": "reunión",
+      "name_plural": "reuniones",
+      "recent": "Reuniones recientes",
+      "more": "Más reuniones",
+      "view": "Ver la reunión"
+    },
+    "notifications": {
+      "name": "notificación",
+      "name_plural": "notificaciones",
+      "recent": "Notificaciones recientes",
+      "more": "Más notificaciones",
+      "view": "Ver la notificación",
+      "action_required": "Acción necesaria",
+      "subjects": "Asunto(s)",
+      "recipients": "Destinatario(s)",
+      "download": "Descarga esta notificación en los idiomas disponibles",
+      "download_pdf": "Descargue esta notificación en formato PDF.",
+      "download_doc": "Descargue esta notificación en formato DOC."
+    },
+    "GBF_Targets": {
+      "name": "Objetivo GBF",
+      "name_plural": "Objetivos del GBF",
+      "recent": "Objetivos recientes del GBF",
+      "more": "Más objetivos del GBF",
+      "view": "Ver el objetivo GBF",
+      "quick_links": {
+        "important": "¿Por qué es importante este objetivo?",
+        "explanation": "Explicación del objetivo",
+        "guiding_questions": "Preguntas orientativas",
+        "links": "Enlaces a otros elementos",
+        "relevant_resources": "Recursos pertinentes",
+        "indicators": "Indicadores"
+      }
+    },
+    "statements": {
+      "name": "declaración",
+      "name_plural": "declaraciones",
+      "recent": "Declaraciones recientes",
+      "more": "Más declaraciones",
+      "view": "Ver la declaración"
+    },
+    "portals": {
+      "name": "portal",
+      "name_plural": "portales",
+      "recent": "Portales recientes",
+      "more": "Más portales",
+      "view": "Ver el portal"
+    },
+    "nbsaps": {
+      "name": "EPANB",
+      "name_plural": "EPANBs",
+      "recent": "EPANBs recientes",
+      "more": "Todos los envíos",
+      "view": "Leer el EPANB"
+    }
+  },
+
+  "content_pages": {
+        "gbf": {
+            "targets_submitted": "Objetivos nacionales enviados a la Secretaría"
+        }
+  },
+
+  "forms": {
+    "search_criteria": "Criterios de Búsqueda",
+    "filter_and_sort": "Filtrar y Clasificar",
+    "title_contains": "Título Contiene",
+    "filter": "Filtrar",
+    "search": "Buscar",
+    "search_terms": "Términos de la Búsqueda",
+    "files": "Ficheros",
+    "year": "Año",
+    "year_any": "Cualquier año"
+  }
 }

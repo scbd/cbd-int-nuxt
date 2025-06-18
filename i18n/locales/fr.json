@@ -2,5 +2,116 @@
     "page": {
         "title": "Convention sur la Diversité Biologique",
         "description": "La Convention sur la diversité biologique (CDB) est le premier accord mondial à couvrir tous les aspects de la diversité biologique : la conservation de la diversité biologique, l'utilisation durable de ses éléments et le partage juste et équitable des avantages découlant de l'utilisation des ressources génétiques."
+  },
+  "navigation": {
+    "options_menu": {
+      "search": "Recherche",
+      "search_icon": "Recherche d'informations pertinentes dans la Convention sur la diversité biologique",
+      "language_icon": "Changer la langue du site web de la Convention sur la diversité biologique pour qu'elle soit l'une des langues officielles des Nations unies.",
+      "login": "Connexion",
+      "login_icon": "Connectez-vous à votre compte de la Convention sur la Diversité Biologique",
+      "settings": "Paramètres",
+      "settings_icon": "Modifier les paramètres de votre site web sur la Convention sur la Diversité Biologique"
+    },
+    "social_media": {
+      "follow": "Suivez-nous sur les médias sociaux"
+    },
+    "sidebar": {
+      "menu_open": "Ouvrir le menu",
+      "menu_close": "Fermer le menu"
+    },
+    "footer": {
+      "a_part_of": "Une partie du"
     }
+  },
+
+  "components": {
+    "updates": {
+      "name": "mise à jour",
+      "name_plural": "mises à jour",
+      "recent": "Mises à jour récentes",
+      "more": "Plus de mises à jour"
+    },
+    "articles": {
+      "name": "article",
+      "name_plural": "articles",
+      "recent": "Articles récents",
+      "more": "Plus d'articles",
+      "view": "Lire la suite"
+    },
+    "meetings": {
+      "name": "réunion",
+      "name_plural": "réunions",
+      "recent": "Réunions récentes",
+      "more": "Plus de réunions",
+      "view": "Voir la réunion"
+    },
+    "notifications": {
+      "name": "notification",
+      "name_plural": "notifications",
+      "recent": "Notifications récentes",
+      "more": "Plus de notifications",
+      "view": "Voir la notification",
+      "action_required": "Action requise",
+      "subjects": "Sujet(s)",
+      "recipients": "Destinataire(s)",
+      "download": "Télécharger la notification dans les langues disponibles",
+      "download_pdf": "Télécharger cette notification au format PDF.",
+      "download_doc": "Télécharger cette notification au format DOC."
+    },
+    "GBF_Targets": {
+      "name": "Objectif du GBF",
+      "name_plural": "Objectifs du GBF",
+      "recent": "Objectifs récents du GBF",
+      "more": "Plus d'objectifs pour le GBF",
+      "view": "Voir l'objectif de GBF",
+      "quick_links": {
+        "important": "Pourquoi cet objectif est-il important?",
+        "explanation": "Explication de l'objectif",
+        "guiding_questions": "Questions directrices",
+        "links": "Liens vers d'autres éléments",
+        "relevant_resources": "Ressources pertinentes",
+        "indicators": "Indicateurs"
+      }
+    },
+    "statements": {
+      "name": "déclaration",
+      "name_plural": "déclarations",
+      "recent": "Déclarations récentes",
+      "more": "Plus de déclarations",
+      "view": "Voir la déclaration"
+    },
+    "portals": {
+      "name": "portail",
+      "name_plural": "portails",
+      "recent": "Portails récents",
+      "more": "Plus de portails",
+      "view": "Voir le portail"
+    },
+    "nbsaps": {
+      "name": "PNAB",
+      "name_plural": "PNAB",
+      "recent": "Plans d'action nationaux récents",
+      "more": "Toutes les soumissions",
+      "view": "Lire le PNAB"
+    }
+  },
+
+  "content_pages": {
+        "gbf": {
+            "targets_submitted": "Objectifs nationaux soumis au Secrétariat"
+        }
+  },
+
+  "forms": {
+    "search_criteria": "Critères de Recherche",
+    "filter_and_sort": "Filtrer et Trier",
+    "title_contains": "Titre Contient",
+    "filter": "Filtre",
+    "search": "Recherche",
+    "search_terms": "Termes de Recherche",
+    "files": "Dossiers",
+    "year": "Année",
+    "year_any": "Chaque année"
+  }
 }

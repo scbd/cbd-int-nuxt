@@ -1,6 +1,120 @@
 { 
     "page": {
         "title": "《生物多样性公约》",
-        "description": "生物多样性公约》（CBD）是第一份涵盖生物多样性所有方面的全球性协定：保护生物多样性、可持续利用生物多样性的组成部分以及公平公正地分享利用遗传资源所产生的惠益。"
+        "description": "生物多样性公约》（CBD）是第一份涵盖生物多样性所有方面的全球性协定：保护生物多样性、可持续利用生物多样性的组成部分以及公平公正地分享利用遗传资源所产生的惠益。",
+        "gbf": {
+            "targets_submitted": "向秘书处提交的国家目标"
+        }
+  },
+  "navigation": {
+    "options_menu": {
+      "search": "搜索",
+      "search_icon": "搜索《生物多样性公约》的相关信息",
+      "language_icon": "将《生物多样性公约》网站的语言更改为联合国正式语文之一",
+      "login": "登录",
+      "login_icon": "登录您的《生物多样性公约》账户",
+      "settings": "设置",
+      "settings_icon": "修改《生物多样性公约》网站设置"
+    },
+    "social_media": {
+      "follow": "在社交媒体上关注我们"
+    },
+    "sidebar": {
+      "menu_open": "打开菜单",
+      "menu_close": "关闭菜单"
+    },
+    "footer": {
+      "a_part_of": "的一部分"
     }
+  },
+
+  "components": {
+    "updates": {
+      "name": "更新",
+      "name_plural": "更新",
+      "recent": "最新更新",
+      "more": "更多更新"
+    },
+    "articles": {
+      "name": "条",
+      "name_plural": "文章",
+      "recent": "最新文章",
+      "more": "更多文章",
+      "view": "继续阅读"
+    },
+    "meetings": {
+      "name": "会议",
+      "name_plural": "会议",
+      "recent": "近期会议",
+      "more": "更多会议",
+      "view": "查看会议"
+    },
+    "notifications": {
+      "name": "通知",
+      "name_plural": "通知",
+      "recent": "最近的通知",
+      "more": "更多通知",
+      "view": "查看通知",
+      "action_required": "需要采取的行动",
+      "subjects": "主题",
+      "recipients": "受援国",
+      "download": "以可用语言下载通知",
+      "download_pdf": "以 PDF 格式下载本通知。",
+      "download_doc": "将此通知下载为 DOC 文件。"
+    },
+    "GBF_Targets": {
+      "name": "GBF 目标",
+      "name_plural": "GBF 目标",
+      "recent": "最近的 GBF 目标",
+      "more": "更多 GBF 目标",
+      "view": "查看 GBF 目标",
+      "quick_links": {
+        "important": "为什么这个目标很重要？",
+        "explanation": "目标解释",
+        "guiding_questions": "指导性问题",
+        "links": "与其他元素的链接",
+        "relevant_resources": "相关资源",
+        "indicators": "指标"
+      }
+    },
+    "statements": {
+      "name": "声明",
+      "name_plural": "发言",
+      "recent": "最近的发言",
+      "more": "更多声明",
+      "view": "查看声明"
+    },
+    "portals": {
+      "name": "门户",
+      "name_plural": "门户",
+      "recent": "最近的门户网站",
+      "more": "更多门户",
+      "view": "查看门户网站"
+    },
+    "nbsaps": {
+      "name": "国家生物多样性和生态系统服务计划",
+      "name_plural": "国家生物多样性战略和行动计划",
+      "recent": "近期的国家生物多样性和生态系统服务行动计划",
+      "more": "所有提交的材料",
+      "view": "阅读《国家生物多样性战略和行动计划"
+    }
+  },
+
+  "content_pages": {
+        "gbf": {
+            "targets_submitted": "向秘书处提交的国家目标"
+        }
+  },
+
+  "forms": {
+    "search_criteria": "搜索标准",
+    "filter_and_sort": "筛选和排序",
+    "title_contains": "标题包含",
+    "filter": "过滤器",
+    "search": "搜索",
+    "search_terms": "搜索条件",
+    "files": "文件",
+    "year": "年份",
+    "year_any": "任何年份"
+  }
 }
