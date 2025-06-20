@@ -80,7 +80,7 @@ definePageMeta({
                   languageSettings.active_language
                 ]"
                 @click="
-                  toStatementsParams.q = `${toStatementsParams.q} AND themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(*${encodeURIComponent(theme)}*)`
+                  toStatementsParams.q = `${toStatementsParams.q} AND themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(*${theme}*)`
                 "
                 :to="{
                   name: 'statements',

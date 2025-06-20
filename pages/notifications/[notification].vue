@@ -125,7 +125,7 @@ definePageMeta({
               <NuxtLink
                 v-for="recipient of notification.recipient"
                 @click="
-                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${encodeURIComponent(recipient)}*)`
+                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${recipient}*)`
                 "
                 :to="{
                   name: `notifications`,
