@@ -80,7 +80,9 @@ watch(referencedStatements, () => {
         <li v-else class="breadcrumb-item active" aria-current="page">
           {{ submenu[submenuItemIndex.level2].title }}
         </li>
-        <template v-if="submenuItemIndex.level3">
+        <template
+          v-if="submenuItemIndex.level3 || submenuItemIndex.level3 === 0"
+        >
           <li
             v-if="
               submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
@@ -112,11 +114,14 @@ watch(referencedStatements, () => {
             }}
           </li>
         </template>
-        <template v-if="submenuItemIndex.level3 && submenuItemIndex.level4">
+        <template
+          v-if="submenuItemIndex.level4 || submenuItemIndex.level4 === 0"
+        >
           <li class="breadcrumb-item active" aria-current="page">
             {{
-              submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
-                .children[submenuItemIndex.level4].title
+              submenu[submenuItemIndex.level2].children[
+                submenuItemIndex.level3!
+              ].children[submenuItemIndex.level4].title
             }}
           </li>
         </template>
