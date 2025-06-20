@@ -5,43 +5,33 @@ import getComponents from "~/composables/componentApi";
 const route = useRoute();
 const { t } = useI18n();
 
-const { getNotifications } = getComponents();
+const { getStatements } = getComponents();
 
-const notificationsParams: searchParams = {
-  q: (route.meta.notificationQuery as string) ?? "schema_s:notification",
-  fl: [
-    "symbol_s",
-    "date_s",
-    "actionDate_s",
-    "deadline_s",
-    "sender",
-    "reference_s",
-    "url_ss",
-    "recipient_ss",
-    "title_??_s",
-    "themes_??_ss",
-    "fulltext_??_s",
-    "files_ss",
-  ],
+const statementsParams: searchParams = {
+  q: (route.meta.statementQuery as string) ?? "schema_s:statement",
+  fl: ["symbol_s", "date_s", "url_ss", "title_??_s", "themes_??_ss"],
   sort: ["date_s desc"],
   rows: 20,
 };
 
-await getNotifications(notificationsParams);
+await getStatements(statementsParams);
 
 definePageMeta({
   layout: "serp",
-  acceptNotificationData: true,
+  acceptStatementData: true,
 });
 </script>
 <template>
   <article class="cus-article container-xxl d-flex flex-column">
     <section>
-      <h1>{{ t("components.notifications.name_plural") }}</h1>
+      <h1>{{ t("components.statements.name_plural") }}</h1>
       <p>{{ t("forms.search_criteria") }}</p>
     </section>
     <section>
-      <FormFilterAndSort :search-params="notificationsParams" />
+      <FormFilterAndSort
+        :search-params="statementsParams"
+        component-type="statement"
+      />
     </section>
 
     <ClientOnly>
@@ -49,8 +39,8 @@ definePageMeta({
         <!-- pagination -->
         <div class="search-results-items">
           <ContentobjectSerpBlock
-            v-for="notification in referencedNotifications.general"
-            :component="notification"
+            v-for="statement in referencedStatements.general"
+            :component="statement"
           />
         </div>
       </section>

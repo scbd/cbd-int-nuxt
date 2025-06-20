@@ -20,59 +20,51 @@ const componentObject = {
 
 if (componentObject.component?.includes("News")) {
   try {
-    if (!referencedArticles.value.length) {
-      const search_params: drupalEntitySearchParams = {
-        entity: "article",
-        sort: ["-changed"],
-        limit: 3,
-      };
-      await getArticles(search_params);
-    }
+    const search_params: drupalEntitySearchParams = {
+      entity: "article",
+      sort: ["-changed"],
+      limit: 4,
+    };
+    await getArticles(search_params, true);
   } catch (error) {
     console.error(error);
   }
   componentObject.type = "article";
 } else if (componentObject.component?.includes("Meetings")) {
   try {
-    if (!referencedMeetings.value.length) {
-      const search_params: searchParams = {
-        q: "schema_s:meeting",
-        fl: ["startDate_dt", "endDate_dt", "title_*_s", "url_ss"],
-        sort: ["abs(ms(startDate_dt,NOW)) asc"],
-        rows: 3,
-      };
-      await getMeetings(search_params);
-    }
+    const search_params: searchParams = {
+      q: "schema_s:meeting",
+      fl: ["startDate_dt", "endDate_dt", "title_*_s", "url_ss"],
+      sort: ["abs(ms(startDate_dt,NOW)) asc"],
+      rows: 4,
+    };
+    await getMeetings(search_params, true);
   } catch (error) {
     console.error(error);
   }
   componentObject.type = "meeting";
 } else if (componentObject.component?.includes("Notifications")) {
   try {
-    if (!referencedNotifications.value.length) {
-      const search_params: searchParams = {
-        q: "schema_s:notification",
-        fl: ["title_*_s", "symbol_s", "date_s", "url_ss"],
-        sort: ["date_s desc"],
-        rows: 3,
-      };
-      await getNotifications(search_params);
-    }
+    const search_params: searchParams = {
+      q: "schema_s:notification",
+      fl: ["title_*_s", "symbol_s", "date_s", "url_ss"],
+      sort: ["date_s desc"],
+      rows: 4,
+    };
+    await getNotifications(search_params, true);
   } catch (error) {
     console.error(error);
   }
   componentObject.type = "notification";
 } else if (componentObject.component?.includes("Statements")) {
   try {
-    if (!referencedStatements.value.length) {
-      const search_params: searchParams = {
-        q: "schema_s:statement",
-        fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
-        sort: ["date_s desc"],
-        rows: 3,
-      };
-      await getStatements(search_params);
-    }
+    const search_params: searchParams = {
+      q: "schema_s:statement",
+      fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
+      sort: ["date_s desc"],
+      rows: 4,
+    };
+    await getStatements(search_params, true);
   } catch (error) {
     console.log(error);
   }
@@ -83,7 +75,7 @@ if (componentObject.component?.includes("News")) {
 <template>
   <li
     v-if="componentObject.type === 'article'"
-    v-for="article in referencedArticles"
+    v-for="article in referencedArticles.megamenu"
     class="nav-item"
   >
     <NuxtLink class="nav-link" :to="article.url">
@@ -101,7 +93,7 @@ if (componentObject.component?.includes("News")) {
 
   <li
     v-else-if="componentObject.type === 'meeting'"
-    v-for="meeting in referencedMeetings"
+    v-for="meeting in referencedMeetings.megamenu"
     class="nav-item"
   >
     <NuxtLink class="nav-link" :to="meeting.url">
@@ -133,7 +125,7 @@ if (componentObject.component?.includes("News")) {
 
   <li
     v-else-if="componentObject.type === 'notification'"
-    v-for="notification in referencedNotifications"
+    v-for="notification in referencedNotifications.megamenu"
     class="nav-item"
   >
     <NuxtLink class="nav-link" :to="notification.url">
@@ -153,7 +145,7 @@ if (componentObject.component?.includes("News")) {
 
   <li
     v-else-if="componentObject.type === 'statement'"
-    v-for="statement in referencedStatements"
+    v-for="statement in referencedStatements.megamenu"
     class="nav-item"
   >
     <NuxtLink class="nav-link" :to="statement.url">

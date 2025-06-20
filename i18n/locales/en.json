@@ -48,7 +48,7 @@
       "view": "View meeting"
     },
     "notifications": {
-      "name": "notifcation",
+      "name": "notification",
       "name_plural": "notifcations",
       "recent": "Recent notifications",
       "more": "More notifications",
@@ -80,7 +80,11 @@
       "name_plural": "statements",
       "recent": "Recent statements",
       "more": "More statements",
-      "view": "View statement"
+      "view": "View statement",
+      "themes": "Themes",
+      "download": "Download statement in available languages",
+      "download_pdf": "Download this statement as a PDF.",
+      "download_doc": "Download this statement as a DOC."
     },
     "portals": {
       "name": "portal",

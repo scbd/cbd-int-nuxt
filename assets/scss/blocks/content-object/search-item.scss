@@ -21,6 +21,14 @@
     gap: 1rem;
     flex-wrap: wrap;
   }
+
+  &.article {
+    .content-information-wrapper {
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+  }
+
   .information {
     flex: 1 0 0;
     flex-direction: column;
@@ -62,6 +70,12 @@
     }
     .description {
       order: 9;
+      img {
+        display: none !important;
+      }
+      * {
+        font-size: 1rem !important;
+      }
     }
   }
 

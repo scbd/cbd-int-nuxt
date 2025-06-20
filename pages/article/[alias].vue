@@ -14,7 +14,7 @@ const articleParams: drupalEntitySearchParams = {
   limit: 1,
 };
 
-await getArticles(articleParams);
+const fetchedArticle = await getArticles(articleParams);
 
 definePageMeta({
   layout: "content",
@@ -29,7 +29,7 @@ watch(languageSettings, async () => {
   <div class="container-xxl d-flex">
     <article class="cus-article container-fluid d-flex flex-column">
       <ClientOnly>
-        <template v-for="article in referencedArticles">
+        <template v-for="article in fetchedArticle">
           <section
             v-html="contentParser(article.content)"
             class="rendered-content"
