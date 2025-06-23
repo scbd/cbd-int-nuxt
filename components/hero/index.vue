@@ -115,8 +115,10 @@ const props = defineProps<{
         </div>
       </div>
     </div>
-    <a href="/error.vue" class="btn cbd-btn cbd-btn-outline-more-content">{{
-      t("components.articles.more")
-    }}</a>
+    <NuxtLink
+      :to="{ name: 'article' }"
+      class="btn cbd-btn cbd-btn-outline-more-content"
+      >{{ t("components.articles.more") }}</NuxtLink
+    >
   </div>
 </template>

@@ -24,7 +24,7 @@ definePageMeta({
   <article class="cus-article container-xxl d-flex flex-column">
     <section>
       <h1>{{ t("components.articles.name_plural") }}</h1>
-      <p>{{ t("forms.search_criteria") }}</p>
+      <!-- <p>{{ t("forms.search_criteria") }}</p> -->
     </section>
     <section>
       <!-- <FormFilterAndSort :search-params="statementsParams" /> -->
