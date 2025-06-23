@@ -6,7 +6,6 @@ import type {
 import type { page } from "~/types/page";
 
 const props = defineProps<{
-  content?: componentSanitized[];
   page?: page;
   submenuItemIndex?: {
     level2?: number;
@@ -22,6 +21,37 @@ const routeArray = route.fullPath
   .split("/")
   .filter((step) => step.trim() != "");
 const routePath = route.fullPath.replace(/\/+$/, "");
+
+const fetchedComponents: {
+  articles?: componentSanitized[];
+  meetings?: componentSanitized[];
+  notifications?: componentSanitized[];
+  statements?: componentSanitized[];
+  nbsaps?: componentSanitized[];
+  portals?: componentSanitized[];
+} = {
+  articles: [referencedArticles.value.general[0]],
+  meetings: [referencedMeetings.value.general[0]],
+  notifications: [referencedNotifications.value.general[0]],
+  statements: [referencedStatements.value.general[0]],
+  nbsaps: [referencedNbsaps.value[0]],
+  portals: [referencedPortals.value[0]],
+};
+
+onMounted(() => {
+  fetchedComponents.articles = [referencedArticles.value.general[0]];
+  fetchedComponents.meetings = [referencedMeetings.value.general[0]];
+  fetchedComponents.notifications = [referencedNotifications.value.general[0]];
+  fetchedComponents.statements = [referencedStatements.value.general[0]];
+  fetchedComponents.nbsaps = [referencedNbsaps.value[0]];
+  fetchedComponents.portals = [referencedPortals.value[0]];
+});
+
+watch(referencedStatements, () => {
+  fetchedComponents.articles = [referencedArticles.value.general[0]];
+  fetchedComponents.nbsaps = [referencedNbsaps.value[0]];
+  fetchedComponents.portals = [referencedPortals.value[0]];
+});
 </script>
 
 <template>
@@ -50,7 +80,9 @@ const routePath = route.fullPath.replace(/\/+$/, "");
         <li v-else class="breadcrumb-item active" aria-current="page">
           {{ submenu[submenuItemIndex.level2].title }}
         </li>
-        <template v-if="submenuItemIndex.level3">
+        <template
+          v-if="submenuItemIndex.level3 || submenuItemIndex.level3 === 0"
+        >
           <li
             v-if="
               submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
@@ -82,11 +114,14 @@ const routePath = route.fullPath.replace(/\/+$/, "");
             }}
           </li>
         </template>
-        <template v-if="submenuItemIndex.level3 && submenuItemIndex.level4">
+        <template
+          v-if="submenuItemIndex.level4 || submenuItemIndex.level4 === 0"
+        >
           <li class="breadcrumb-item active" aria-current="page">
             {{
-              submenu[submenuItemIndex.level2].children[submenuItemIndex.level3]
-                .children[submenuItemIndex.level4].title
+              submenu[submenuItemIndex.level2].children[
+                submenuItemIndex.level3!
+              ].children[submenuItemIndex.level4].title
             }}
           </li>
         </template>
@@ -106,24 +141,67 @@ const routePath = route.fullPath.replace(/\/+$/, "");
         <li v-if="page" class="breadcrumb-item active" aria-current="page">
           {{ page.title }}
         </li>
-        <li
-          v-else
-          v-for="crumbs in content"
-          class="breadcrumb-item active"
-          aria-current="page"
-        >
-          <template v-if="crumbs.type === 'article'">
-            {{ crumbs.title }}
-          </template>
-          <template v-else>
-            {{
-              crumbs.symbol ??
-              (crumbs.title as availableLanguages)[
-                languageSettings.active_language
-              ]
-            }}
-          </template>
-        </li>
+
+        <template v-else>
+          <li class="breadcrumb-item active" aria-current="page">
+            <template
+              v-if="
+                route.meta.pageType === 'componentArticle' &&
+                fetchedComponents.articles
+              "
+            >
+              {{ fetchedComponents.articles[0].title }}
+            </template>
+            <template
+              v-else-if="
+                route.meta.pageType === 'componentMeeting' &&
+                fetchedComponents.meetings
+              "
+            >
+              {{
+                (fetchedComponents.meetings[0].title as availableLanguages)[
+                  languageSettings.active_language
+                ]
+              }}
+            </template>
+            <template
+              v-else-if="
+                route.meta.pageType === 'componentNotification' &&
+                fetchedComponents.notifications
+              "
+            >
+              {{ fetchedComponents.notifications[0].symbol }}
+            </template>
+            <template
+              v-else-if="
+                route.meta.pageType === 'componentStatement' &&
+                fetchedComponents.statements
+              "
+            >
+              {{ fetchedComponents.statements[0].symbol }}
+            </template>
+            <template
+              v-else-if="
+                route.meta.pageType === 'componentNbsap' &&
+                fetchedComponents.nbsaps
+              "
+            >
+              {{
+                (fetchedComponents.nbsaps[0].title as availableLanguages)[
+                  languageSettings.active_language
+                ]
+              }}
+            </template>
+            <template
+              v-else-if="
+                route.meta.pageType === 'componentPortal' &&
+                fetchedComponents.portals
+              "
+            >
+              {{ fetchedComponents.portals[0].title }}
+            </template>
+          </li>
+        </template>
       </template>
     </ol>
   </nav>

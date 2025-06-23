@@ -46,6 +46,55 @@ const objectLocation = (
 </script>
 
 <template>
+  <template v-if="component.type === 'article'">
+    <div
+      v-if="articlesStatus.status === 'OK'"
+      class="search-item content-object"
+      :class="component.type"
+    >
+      <div class="content-image-wrapper">
+        <img
+          :src="component.image_cover?.url ?? '/images/content_replacement.svg'"
+          :alt="component.image_cover?.alt"
+          :title="component.image_cover?.title"
+          class="content-image"
+        />
+      </div>
+      <div class="content-information-wrapper">
+        <div class="information">
+          <div class="taxonomy">
+            <div class="source">{{ "CBD" }}</div>
+            <div class="type">{{ t("components.articles.name") }}</div>
+          </div>
+          <div class="date">
+            {{
+              Intl.DateTimeFormat(languageSettings.active_language, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }).format(component.date)
+            }}
+          </div>
+          <NuxtLink :to="component.url" class="title">
+            {{ component.title }}
+          </NuxtLink>
+          <div
+            class="description"
+            v-html="contentParser(component.content)"
+          ></div>
+        </div>
+        <div class="read-on-wrapper">
+          <NuxtLink :to="component.url" class="btn cbd-btn-more-content">{{
+            t(`components.${component.type.replace(" ", "_")}s.view`)
+          }}</NuxtLink>
+        </div>
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="[{ 'error-loader': articlesStatus.status === 'error' }]"
+    />
+  </template>
   <template v-if="component.type === 'notification'">
     <div
       v-if="notificationsStatus.status === 'OK'"
@@ -110,9 +159,7 @@ const objectLocation = (
           <div v-show="component.themes" class="subjects">
             {{ t("components.notifications.subjects") }}:
             {{
-              (component.themes as availableLanguages)[
-                languageSettings.active_language.slice(0, 2)
-              ]
+              component.themes?.[languageSettings.active_language.slice(0, 2)]
             }}
           </div>
           <div class="description">
@@ -143,7 +190,113 @@ const objectLocation = (
                 />
                 <img
                   v-show="file.type.includes('doc')"
+                  src="/images/icons/icon_file-doc.svg"
+                  :alt="t('components.notifications.download_doc')"
+                />
+              </NuxtLink>
+            </div>
+          </div>
+        </template>
+        <div class="read-on-wrapper">
+          <NuxtLink :to="component.url" class="btn cbd-btn-more-content">{{
+            t(`components.${component.type.replace(" ", "_")}s.view`)
+          }}</NuxtLink>
+        </div>
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="[{ 'error-loader': notificationsStatus.status === 'error' }]"
+    />
+  </template>
+  <template v-if="component.type === 'statement'">
+    <div
+      v-if="statementsStatus.status === 'OK'"
+      class="search-item content-object"
+      :class="`object-type-${component.type}`"
+    >
+      <div class="content-image-wrapper">
+        <img
+          :src="handlerImage(component)"
+          @error="handlerMissingImage"
+          alt=""
+          class="content-image"
+        />
+      </div>
+
+      <div class="content-information-wrapper">
+        <div class="information">
+          <div class="date">
+            {{
+              Intl.DateTimeFormat(
+                languageSettings.active_language.slice(0, 2),
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              ).format(component.date)
+            }}
+            <template v-if="component.date_end">
+              &nbsp;&ndash;&nbsp;
+              {{
+                Intl.DateTimeFormat(
+                  languageSettings.active_language.slice(0, 2),
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                ).format(component.date_end)
+              }}
+            </template>
+          </div>
+
+          <NuxtLink
+            class="title"
+            :to="{
+              name: 'statements-statement',
+              params: { statement: component.symbol },
+            }"
+          >
+            {{
+              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+            }}
+          </NuxtLink>
+
+          <div
+            v-if="
+              component.themes?.[languageSettings.active_language.slice(0, 2)]
+            "
+            class="subjects"
+          >
+            {{ t("components.statements.themes") }}:
+
+            <template v-if="languageSettings.active_language === 'ar'">
+              {{ component.themes["ar"].join("، ") }}
+            </template>
+            <template v-else>
+              {{
+                component.themes[
+                  languageSettings.active_language.slice(0, 2)
+                ].join(", ")
+              }}
+            </template>
+          </div>
+        </div>
+        <template v-if="component.url">
+          <div class="files">
+            <div class="files-title">{{ t("forms.files") }}</div>
+            <div class="files-available">
+              <NuxtLink class="btn" target="_blank" :to="component.url">
+                <img
+                  v-show="component.url.includes('.pdf')"
                   src="/images/icons/icon_file-pdf.svg"
+                  :alt="t('components.notifications.download_pdf')"
+                />
+                <img
+                  v-show="component.url.includes('.doc')"
+                  src="/images/icons/icon_file-doc.svg"
                   :alt="t('components.notifications.download_doc')"
                 />
               </NuxtLink>
@@ -152,8 +305,10 @@ const objectLocation = (
         </template>
         <div class="read-on-wrapper">
           <NuxtLink
-            :to="component.url"
-            :notification="component"
+            :to="{
+              name: 'statements-statement',
+              params: { statement: component.symbol },
+            }"
             class="btn cbd-btn-more-content"
             >{{
               t(`components.${component.type.replace(" ", "_")}s.view`)
@@ -164,7 +319,7 @@ const objectLocation = (
     </div>
     <Loader
       v-else
-      :class="notificationsStatus.status === 'error' ? 'error-loader' : ''"
+      :class="[{ 'error-loader': statementsStatus.status === 'error' }]"
     />
   </template>
 </template>

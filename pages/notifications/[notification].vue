@@ -73,7 +73,7 @@ definePageMeta({
 <template>
   <article class="cus-article container-xxl d-flex flex-column page-component">
     <ClientOnly>
-      <section v-for="notification in referencedNotifications">
+      <section v-for="notification in referencedNotifications.general">
         <h1>
           {{ t("components.notifications.name") }} {{ notification.symbol }}
         </h1>
@@ -125,7 +125,7 @@ definePageMeta({
               <NuxtLink
                 v-for="recipient of notification.recipient"
                 @click="
-                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${encodeURIComponent(recipient)}*)`
+                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${recipient}*)`
                 "
                 :to="{
                   name: `notifications`,
@@ -136,19 +136,13 @@ definePageMeta({
               </NuxtLink>
             </div>
             <div
-              v-show="
-                (notification.themes as availableLanguages)[
-                  languageSettings.active_language
-                ]
-              "
+              v-show="notification.themes?.[languageSettings.active_language]"
               class="subjects"
             >
               <span class="fw-bold"
                 >{{ t("components.notifications.subjects") }}:
               </span>
-              {{
-                `${(notification.themes as availableLanguages)[languageSettings.active_language]}`
-              }}
+              {{ `${notification.themes?.[languageSettings.active_language]}` }}
             </div>
           </div>
           <template v-if="notification.files?.length">

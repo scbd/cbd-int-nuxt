@@ -38,11 +38,6 @@
           color: var(--bs-tertiary-color);
         }
       }
-      &.show {
-        .nav-link {
-          cursor: default;
-        }
-      }
     }
     &.show:not(.current-page) {
       box-shadow: 0 -0.167rem inset var(--cbd-content-accent);

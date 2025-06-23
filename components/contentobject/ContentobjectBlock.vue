@@ -216,12 +216,15 @@ if (props.component.type === "GBF Target") {
           }).format(component.date_action)
         }}
       </div>
-      <div v-show="component.themes" class="subjects">
+      <div
+        v-if="component.themes?.[languageSettings.active_language.slice(0, 2)]"
+        class="subjects"
+      >
         {{ t("components.notifications.subjects") }}:
         {{
-          (component.themes as availableLanguages)[
-            languageSettings.active_language.slice(0, 2)
-          ]
+          component.themes[languageSettings.active_language.slice(0, 2)].join(
+            ", "
+          )
         }}
       </div>
       <div class="description">
@@ -325,10 +328,27 @@ if (props.component.type === "GBF Target") {
           ]
         }}
       </div>
+
+      <div
+        v-if="component.themes?.[languageSettings.active_language.slice(0, 2)]"
+        class="subjects"
+      >
+        {{ t("components.statements.themes") }}:
+        {{
+          component.themes[languageSettings.active_language.slice(0, 2)].join(
+            ", "
+          )
+        }}
+      </div>
       <div class="read-on-wrapper">
-        <NuxtLink :to="component.url" class="read-on" target="_blank">{{
-          t("components.statements.view")
-        }}</NuxtLink>
+        <NuxtLink
+          :to="{
+            name: 'statements-statement',
+            params: { statement: component.symbol },
+          }"
+          class="read-on"
+          >{{ t("components.statements.view") }}</NuxtLink
+        >
       </div>
     </div>
     <Loader

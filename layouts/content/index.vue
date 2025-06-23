@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const route = useRoute();
+
+const fetchedArticle = [referencedArticles.value.general[0]];
 </script>
 
 <template>
@@ -11,29 +13,29 @@ const route = useRoute();
       </nav>
     </header>
     <ClientOnly>
-      <template v-if="route.meta.pageType === 'componentMeeting'">
-        <Breadcrumbs :content="referencedMeetings" />
+      <template v-if="route.meta.pageType === 'componentArticle'">
+        <Breadcrumbs />
+        <HeroContent :article="fetchedArticle" />
+      </template>
+      <template v-else-if="route.meta.pageType === 'componentMeeting'">
+        <Breadcrumbs />
       </template>
       <template v-else-if="route.meta.pageType === 'componentNotification'">
-        <Breadcrumbs :content="referencedNotifications" />
+        <Breadcrumbs />
       </template>
       <template v-else-if="route.meta.pageType === 'componentStatement'">
-        <Breadcrumbs :content="referencedStatements" />
+        <Breadcrumbs />
       </template>
       <template v-else-if="route.meta.pageType === 'componentNbsap'">
-        <Breadcrumbs :content="referencedNbsaps" />
+        <Breadcrumbs />
       </template>
       <template v-else-if="route.meta.pageType === 'componentPortal'">
-        <Breadcrumbs :content="referencedPortals" />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentArticle'">
-        <Breadcrumbs :content="referencedArticles" />
-        <HeroContent :article="referencedArticles" />
+        <Breadcrumbs />
       </template>
     </ClientOnly>
     <main
       class="cus-main d-flex flex-column"
-      :class="route.meta.pageType === 'page' ? 'cus-internal-page' : ''"
+      :class="[{ 'cus-internal-page': route.meta.pageType === 'page' }]"
       role="main"
     >
       <NuxtPage :page-key="(route) => route.fullPath" />

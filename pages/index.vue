@@ -113,7 +113,7 @@ definePageMeta({
 
 <template>
   <ClientOnly>
-    <Hero :articles="referencedArticles" />
+    <Hero :articles="referencedArticles.general.slice(0, 3)" />
   </ClientOnly>
 
   <article class="cus-article container-xxl d-flex flex-column">
@@ -121,11 +121,11 @@ definePageMeta({
       <ContentobjectRow component-type="update" :components="sortedUpdates" />
       <ContentobjectRow
         component-type="meeting"
-        :components="referencedMeetings"
+        :components="referencedMeetings.general"
       />
       <ContentobjectRow
         component-type="notification"
-        :components="referencedNotifications"
+        :components="referencedNotifications.general"
       />
       <ContentobjectRow
         component-type="GBF Target"
@@ -133,7 +133,7 @@ definePageMeta({
       />
       <ContentobjectRow
         component-type="statement"
-        :components="referencedStatements"
+        :components="referencedStatements.general"
       />
       <ContentobjectRow
         component-type="portal"

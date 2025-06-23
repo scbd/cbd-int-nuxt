@@ -2,12 +2,14 @@
 import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
-const { getNotifications } = getComponents();
+const { getNotifications, getStatements } = getComponents();
+const route = useRoute();
 const languageSettings = useLanguageStore();
 const { t } = useI18n();
 
 const props = defineProps<{
   searchParams: searchParams;
+  componentType?: string;
 }>();
 
 const inputFilterTitle = ref<string>();
@@ -16,7 +18,12 @@ const selectFilterYear = ref<number>(0);
 const selectSortName = ref<string>("asc");
 const selectSortDate = ref<string>("desc");
 
-const query: { title?: string; year: number; recipient?: string } = {
+const query: {
+  title?: string;
+  year: number;
+  recipient?: string;
+  theme?: string;
+} = {
   year: 0,
 };
 const displayQuery = ref(query);
@@ -28,8 +35,19 @@ if (props.searchParams.q.includes("recipient_ss")) {
   );
 }
 
+if (
+  props.searchParams.q.includes(
+    `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
+  )
+) {
+  displayQuery.value.theme = props.searchParams.q.substring(
+    props.searchParams.q.indexOf("*") + 1,
+    props.searchParams.q.lastIndexOf("*")
+  );
+}
+
 const searchHandler = async () => {
-  let paramQuery = `schema_s:notification`;
+  let paramQuery = `schema_s:${props.componentType ?? "notification"}`;
   let paramSort = [];
 
   displayQuery.value.recipient = "";
@@ -86,7 +104,11 @@ const searchHandler = async () => {
   params.q = paramQuery;
   params.sort = paramSort;
 
-  await getNotifications(params);
+  if (props.componentType === "statement") {
+    await getStatements(params);
+  } else {
+    await getNotifications(params);
+  }
 };
 </script>
 <template>
@@ -211,6 +233,11 @@ const searchHandler = async () => {
       <span v-if="displayQuery.recipient" class="badge bg-secondary">
         {{ t("components.notifications.recipients") }} -
         {{ decodeURIComponent(displayQuery.recipient) }}
+      </span>
+
+      <span v-if="displayQuery.theme" class="badge bg-secondary">
+        {{ t("components.statements.themes") }} -
+        {{ decodeURIComponent(displayQuery.theme) }}
       </span>
     </div>
   </div>

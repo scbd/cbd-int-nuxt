@@ -18,15 +18,27 @@ import type {
 } from "~/types/drupalEntityApi";
 import type { componentStatus } from "~/types/componentStatus";
 
-export const referencedArticles = ref<componentSanitized[]>([]);
+export const referencedArticles = ref({
+  general: <componentSanitized[]>[],
+  megamenu: <componentSanitized[]>[],
+});
 export const articlesStatus = ref<componentStatus>({ status: "pending" });
-export const referencedMeetings = ref<componentSanitized[]>([]);
+export const referencedMeetings = ref({
+  general: <componentSanitized[]>[],
+  megamenu: <componentSanitized[]>[],
+});
 export const meetingsStatus = ref<componentStatus>({ status: "pending" });
-export const referencedNotifications = ref<componentSanitized[]>([]);
+export const referencedNotifications = ref({
+  general: <componentSanitized[]>[],
+  megamenu: <componentSanitized[]>[],
+});
 export const notificationsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedGbfTargets = ref<componentSanitized[]>([]);
 export const gbfTargetsStatus = ref<componentStatus>({ status: "pending" });
-export const referencedStatements = ref<componentSanitized[]>([]);
+export const referencedStatements = ref({
+  general: <componentSanitized[]>[],
+  megamenu: <componentSanitized[]>[],
+});
 export const statementsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedPortals = ref<componentSanitized[]>([]);
 export const portalsStatus = ref<componentStatus>({ status: "pending" });
@@ -42,7 +54,10 @@ export default function getComponents() {
   const solrURI = "/api/v2013/index?";
   const thesaurusURI = "/api/v2013/thesaurus/domains";
 
-  const getArticles = async (searchParameters: drupalEntitySearchParams) => {
+  const getArticles = async (
+    searchParameters: drupalEntitySearchParams,
+    megamenu = false
+  ) => {
     articlesStatus.value.status = "pending";
     const langCode = languageSettings.active_language;
 
@@ -66,7 +81,6 @@ export default function getComponents() {
           const articleResponse: drupalEntityPath = await response.json();
           uuid = articleResponse.entity.uuid;
         } else {
-          referencedArticles.value = [];
           throw new Error(response.statusText, {
             cause: { url: response.url, statusCode: response.status },
           });
@@ -127,7 +141,7 @@ export default function getComponents() {
           return response;
         };
 
-        const dataMapped = (articlesRaw.data as componentArticleRaw[])!.map(
+        const articlesList = (articlesRaw.data as componentArticleRaw[])!.map(
           (rawData: componentArticleRaw): componentSanitized => ({
             type: "article",
             title: rawData.attributes.title,
@@ -147,7 +161,7 @@ export default function getComponents() {
           })
         );
 
-        for await (const article of dataMapped.flat()) {
+        for await (const article of articlesList.flat()) {
           if (article.image_cover?.url) {
             try {
               const image_cover = await getArticleImage(
@@ -162,13 +176,14 @@ export default function getComponents() {
               console.error(error);
             }
           }
-
-          article.content = article.content;
         }
 
-        const articlesList: componentSanitized[] = dataMapped;
+        if (!megamenu) {
+          referencedArticles.value.general = articlesList;
+        } else {
+          referencedArticles.value.megamenu = articlesList;
+        }
 
-        referencedArticles.value = articlesList;
         articlesStatus.value.status = "OK";
 
         return articlesList;
@@ -179,7 +194,10 @@ export default function getComponents() {
     }
   };
 
-  const getMeetings = async (searchParameters: searchParams) => {
+  const getMeetings = async (
+    searchParameters: searchParams,
+    megamenu = false
+  ) => {
     meetingsStatus.value.status = "pending";
 
     const params = Object.entries(searchParameters)
@@ -201,7 +219,7 @@ export default function getComponents() {
         const meetingsRaw: { response: componentRequest } =
           await response.json();
 
-        const dataDocsMapped = meetingsRaw.response.docs!.map(
+        const meetingsList = meetingsRaw.response.docs!.map(
           (rawData: componentMeetingRaw): componentSanitized => ({
             type: "meeting",
             symbol: rawData.symbol_s,
@@ -236,12 +254,18 @@ export default function getComponents() {
           })
         );
 
-        const meetingList: componentSanitized[] = dataDocsMapped;
+        // const meetingList: componentSanitized[] = dataDocsMapped;
 
-        referencedMeetings.value = meetingList;
+        // referencedMeetings.value = meetingList;
+        if (!megamenu) {
+          referencedMeetings.value.general = meetingsList;
+        } else {
+          referencedMeetings.value.megamenu = meetingsList;
+        }
+
         meetingsStatus.value.status = "OK";
 
-        return meetingList;
+        return meetingsList;
       }
     } catch (error) {
       console.error(error);
@@ -249,7 +273,10 @@ export default function getComponents() {
     }
   };
 
-  const getNotifications = async (searchParameters: searchParams) => {
+  const getNotifications = async (
+    searchParameters: searchParams,
+    megamenu = false
+  ) => {
     notificationsStatus.value.status = "pending";
 
     const params = Object.entries(searchParameters)
@@ -273,7 +300,7 @@ export default function getComponents() {
       const notificationsRaw: { response: componentRequest } =
         await response.json();
 
-      const dataDocsMapped = notificationsRaw.response.docs!.map(
+      const notificationsList = notificationsRaw.response.docs!.map(
         (rawData: componentNotificationRaw): componentSanitized => ({
           type: "notification",
           symbol: rawData.symbol_s,
@@ -295,12 +322,12 @@ export default function getComponents() {
             zh: rawData.title_ZH_s,
           },
           themes: {
-            ar: rawData.themes_AR_ss ? rawData.themes_AR_ss.join("، ") : "",
-            en: rawData.themes_EN_ss ? rawData.themes_EN_ss.join(", ") : "",
-            es: rawData.themes_ES_ss ? rawData.themes_ES_ss.join(", ") : "",
-            fr: rawData.themes_FR_ss ? rawData.themes_FR_ss.join(", ") : "",
-            ru: rawData.themes_RU_ss ? rawData.themes_RU_ss.join(", ") : "",
-            zh: rawData.themes_ZH_ss ? rawData.themes_ZH_ss.join(", ") : "",
+            ar: rawData.themes_AR_ss,
+            en: rawData.themes_EN_ss,
+            es: rawData.themes_ES_ss,
+            fr: rawData.themes_FR_ss,
+            ru: rawData.themes_RU_ss,
+            zh: rawData.themes_ZH_ss,
           },
           fulltext: {
             ar: rawData.fulltext_AR_s,
@@ -314,12 +341,19 @@ export default function getComponents() {
         })
       );
 
-      const notificationList: componentSanitized[] = dataDocsMapped;
+      // const notificationList: componentSanitized[] = dataDocsMapped;
 
-      referencedNotifications.value = notificationList;
+      // referencedNotifications.value = notificationList;
+
+      if (!megamenu) {
+        referencedNotifications.value.general = notificationsList;
+      } else {
+        referencedNotifications.value.megamenu = notificationsList;
+      }
+
       notificationsStatus.value.status = "OK";
 
-      return notificationList;
+      return notificationsList;
     } catch (error) {
       console.error(error);
       notificationsStatus.value.status = "error";
@@ -370,7 +404,10 @@ export default function getComponents() {
     }
   };
 
-  const getStatements = async (searchParameters: searchParams) => {
+  const getStatements = async (
+    searchParameters: searchParams,
+    megamenu = false
+  ) => {
     statementsStatus.value.status = "pending";
 
     const params = Object.entries(searchParameters)
@@ -395,7 +432,7 @@ export default function getComponents() {
         const statementsRaw: { response: componentRequest } =
           await response.json();
 
-        const dataDocsMapped = statementsRaw.response.docs!.map(
+        const statementsList = statementsRaw.response.docs!.map(
           (rawData: componentStatementRaw): componentSanitized => ({
             type: "statement",
             symbol: rawData.symbol_s,
@@ -409,15 +446,26 @@ export default function getComponents() {
               ru: rawData.title_RU_s,
               zh: rawData.title_ZH_s,
             },
+            themes: {
+              ar: rawData.themes_AR_ss,
+              en: rawData.themes_EN_ss,
+              es: rawData.themes_ES_ss,
+              fr: rawData.themes_FR_ss,
+              ru: rawData.themes_RU_ss,
+              zh: rawData.themes_ZH_ss,
+            },
           })
         );
 
-        const statementList: componentSanitized[] = dataDocsMapped;
+        if (!megamenu) {
+          referencedStatements.value.general = statementsList;
+        } else {
+          referencedStatements.value.megamenu = statementsList;
+        }
 
-        referencedStatements.value = statementList;
         statementsStatus.value.status = "OK";
 
-        return statementList;
+        return statementsList;
       }
     } catch (error) {
       console.error(error);
