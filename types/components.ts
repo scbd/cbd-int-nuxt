@@ -73,7 +73,14 @@ interface componentNotification extends componentBase {
   sender?: string;
   reference?: string;
   recipient?: string[];
-  themes?: availableLanguages;
+  themes?: {
+    [ar: string]: string[];
+    en: string[];
+    es: string[];
+    fr: string[];
+    ru: string[];
+    zh: string[];
+  };
   fulltext?: availableLanguages;
   files?: {
     type: string;
@@ -90,7 +97,16 @@ interface componentGbfTarget extends componentBase {
   description_long?: availableLanguages;
 }
 
-interface componentStatement extends componentBase {}
+interface componentStatement extends componentBase {
+  themes?: {
+    [ar: string]: string[];
+    en: string[];
+    es: string[];
+    fr: string[];
+    ru: string[];
+    zh: string[];
+  };
+}
 
 interface componentPortal extends componentBase {
   date_edited?: Date;
@@ -238,6 +254,12 @@ export interface componentStatementRaw {
   title_FR_s: string;
   title_RU_s: string;
   title_ZH_s: string;
+  themes_AR_ss: string[];
+  themes_EN_ss: string[];
+  themes_ES_ss: string[];
+  themes_FR_ss: string[];
+  themes_RU_ss: string[];
+  themes_ZH_ss: string[];
   url_ss: string;
 }
 

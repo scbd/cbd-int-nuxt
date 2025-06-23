@@ -8,9 +8,6 @@ const props = defineProps<{
   submenuIndex: number;
 }>();
 
-const currentPath = route.path;
-const fullPath = route.fullPath;
-
 const displayChildren = ref<number>(props.submenuIndex);
 const itemSelected = ref<number>(props.submenuIndex);
 </script>
@@ -102,7 +99,7 @@ const itemSelected = ref<number>(props.submenuIndex);
             class="nav-item"
             :class="[
               {
-                'current-page': fullPath.includes(childItem.link),
+                'current-page': route.fullPath === childItem.link,
               },
             ]"
           >
