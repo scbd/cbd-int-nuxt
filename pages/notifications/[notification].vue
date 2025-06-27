@@ -8,6 +8,7 @@ import type {
 import getComponents from "~/composables/componentApi";
 
 const { getNotifications } = getComponents();
+const config = useRuntimeConfig();
 const route = useRoute();
 const languageSettings = useLanguageStore();
 const { t } = useI18n();
@@ -142,7 +143,18 @@ definePageMeta({
               <span class="fw-bold"
                 >{{ t("components.notifications.subjects") }}:
               </span>
-              {{ `${notification.themes?.[languageSettings.active_language]}` }}
+              <NuxtLink
+                v-for="subject in notification.themes?.[
+                  languageSettings.active_language
+                ]"
+                @click="
+                  toNotificationsParams.q = `${toNotificationsParams.q} AND themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(&quot;${subject}&quot;)`
+                "
+                :to="{ name: `notifications` }"
+                class="badge"
+              >
+                {{ subject }}
+              </NuxtLink>
             </div>
           </div>
           <template v-if="notification.files?.length">
@@ -155,7 +167,7 @@ definePageMeta({
                   v-for="file in notification.files"
                   class="btn"
                   target="_blank"
-                  :to="file.url"
+                  :to="`${config.public.FRONTEND_URL}${file.url}`"
                 >
                   {{
                     new Intl.DisplayNames(languageSettings.active_language, {
@@ -169,7 +181,7 @@ definePageMeta({
                   />
                   <img
                     v-show="file.type.includes('doc')"
-                    src="/images/icons/icon_file-pdf.svg"
+                    src="/images/icons/icon_file-doc.svg"
                     :alt="t('components.notifications.download_doc')"
                   />
                 </NuxtLink>

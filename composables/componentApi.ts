@@ -234,6 +234,14 @@ export default function getComponents() {
               ru: rawData.title_RU_s,
               zh: rawData.title_ZH_s,
             },
+            themes: {
+              ar: rawData.themes_AR_ss,
+              en: rawData.themes_EN_ss,
+              es: rawData.themes_ES_ss,
+              fr: rawData.themes_FR_ss,
+              ru: rawData.themes_RU_ss,
+              zh: rawData.themes_ZH_ss,
+            },
             event_city: {
               ar: rawData.eventCity_AR_s,
               en: rawData.eventCity_EN_s,
@@ -254,9 +262,6 @@ export default function getComponents() {
           })
         );
 
-        // const meetingList: componentSanitized[] = dataDocsMapped;
-
-        // referencedMeetings.value = meetingList;
         if (!megamenu) {
           referencedMeetings.value.general = meetingsList;
         } else {
@@ -340,10 +345,6 @@ export default function getComponents() {
           files: JSON.parse(rawData.files_ss?.[0] ?? "{}"),
         })
       );
-
-      // const notificationList: componentSanitized[] = dataDocsMapped;
-
-      // referencedNotifications.value = notificationList;
 
       if (!megamenu) {
         referencedNotifications.value.general = notificationsList;

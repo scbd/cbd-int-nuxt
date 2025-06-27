@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
+import FormPagination from "~/components/form/FormPagination.vue";
 
 const route = useRoute();
 const { t } = useI18n();
@@ -36,13 +37,14 @@ definePageMeta({
 
     <ClientOnly>
       <section class="search-results">
-        <!-- pagination -->
+        <FormPagination />
         <div class="search-results-items">
           <ContentobjectSerpBlock
             v-for="statement in referencedStatements.general"
             :component="statement"
           />
         </div>
+        <FormPagination />
       </section>
     </ClientOnly>
   </article>

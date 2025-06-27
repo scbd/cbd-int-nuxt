@@ -30,6 +30,7 @@ const meetingsParams: searchParams = {
     "endDate_dt",
     "EVT_CD",
     "title_*_s",
+    "themes_??_ss",
     "url_ss",
     "symbol_s",
     "eventCity_*_s",

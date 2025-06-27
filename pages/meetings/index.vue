@@ -1,49 +1,48 @@
 <script setup lang="ts">
 import type { searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
+import FormPagination from "~/components/form/FormPagination.vue";
 
 const route = useRoute();
 const { t } = useI18n();
 
-const { getNotifications } = getComponents();
+const { getMeetings } = getComponents();
 
-const notificationsParams: searchParams = {
-  q: (route.meta.notificationQuery as string) ?? "schema_s:notification",
+const meetingssParams: searchParams = {
+  q: (route.meta.meetingQuery as string) ?? "schema_s:meeting",
   fl: [
-    "symbol_s",
-    "date_s",
-    "actionDate_s",
-    "deadline_s",
-    "sender",
-    "reference_s",
-    "url_ss",
-    "recipient_ss",
-    "title_??_s",
+    "startDate_dt",
+    "endDate_dt",
+    "EVT_CD",
+    "title_*_s",
     "themes_??_ss",
-    "fulltext_??_s",
-    "files_ss",
+    "url_ss",
+    "symbol_s",
+    "eventCity_*_s",
+    "eventCountry_??_s",
+    "status_s",
   ],
-  sort: ["date_s desc"],
+  sort: ["abs(ms(startDate_dt,NOW)) asc"],
   rows: 20,
 };
 
-await getNotifications(notificationsParams);
+await getMeetings(meetingssParams);
 
 definePageMeta({
   layout: "serp",
-  acceptNotificationData: true,
+  acceptMeetingData: true,
 });
 </script>
 <template>
   <article class="cus-article container-xxl d-flex flex-column">
     <section>
-      <h1>{{ t("components.notifications.name_plural") }}</h1>
+      <h1>{{ t("components.meetings.name_plural") }}</h1>
       <p>{{ t("forms.search_criteria") }}</p>
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="notificationsParams"
-        :component-type="'notification'"
+        :search-params="meetingssParams"
+        component-type="meeting"
       />
     </section>
 
@@ -52,8 +51,8 @@ definePageMeta({
         <FormPagination />
         <div class="search-results-items">
           <ContentobjectSerpBlock
-            v-for="notification in referencedNotifications.general"
-            :component="notification"
+            v-for="meeting in referencedMeetings.general"
+            :component="meeting"
           />
         </div>
         <FormPagination />
