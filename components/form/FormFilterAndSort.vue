@@ -220,7 +220,7 @@ const searchHandler = async () => {
         </div>
       </div>
 
-      <div class="form_section-options column">
+      <!-- <div class="form_section-options column">
         <div class="form_section-header">Sort</div>
         <div class="form_section-options">
           <select
@@ -242,7 +242,7 @@ const searchHandler = async () => {
             <option value="desc" selec>Date DSC</option>
           </select>
         </div>
-      </div>
+      </div> -->
 
       <input
         class="btn cbd-btn-primary"

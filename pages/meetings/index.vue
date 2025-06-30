@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { searchParams } from "~/types/components";
+import type { componentSanitized, searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 import FormPagination from "~/components/form/FormPagination.vue";
 
@@ -8,7 +8,7 @@ const { t } = useI18n();
 
 const { getMeetings } = getComponents();
 
-const meetingssParams: searchParams = {
+const meetingsParams: searchParams = {
   q: (route.meta.meetingQuery as string) ?? "schema_s:meeting",
   fl: [
     "startDate_dt",
@@ -26,7 +26,7 @@ const meetingssParams: searchParams = {
   rows: 20,
 };
 
-await getMeetings(meetingssParams);
+await getMeetings(meetingsParams);
 
 definePageMeta({
   layout: "serp",
@@ -41,21 +41,27 @@ definePageMeta({
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="meetingssParams"
+        :search-params="meetingsParams"
         component-type="meeting"
       />
     </section>
 
     <ClientOnly>
       <section class="search-results">
-        <FormPagination />
+        <FormPagination
+          component-type="meeting"
+          :component-search="meetingsParams"
+        />
         <div class="search-results-items">
           <ContentobjectSerpBlock
             v-for="meeting in referencedMeetings.general"
             :component="meeting"
           />
         </div>
-        <FormPagination />
+        <FormPagination
+          component-type="meeting"
+          :component-search="meetingsParams"
+        />
       </section>
     </ClientOnly>
   </article>

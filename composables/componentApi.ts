@@ -26,11 +26,15 @@ export const articlesStatus = ref<componentStatus>({ status: "pending" });
 export const referencedMeetings = ref({
   general: <componentSanitized[]>[],
   megamenu: <componentSanitized[]>[],
+  numFound: 0,
+  start: 0,
 });
 export const meetingsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedNotifications = ref({
   general: <componentSanitized[]>[],
   megamenu: <componentSanitized[]>[],
+  numFound: 0,
+  start: 0,
 });
 export const notificationsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedGbfTargets = ref<componentSanitized[]>([]);
@@ -38,6 +42,8 @@ export const gbfTargetsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedStatements = ref({
   general: <componentSanitized[]>[],
   megamenu: <componentSanitized[]>[],
+  numFound: 0,
+  start: 0,
 });
 export const statementsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedPortals = ref<componentSanitized[]>([]);
@@ -264,6 +270,9 @@ export default function getComponents() {
 
         if (!megamenu) {
           referencedMeetings.value.general = meetingsList;
+          referencedMeetings.value.numFound =
+            meetingsRaw.response.numFound ?? 0;
+          referencedMeetings.value.start = meetingsRaw.response.start ?? 0;
         } else {
           referencedMeetings.value.megamenu = meetingsList;
         }

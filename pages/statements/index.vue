@@ -37,14 +37,20 @@ definePageMeta({
 
     <ClientOnly>
       <section class="search-results">
-        <FormPagination />
+        <FormPagination
+          component-type="statement"
+          :component-search="statementsParams"
+        />
         <div class="search-results-items">
           <ContentobjectSerpBlock
             v-for="statement in referencedStatements.general"
             :component="statement"
           />
         </div>
-        <FormPagination />
+        <FormPagination
+          component-type="statement"
+          :component-search="statementsParams"
+        />
       </section>
     </ClientOnly>
   </article>

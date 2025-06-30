@@ -33,6 +33,7 @@ export interface searchParams {
   rows: string | number;
   fl?: string | string[];
   sort?: string[];
+  start?: number;
   status?: string;
 }
 

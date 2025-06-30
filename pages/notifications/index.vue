@@ -49,14 +49,20 @@ definePageMeta({
 
     <ClientOnly>
       <section class="search-results">
-        <FormPagination />
+        <FormPagination
+          component-type="notification"
+          :component-search="notificationsParams"
+        />
         <div class="search-results-items">
           <ContentobjectSerpBlock
             v-for="notification in referencedNotifications.general"
             :component="notification"
           />
         </div>
-        <FormPagination />
+        <FormPagination
+          component-type="notification"
+          :component-search="notificationsParams"
+        />
       </section>
     </ClientOnly>
   </article>
