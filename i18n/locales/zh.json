@@ -82,7 +82,11 @@
       "name_plural": "发言",
       "recent": "最近的发言",
       "more": "更多声明",
-      "view": "查看声明"
+      "view": "查看声明",
+      "themes": "主题",
+      "download": "下载现有语言版本的声明",
+      "download_pdf": "以 PDF 格式下载本声明。",
+      "download_doc": "下载本声明的 DOC 文件。"
     },
     "portals": {
       "name": "门户",

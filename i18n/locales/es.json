@@ -79,7 +79,11 @@
       "name_plural": "declaraciones",
       "recent": "Declaraciones recientes",
       "more": "Más declaraciones",
-      "view": "Ver la declaración"
+      "view": "Ver la declaración",
+      "themes": "Temas",
+      "download": "Descargar la declaración en los idiomas disponibles",
+      "download_pdf": "Descargue esta declaración en formato PDF.",
+      "download_doc": "Descargue esta declaración en formato DOC."
     },
     "portals": {
       "name": "portal",
