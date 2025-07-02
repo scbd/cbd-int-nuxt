@@ -115,6 +115,8 @@
     "search_terms": "搜索条件",
     "files": "文件",
     "year": "年份",
-    "year_any": "任何年份"
+    "year_any": "任何年份",
+    "results": "成果",
+    "of": "的"
   }
 }
