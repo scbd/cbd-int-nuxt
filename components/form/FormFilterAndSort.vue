@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { searchParams } from "~/types/components";
+import type { componentSanitized, searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
 const { getMeetings, getNotifications, getStatements } = getComponents();
@@ -8,8 +8,13 @@ const languageSettings = useLanguageStore();
 const { t } = useI18n();
 
 const props = defineProps<{
-  searchParams: searchParams;
-  componentType?: string;
+  searchParams?: searchParams[];
+  componentType:
+    | "article"
+    | "meeting"
+    | "notification"
+    | "statement"
+    | "updates";
 }>();
 
 const inputFilterTitle = ref<string>();
@@ -18,7 +23,7 @@ const inputFilterThemes = ref<string>();
 const inputFilterRecipients = ref<string>();
 const selectFilterYear = ref<number>(0);
 const selectSortName = ref<string>("asc");
-const selectSortDate = ref<string>("desc");
+const selectSortDate = ref<string>();
 
 const query: {
   title?: string;
@@ -30,27 +35,31 @@ const query: {
 };
 const displayQuery = ref(query);
 
-if (props.searchParams.q.includes("recipient_ss")) {
-  displayQuery.value.recipient = props.searchParams.q.substring(
-    props.searchParams.q.indexOf("*") + 1,
-    props.searchParams.q.lastIndexOf("*")
-  );
-}
-
-if (
-  props.searchParams.q.includes(
-    `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
-  )
-) {
-  displayQuery.value.theme = props.searchParams.q.substring(
-    props.searchParams.q.indexOf('("') + 2,
-    props.searchParams.q.lastIndexOf('")')
-  );
+if (props.searchParams) {
+  for (const searchParams of props.searchParams) {
+    if (searchParams.q.includes("recipient_ss")) {
+      displayQuery.value.recipient = searchParams.q.substring(
+        searchParams.q.indexOf("*") + 1,
+        searchParams.q.lastIndexOf("*")
+      );
+    }
+    if (
+      searchParams.q.includes(
+        `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
+      )
+    ) {
+      displayQuery.value.theme = searchParams.q.substring(
+        searchParams.q.indexOf('("') + 2,
+        searchParams.q.lastIndexOf('")')
+      );
+    }
+  }
 }
 
 const searchHandler = async () => {
-  let paramQuery = `schema_s:${props.componentType ?? "notification"}`;
-  let paramSort = [];
+  // let paramQuery = `schema_s:${props.componentType}`;
+  let paramQuery = "";
+  let paramSort: string[] = [];
 
   displayQuery.value.recipient = "";
 
@@ -121,33 +130,45 @@ const searchHandler = async () => {
   //   paramQuery = `${paramQuery})`;
   // }
 
-  const params: searchParams = {
-    q: paramQuery,
-    fl: props.searchParams.fl,
-    rows: props.searchParams.rows,
-  };
+  if (props.searchParams) {
+    for await (const searchParams of props.searchParams) {
+      // if (selectSortName.value) {
+      //   paramSort.push(
+      //     `title_${languageSettings.active_language.toUpperCase()}_s ${selectSortDate.value}`
+      //   );
+      // }
 
-  if (selectSortDate.value) {
-    paramSort?.push(`date_s ${selectSortDate.value}`);
-  }
+      if (searchParams.q.includes("schema_s:meeting")) {
+        if (selectSortDate.value) {
+          paramSort.push(`abs(ms(startDate_dt,NOW)) ${selectSortDate.value}`);
+        } else {
+          paramSort.push(`abs(ms(startDate_dt,NOW)) asc`);
+        }
 
-  if (selectSortName.value) {
-    paramSort?.push(
-      `title_${languageSettings.active_language.toUpperCase()}_s ${selectSortDate.value}`
-    );
-  }
+        searchParams.q = `schema_s:meeting${paramQuery}`;
+        searchParams.sort = paramSort;
 
-  params.q = paramQuery;
-  params.sort = paramSort;
+        await getMeetings(searchParams);
+      } else if (searchParams.q.includes("schema_s:notification")) {
+        if (selectSortDate.value) {
+          paramSort?.push(`date_s ${selectSortDate.value}`);
+        }
 
-  console.log(params.q);
+        searchParams.q = `schema_s:notification${paramQuery}`;
+        searchParams.sort = paramSort;
 
-  if (props.componentType === "meeting") {
-    await getMeetings(params);
-  } else if (props.componentType === "notification") {
-    await getNotifications(params);
-  } else if (props.componentType === "statement") {
-    await getStatements(params);
+        await getNotifications(searchParams);
+      } else if (searchParams.q.includes("schema_s:statement")) {
+        if (selectSortDate.value) {
+          paramSort?.push(`date_s ${selectSortDate.value}`);
+        }
+
+        searchParams.q = `schema_s:statement${paramQuery}`;
+        searchParams.sort = paramSort;
+
+        await getStatements(searchParams);
+      }
+    }
   }
 };
 </script>

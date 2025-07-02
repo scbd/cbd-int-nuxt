@@ -42,7 +42,7 @@ definePageMeta({
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="notificationsParams"
+        :search-params="[notificationsParams]"
         :component-type="'notification'"
       />
     </section>

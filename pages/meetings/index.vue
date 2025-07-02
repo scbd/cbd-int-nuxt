@@ -41,7 +41,7 @@ definePageMeta({
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="meetingsParams"
+        :search-params="[meetingsParams]"
         component-type="meeting"
       />
     </section>

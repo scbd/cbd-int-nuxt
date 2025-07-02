@@ -30,7 +30,7 @@ definePageMeta({
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="statementsParams"
+        :search-params="[statementsParams]"
         component-type="statement"
       />
     </section>
