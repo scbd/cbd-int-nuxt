@@ -1,21 +1,31 @@
 <script setup lang="ts">
-import type { searchParams } from "~/types/components";
+import type { componentGaiaType, searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 import FormPagination from "~/components/form/FormPagination.vue";
 
 const route = useRoute();
 const { t } = useI18n();
 
-const { getStatements } = getComponents();
+const { getGaiaComponents } = getComponents();
 
 const statementsParams: searchParams = {
-  q: (route.meta.statementQuery as string) ?? "schema_s:statement",
-  fl: ["symbol_s", "date_s", "url_ss", "title_??_s", "themes_??_ss"],
-  sort: ["date_s desc"],
+  q: "",
+  fl: [
+    "schema_s",
+    "symbol_s",
+    "date_s",
+    "url_ss",
+    "title_??_s",
+    "themes_??_ss",
+  ],
+  sort: {
+    date_s: "desc",
+  },
   rows: 20,
 };
+const componentTypes: componentGaiaType = ["statement"];
 
-await getStatements(statementsParams);
+await getGaiaComponents(statementsParams, componentTypes);
 
 definePageMeta({
   layout: "serp",
@@ -30,15 +40,15 @@ definePageMeta({
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="[statementsParams]"
-        component-type="statement"
+        :search-params="statementsParams"
+        :component-types="componentTypes"
       />
     </section>
 
     <ClientOnly>
       <section class="search-results">
         <FormPagination
-          component-type="statement"
+          :component-types="componentTypes"
           :component-search="statementsParams"
         />
         <div class="search-results-items">
@@ -48,7 +58,7 @@ definePageMeta({
           />
         </div>
         <FormPagination
-          component-type="statement"
+          :component-types="componentTypes"
           :component-search="statementsParams"
         />
       </section>

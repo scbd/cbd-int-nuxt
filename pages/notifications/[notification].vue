@@ -7,7 +7,7 @@ import type {
 
 import getComponents from "~/composables/componentApi";
 
-const { getNotifications } = getComponents();
+const { getGaiaComponents } = getComponents();
 const config = useRuntimeConfig();
 const route = useRoute();
 const languageSettings = useLanguageStore();
@@ -18,8 +18,9 @@ const props = defineProps<{
 }>();
 
 const notificationsParams: searchParams = {
-  q: `schema_s:notification AND symbol_s:${route.params.notification}`,
+  q: `symbol_s:${route.params.notification}`,
   fl: [
+    "schema_s",
     "symbol_s",
     "date_s",
     "actionDate_s",
@@ -33,14 +34,16 @@ const notificationsParams: searchParams = {
     "fulltext_??_s",
     "files_ss",
   ],
-  sort: ["date_s desc"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 1,
 };
 
-await getNotifications(notificationsParams);
+await getGaiaComponents(notificationsParams, ["notification"]);
 
 const toNotificationsParams: searchParams = {
-  q: `schema_s:notification`,
+  q: "",
   fl: [
     "symbol_s",
     "date_s",
@@ -55,7 +58,9 @@ const toNotificationsParams: searchParams = {
     "fulltext_??_s",
     "files_ss",
   ],
-  sort: ["date_s desc"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 1,
 };
 

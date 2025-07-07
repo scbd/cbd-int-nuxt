@@ -236,10 +236,10 @@ const objectLocation = (
               ).format(component.date_action)
             }}
           </div>
-          <div v-show="component.themes" class="subjects">
+          <div v-if="component.themes" class="subjects">
             {{ t("components.notifications.subjects") }}:
             {{
-              component.themes?.[
+              component.themes[
                 languageSettings.active_language.slice(0, 2)
               ].join(", ")
             }}

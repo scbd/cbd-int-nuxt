@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { fetchedMenuItem } from "~/types/drupalMenu";
 
+const { t } = useI18n();
+
 const props = defineProps<{
   parent: fetchedMenuItem;
 }>();
@@ -9,7 +11,7 @@ const props = defineProps<{
 <template>
   <nav class="mega-menu-drawer dropdown-menu container-fluid">
     <ul class="mega-menu-drawer-internal nav">
-      <li class="sections-header">Sections</li>
+      <li class="sections-header">{{ t("navigation.megamenu.sections") }}</li>
       <li class="level-1-item nav-item">
         <NuxtLink
           class="nav-link"

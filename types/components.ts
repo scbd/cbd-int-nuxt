@@ -1,5 +1,4 @@
 export interface componentRequest {
-  numFound?: number;
   start?: number;
   data?:
     | componentArticleRaw
@@ -7,11 +6,32 @@ export interface componentRequest {
     | componentGbfTargetRaw
     | componentGbfTargetRaw[]
     | componentPortalRaw[];
-  docs?: [];
 }
 
+export interface componentGaiaRequest {
+  numFound: number;
+  start: 0;
+  docs:
+    | componentMeetingRaw[]
+    | componentNotificationRaw[]
+    | componentStatementRaw[]
+    | componentNbsapRaw[];
+}
+
+export type componentType = componentGaiaType | componentDrupalType;
+
+export type componentGaiaType = (
+  | "meeting"
+  | "notification"
+  | "statement"
+  | "nbsap"
+)[];
+
+export type componentDrupalType = ("article" | "gbf-target" | "portal")[];
+
 export interface availableLanguages {
-  [ar: string]: string;
+  [language: string]: string;
+  ar: string;
   en: string;
   es: string;
   fr: string;
@@ -19,8 +39,9 @@ export interface availableLanguages {
   zh: string;
 }
 
-interface availableLanguagesArray {
-  [ar: string]: string[];
+export interface availableLanguagesArray {
+  [language: string]: string[];
+  ar: string[];
   en: string[];
   es: string[];
   fr: string[];
@@ -32,7 +53,11 @@ export interface searchParams {
   q: string;
   rows: string | number;
   fl?: string | string[];
-  sort?: string[];
+  sort?:
+    | string
+    | {
+        [field_name: string]: "asc" | "desc";
+      };
   start?: number;
   status?: string;
 }
@@ -178,6 +203,7 @@ export interface componentArticlePath {
 }
 
 export interface componentMeetingRaw {
+  schema_s: string;
   status_s: string;
   symbol_s: string;
   title_AR_s: string;
@@ -210,6 +236,7 @@ export interface componentMeetingRaw {
 }
 
 export interface componentNotificationRaw {
+  schema_s: string;
   symbol_s: string;
   date_s: string;
   actionDate_s?: string;
@@ -249,6 +276,7 @@ export interface componentGbfTargetRaw {
 }
 
 export interface componentStatementRaw {
+  schema_s: string;
   symbol_s: string;
   date_s: string;
   title_AR_s: string;
@@ -285,6 +313,7 @@ export interface componentPortalRaw {
 }
 
 export interface componentNbsapRaw {
+  schema_s: string;
   title_AR_s: string;
   title_EN_s: string;
   title_ES_s: string;

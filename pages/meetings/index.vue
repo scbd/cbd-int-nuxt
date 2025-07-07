@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import type { componentSanitized, searchParams } from "~/types/components";
+import type {
+  componentGaiaType,
+  componentSanitized,
+  searchParams,
+} from "~/types/components";
 import getComponents from "~/composables/componentApi";
 import FormPagination from "~/components/form/FormPagination.vue";
 
 const route = useRoute();
 const { t } = useI18n();
 
-const { getMeetings } = getComponents();
+const { getGaiaComponents } = getComponents();
 
 const meetingsParams: searchParams = {
-  q: (route.meta.meetingQuery as string) ?? "schema_s:meeting",
+  q: (route.meta.meetingQuery as string) ?? "",
   fl: [
+    "schema_s",
     "startDate_dt",
     "endDate_dt",
-    "EVT_CD",
-    "title_*_s",
+    "title_??_s",
     "themes_??_ss",
     "url_ss",
     "symbol_s",
@@ -22,11 +26,14 @@ const meetingsParams: searchParams = {
     "eventCountry_??_s",
     "status_s",
   ],
-  sort: ["abs(ms(startDate_dt,NOW)) asc"],
+  sort: {
+    createdDate_dt: "desc",
+  },
   rows: 20,
 };
 
-await getMeetings(meetingsParams);
+const componentTypes: componentGaiaType = ["meeting"];
+await getGaiaComponents(meetingsParams, componentTypes);
 
 definePageMeta({
   layout: "serp",
@@ -41,15 +48,15 @@ definePageMeta({
     </section>
     <section>
       <FormFilterAndSort
-        :search-params="[meetingsParams]"
-        component-type="meeting"
+        :search-params="meetingsParams"
+        :component-types="componentTypes"
       />
     </section>
 
     <ClientOnly>
       <section class="search-results">
         <FormPagination
-          component-type="meeting"
+          :component-types="componentTypes"
           :component-search="meetingsParams"
         />
         <div class="search-results-items">
@@ -59,7 +66,7 @@ definePageMeta({
           />
         </div>
         <FormPagination
-          component-type="meeting"
+          :component-types="componentTypes"
           :component-search="meetingsParams"
         />
       </section>

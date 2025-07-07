@@ -1,6 +1,8 @@
 import type { drupalToken } from "~/types/drupalAuth";
 import type {
   componentRequest,
+  componentGaiaType,
+  componentGaiaRequest,
   componentArticleRaw,
   componentArticleCoverImageRaw,
   componentMeetingRaw,
@@ -11,12 +13,21 @@ import type {
   componentNbsapRaw,
   componentSanitized,
   searchParams,
+  availableLanguages,
+  availableLanguagesArray,
 } from "~/types/components";
 import type {
   drupalEntityPath,
   drupalEntitySearchParams,
 } from "~/types/drupalEntityApi";
 import type { componentStatus } from "~/types/componentStatus";
+
+export const referencedComponents = ref({
+  searchResults: <componentSanitized[]>[],
+  numFound: 0,
+  start: 0,
+});
+export const searchResultsStatus = ref<componentStatus>({ status: "pending" });
 
 export const referencedArticles = ref({
   general: <componentSanitized[]>[],
@@ -48,7 +59,11 @@ export const referencedStatements = ref({
 export const statementsStatus = ref<componentStatus>({ status: "pending" });
 export const referencedPortals = ref<componentSanitized[]>([]);
 export const portalsStatus = ref<componentStatus>({ status: "pending" });
-export const referencedNbsaps = ref<componentSanitized[]>([]);
+export const referencedNbsaps = ref({
+  general: <componentSanitized[]>[],
+  numFound: 0,
+  start: 0,
+});
 export const nbsapsStatus = ref<componentStatus>({ status: "pending" });
 
 export default function getComponents() {
@@ -59,6 +74,247 @@ export default function getComponents() {
 
   const solrURI = "/api/v2013/index?";
   const thesaurusURI = "/api/v2013/thesaurus/domains";
+
+  const getGaiaComponents = async (
+    searchParameters: searchParams,
+    components: componentGaiaType,
+    megamenu = false
+  ) => {
+    if (components.length > 1) {
+      searchResultsStatus.value.status = "pending";
+    } else {
+      for (const componentType of components) {
+        if (componentType === "meeting") {
+          meetingsStatus.value.status = "pending";
+        } else if (componentType === "notification") {
+          notificationsStatus.value.status = "pending";
+        } else if (componentType === "statement") {
+          statementsStatus.value.status = "pending";
+        } else if (componentType === "nbsap") {
+          nbsapsStatus.value.status = "pending";
+        }
+      }
+    }
+
+    searchParameters.q +=
+      searchParameters.q !== ""
+        ? ` AND schema_s:(${components.join(" OR ")})`
+        : `schema_s:(${components.join(" OR ")})`;
+
+    searchParameters.sort =
+      searchParameters.sort instanceof Object
+        ? (Object.entries(searchParameters.sort as Object)
+            .map(
+              ([subprop, subvalue]): string =>
+                `${subprop} ${encodeURIComponent(subvalue)}`
+            )
+            .join(",") as string)
+        : searchParameters.sort;
+
+    const params = Object.entries(searchParameters)
+      .map(
+        ([prop, value]) =>
+          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
+
+    try {
+      const response = await fetch(`${config.public.GAIA}${solrURI}${params}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const componentsRaw: { response: componentGaiaRequest } =
+          await response.json();
+
+        const componentsList = componentsRaw.response.docs!.map(
+          (
+            componentRaw:
+              | componentMeetingRaw
+              | componentNotificationRaw
+              | componentStatementRaw
+              | componentNbsapRaw
+          ): componentSanitized => ({
+            type: componentRaw.schema_s,
+            symbol: (
+              componentRaw as
+                | componentMeetingRaw
+                | componentNotificationRaw
+                | componentStatementRaw
+            ).symbol_s,
+            url: componentRaw.url_ss[0],
+            date: new Date(
+              (componentRaw as componentMeetingRaw).startDate_dt ??
+                (
+                  componentRaw as
+                    | componentNotificationRaw
+                    | componentStatementRaw
+                ).date_s ??
+                (componentRaw as componentNbsapRaw).submittedDate_s
+            ),
+            title: {
+              ar: componentRaw.title_AR_s,
+              en: componentRaw.title_EN_s,
+              es: componentRaw.title_ES_s,
+              fr: componentRaw.title_FR_s,
+              ru: componentRaw.title_RU_s,
+              zh: componentRaw.title_ZH_s,
+            } as availableLanguages,
+            themes: {
+              ar: (
+                componentRaw as
+                  | componentMeetingRaw
+                  | componentNotificationRaw
+                  | componentStatementRaw
+              ).themes_AR_ss,
+              en: (
+                componentRaw as
+                  | componentMeetingRaw
+                  | componentNotificationRaw
+                  | componentStatementRaw
+              ).themes_EN_ss,
+              es: (
+                componentRaw as
+                  | componentMeetingRaw
+                  | componentNotificationRaw
+                  | componentStatementRaw
+              ).themes_ES_ss,
+              fr: (
+                componentRaw as
+                  | componentMeetingRaw
+                  | componentNotificationRaw
+                  | componentStatementRaw
+              ).themes_FR_ss,
+              ru: (
+                componentRaw as
+                  | componentMeetingRaw
+                  | componentNotificationRaw
+                  | componentStatementRaw
+              ).themes_RU_ss,
+              zh: (
+                componentRaw as
+                  | componentMeetingRaw
+                  | componentNotificationRaw
+                  | componentStatementRaw
+              ).themes_ZH_ss,
+            } as availableLanguagesArray,
+            status: (componentRaw as componentMeetingRaw).status_s,
+            event_city: {
+              ar: (componentRaw as componentMeetingRaw).eventCity_AR_s,
+              en: (componentRaw as componentMeetingRaw).eventCity_EN_s,
+              es: (componentRaw as componentMeetingRaw).eventCity_ES_s,
+              fr: (componentRaw as componentMeetingRaw).eventCity_FR_s,
+              ru: (componentRaw as componentMeetingRaw).eventCity_RU_s,
+              zh: (componentRaw as componentMeetingRaw).eventCity_ZH_s,
+            },
+            event_country: {
+              ar: (componentRaw as componentMeetingRaw).eventCountry_AR_s,
+              en: (componentRaw as componentMeetingRaw).eventCountry_EN_s,
+              es: (componentRaw as componentMeetingRaw).eventCountry_ES_s,
+              fr: (componentRaw as componentMeetingRaw).eventCountry_FR_s,
+              ru: (componentRaw as componentMeetingRaw).eventCountry_RU_s,
+              zh: (componentRaw as componentMeetingRaw).eventCountry_ZH_s,
+            },
+            date_action: (componentRaw as componentNotificationRaw).actionDate_s
+              ? new Date(
+                  (componentRaw as componentNotificationRaw)
+                    .actionDate_s as string
+                )
+              : undefined,
+            date_deadline: new Date(
+              (componentRaw as componentNotificationRaw).deadline_s
+            ),
+            sender: (componentRaw as componentNotificationRaw).sender_s,
+            reference: (componentRaw as componentNotificationRaw).reference_s,
+            recipient: (componentRaw as componentNotificationRaw).recipient_ss,
+            fulltext: {
+              ar: (componentRaw as componentNotificationRaw).fulltext_AR_s,
+              en: (componentRaw as componentNotificationRaw).fulltext_EN_s,
+              es: (componentRaw as componentNotificationRaw).fulltext_ES_s,
+              fr: (componentRaw as componentNotificationRaw).fulltext_FR_s,
+              ru: (componentRaw as componentNotificationRaw).fulltext_RU_s,
+              zh: (componentRaw as componentNotificationRaw).fulltext_ZH_s,
+            },
+            files: JSON.parse(
+              (componentRaw as componentNotificationRaw).files_ss?.[0] ?? "{}"
+            ),
+          })
+        );
+
+        if (components.length > 1) {
+          referencedComponents.value.searchResults = componentsList;
+          referencedComponents.value.numFound = componentsRaw.response.numFound;
+          referencedComponents.value.start = componentsRaw.response.start;
+
+          searchResultsStatus.value.status = "OK";
+        } else {
+          if (components[0] === "meeting") {
+            if (!megamenu) {
+              referencedMeetings.value.general = componentsList;
+              referencedMeetings.value.numFound =
+                componentsRaw.response.numFound;
+              referencedMeetings.value.start = componentsRaw.response.start;
+            } else {
+              referencedMeetings.value.megamenu = componentsList;
+            }
+
+            meetingsStatus.value.status = "OK";
+          } else if (components[0] === "notification") {
+            if (!megamenu) {
+              referencedNotifications.value.general = componentsList;
+              referencedNotifications.value.numFound =
+                componentsRaw.response.numFound;
+              referencedNotifications.value.start =
+                componentsRaw.response.start;
+            } else {
+              referencedNotifications.value.megamenu = componentsList;
+            }
+            notificationsStatus.value.status = "OK";
+          } else if (components[0] === "statement") {
+            if (!megamenu) {
+              referencedStatements.value.general = componentsList;
+              referencedStatements.value.numFound =
+                componentsRaw.response.numFound;
+              referencedStatements.value.start = componentsRaw.response.start;
+            } else {
+              referencedStatements.value.megamenu = componentsList;
+            }
+
+            statementsStatus.value.status = "OK";
+          } else if (components[0] === "nbsap") {
+            referencedNbsaps.value.general = componentsList;
+            referencedNbsaps.value.numFound = componentsRaw.response.numFound;
+            referencedNbsaps.value.start = componentsRaw.response.start;
+
+            nbsapsStatus.value.status = "OK";
+          }
+        }
+
+        return componentsList;
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (components.length > 1) {
+        searchResultsStatus.value.status = "error";
+      } else {
+        for (const componentType of components) {
+          if (componentType === "meeting") {
+            meetingsStatus.value.status = "error";
+          } else if (componentType === "notification") {
+            notificationsStatus.value.status = "error";
+          } else if (componentType === "statement") {
+            statementsStatus.value.status = "error";
+          } else if (componentType === "nbsap") {
+            nbsapsStatus.value.status = "error";
+          }
+        }
+      }
+    }
+  };
 
   const getArticles = async (
     searchParameters: drupalEntitySearchParams,
@@ -200,176 +456,6 @@ export default function getComponents() {
     }
   };
 
-  const getMeetings = async (
-    searchParameters: searchParams,
-    megamenu = false
-  ) => {
-    meetingsStatus.value.status = "pending";
-
-    const params = Object.entries(searchParameters)
-      .map(
-        ([prop, value]) =>
-          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
-      )
-      .join("&");
-
-    try {
-      const response = await fetch(`${config.public.GAIA}${solrURI}${params}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const meetingsRaw: { response: componentRequest } =
-          await response.json();
-
-        const meetingsList = meetingsRaw.response.docs!.map(
-          (rawData: componentMeetingRaw): componentSanitized => ({
-            type: "meeting",
-            symbol: rawData.symbol_s,
-            date: new Date(rawData.startDate_dt),
-            date_end: new Date(rawData.endDate_dt),
-            url: rawData.url_ss[0],
-            title: {
-              ar: rawData.title_AR_s,
-              en: rawData.title_EN_s,
-              es: rawData.title_ES_s,
-              fr: rawData.title_FR_s,
-              ru: rawData.title_RU_s,
-              zh: rawData.title_ZH_s,
-            },
-            themes: {
-              ar: rawData.themes_AR_ss,
-              en: rawData.themes_EN_ss,
-              es: rawData.themes_ES_ss,
-              fr: rawData.themes_FR_ss,
-              ru: rawData.themes_RU_ss,
-              zh: rawData.themes_ZH_ss,
-            },
-            event_city: {
-              ar: rawData.eventCity_AR_s,
-              en: rawData.eventCity_EN_s,
-              es: rawData.eventCity_ES_s,
-              fr: rawData.eventCity_FR_s,
-              ru: rawData.eventCity_RU_s,
-              zh: rawData.eventCity_ZH_s,
-            },
-            event_country: {
-              ar: rawData.eventCountry_AR_s,
-              en: rawData.eventCountry_EN_s,
-              es: rawData.eventCountry_ES_s,
-              fr: rawData.eventCountry_FR_s,
-              ru: rawData.eventCountry_RU_s,
-              zh: rawData.eventCountry_ZH_s,
-            },
-            status: rawData.status_s,
-          })
-        );
-
-        if (!megamenu) {
-          referencedMeetings.value.general = meetingsList;
-          referencedMeetings.value.numFound =
-            meetingsRaw.response.numFound ?? 0;
-          referencedMeetings.value.start = meetingsRaw.response.start ?? 0;
-        } else {
-          referencedMeetings.value.megamenu = meetingsList;
-        }
-
-        meetingsStatus.value.status = "OK";
-
-        return meetingsList;
-      }
-    } catch (error) {
-      console.error(error);
-      meetingsStatus.value.status = "error";
-    }
-  };
-
-  const getNotifications = async (
-    searchParameters: searchParams,
-    megamenu = false
-  ) => {
-    notificationsStatus.value.status = "pending";
-
-    const params = Object.entries(searchParameters)
-      .map(
-        ([prop, value]) =>
-          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
-      )
-      .join("&");
-
-    try {
-      const response = await fetch(
-        `${config.public.GAIA}${solrURI}${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const notificationsRaw: { response: componentRequest } =
-        await response.json();
-
-      const notificationsList = notificationsRaw.response.docs!.map(
-        (rawData: componentNotificationRaw): componentSanitized => ({
-          type: "notification",
-          symbol: rawData.symbol_s,
-          date: new Date(rawData.date_s),
-          date_action: rawData.actionDate_s
-            ? new Date(rawData.actionDate_s)
-            : undefined,
-          date_deadline: new Date(rawData.deadline_s),
-          sender: rawData.sender_s,
-          reference: rawData.reference_s,
-          url: rawData.url_ss[0],
-          recipient: rawData.recipient_ss,
-          title: {
-            ar: rawData.title_AR_s,
-            en: rawData.title_EN_s,
-            es: rawData.title_ES_s,
-            fr: rawData.title_FR_s,
-            ru: rawData.title_RU_s,
-            zh: rawData.title_ZH_s,
-          },
-          themes: {
-            ar: rawData.themes_AR_ss,
-            en: rawData.themes_EN_ss,
-            es: rawData.themes_ES_ss,
-            fr: rawData.themes_FR_ss,
-            ru: rawData.themes_RU_ss,
-            zh: rawData.themes_ZH_ss,
-          },
-          fulltext: {
-            ar: rawData.fulltext_AR_s,
-            en: rawData.fulltext_EN_s,
-            es: rawData.fulltext_ES_s,
-            fr: rawData.fulltext_FR_s,
-            ru: rawData.fulltext_RU_s,
-            zh: rawData.fulltext_ZH_s,
-          },
-          files: JSON.parse(rawData.files_ss?.[0] ?? "{}"),
-        })
-      );
-
-      if (!megamenu) {
-        referencedNotifications.value.general = notificationsList;
-      } else {
-        referencedNotifications.value.megamenu = notificationsList;
-      }
-
-      notificationsStatus.value.status = "OK";
-
-      return notificationsList;
-    } catch (error) {
-      console.error(error);
-      notificationsStatus.value.status = "error";
-    }
-  };
-
   const getGbfTargets = async (searchParameters: drupalEntitySearchParams) => {
     gbfTargetsStatus.value.status = "pending";
     const langCode = languageSettings.active_language;
@@ -411,75 +497,6 @@ export default function getComponents() {
     } catch (error) {
       console.error(error);
       gbfTargetsStatus.value.status = "error";
-    }
-  };
-
-  const getStatements = async (
-    searchParameters: searchParams,
-    megamenu = false
-  ) => {
-    statementsStatus.value.status = "pending";
-
-    const params = Object.entries(searchParameters)
-      .map(
-        ([prop, value]) =>
-          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
-      )
-      .join("&");
-
-    try {
-      const response = await fetch(
-        `${config.public.GAIA}${solrURI}${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const statementsRaw: { response: componentRequest } =
-          await response.json();
-
-        const statementsList = statementsRaw.response.docs!.map(
-          (rawData: componentStatementRaw): componentSanitized => ({
-            type: "statement",
-            symbol: rawData.symbol_s,
-            date: new Date(rawData.date_s),
-            url: Array(rawData.url_ss).flat().join("") ?? "",
-            title: {
-              ar: rawData.title_AR_s,
-              en: rawData.title_EN_s,
-              es: rawData.title_ES_s,
-              fr: rawData.title_FR_s,
-              ru: rawData.title_RU_s,
-              zh: rawData.title_ZH_s,
-            },
-            themes: {
-              ar: rawData.themes_AR_ss,
-              en: rawData.themes_EN_ss,
-              es: rawData.themes_ES_ss,
-              fr: rawData.themes_FR_ss,
-              ru: rawData.themes_RU_ss,
-              zh: rawData.themes_ZH_ss,
-            },
-          })
-        );
-
-        if (!megamenu) {
-          referencedStatements.value.general = statementsList;
-        } else {
-          referencedStatements.value.megamenu = statementsList;
-        }
-
-        statementsStatus.value.status = "OK";
-
-        return statementsList;
-      }
-    } catch (error) {
-      console.error(error);
-      statementsStatus.value.status = "error";
     }
   };
 
@@ -533,66 +550,10 @@ export default function getComponents() {
     }
   };
 
-  const getNbsaps = async (searchParameters: searchParams) => {
-    nbsapsStatus.value.status = "pending";
-
-    const params = Object.entries(searchParameters)
-      .map(
-        ([prop, value]) =>
-          `${encodeURIComponent(prop)}=${encodeURIComponent(value)}`
-      )
-      .join("&");
-
-    try {
-      const response = await fetch(
-        `${config.public.GAIA}${solrURI}${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const nbsapsRaw: { response: componentRequest } = await response.json();
-
-        const dataDocsMapped = nbsapsRaw.response.docs!.map(
-          (rawData: componentNbsapRaw): componentSanitized => ({
-            type: "nbsap",
-            date: new Date(rawData.submittedDate_s),
-            url: rawData.url_ss[0],
-            title: {
-              ar: rawData.title_AR_s,
-              en: rawData.title_EN_s,
-              es: rawData.title_ES_s,
-              fr: rawData.title_FR_s,
-              ru: rawData.title_RU_s,
-              zh: rawData.title_ZH_s,
-            },
-          })
-        );
-
-        const nbsapList: componentSanitized[] = dataDocsMapped;
-
-        referencedNbsaps.value = nbsapList;
-        nbsapsStatus.value.status = "OK";
-
-        return nbsapList;
-      }
-    } catch (error) {
-      console.error(error);
-      nbsapsStatus.value.status = "error";
-    }
-  };
-
   return {
+    getGaiaComponents,
     getArticles,
-    getMeetings,
-    getNotifications,
     getGbfTargets,
-    getStatements,
     getPortals,
-    getNbsaps,
   };
 }

@@ -14,6 +14,9 @@
       "settings": "Settings",
       "settings_icon": "Modify your Convention on Biological Diversity website settings"
     },
+    "megamenu": {
+      "sections": "Sections"
+    },
     "social_media": {
       "follow": "Follow us on social media"
     },

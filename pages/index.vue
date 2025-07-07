@@ -2,20 +2,13 @@
 import getComponents, {
   referencedGbfTargets,
 } from "~/composables/componentApi";
-import type { searchParams, componentSanitized } from "~/types/components";
+import type { componentSanitized, searchParams } from "~/types/components";
 import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
 
 const languageSettings = useLanguageStore();
 
-const {
-  getArticles,
-  getMeetings,
-  getNotifications,
-  getGbfTargets,
-  getStatements,
-  getPortals,
-  getNbsaps,
-} = getComponents();
+const { getArticles, getGbfTargets, getPortals, getGaiaComponents } =
+  getComponents();
 
 const articlesParams: drupalEntitySearchParams = {
   entity: "article",
@@ -24,12 +17,13 @@ const articlesParams: drupalEntitySearchParams = {
 };
 
 const meetingsParams: searchParams = {
-  q: "schema_s:meeting",
+  q: "",
   fl: [
+    "schema_s",
+    "symbol_s",
     "startDate_dt",
     "endDate_dt",
-    "EVT_CD",
-    "title_*_s",
+    "title_??_s",
     "themes_??_ss",
     "url_ss",
     "symbol_s",
@@ -37,13 +31,16 @@ const meetingsParams: searchParams = {
     "eventCountry_??_s",
     "status_s",
   ],
-  sort: ["abs(ms(startDate_dt,NOW)) asc"],
+  sort: {
+    "abs(ms(startDate_dt,NOW))": "asc",
+  },
   rows: 4,
 };
 
 const notificationsParams: searchParams = {
-  q: "schema_s:notification",
+  q: "",
   fl: [
+    "schema_s",
     "symbol_s",
     "date_s",
     "actionDate_s",
@@ -56,7 +53,9 @@ const notificationsParams: searchParams = {
     "themes_??_ss",
     "fulltext_??_s",
   ],
-  sort: ["date_s desc"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 4,
 };
 
@@ -71,31 +70,39 @@ const gbfTargetsParams: drupalEntitySearchParams = {
 };
 
 const statementsParams: searchParams = {
-  q: "schema_s:statement",
-  fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
-  sort: ["date_s desc"],
+  q: "",
+  fl: ["schema_s", "symbol_s", "date_s", "url_ss", "title_??_s"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 4,
 };
 
 const nbsapsParams: searchParams = {
-  q: "schema_s:nbsap",
-  fl: ["submittedDate_s", "url_ss", "title_??_s"],
-  sort: ["submittedDate_s desc"],
+  q: "",
+  fl: ["schema_s", "submittedDate_s", "url_ss", "title_??_s"],
+  sort: { submittedDate_s: "desc" },
   rows: 4,
 };
 
-const updates: componentSanitized[] = [];
+const updates = ref<componentSanitized[]>([]);
 
 const articles = (await getArticles(articlesParams)) ?? [];
-const meetings = (await getMeetings(meetingsParams)) ?? [];
-const notifications = (await getNotifications(notificationsParams)) ?? [];
-await getStatements(statementsParams);
+
+await getGaiaComponents(meetingsParams, ["meeting"]);
+await getGaiaComponents(notificationsParams, ["notification"]);
+await getGaiaComponents(statementsParams, ["statement"]);
+
 await getGbfTargets(gbfTargetsParams);
 await getPortals();
-await getNbsaps(nbsapsParams);
+await getGaiaComponents(nbsapsParams, ["nbsap"]);
 
-updates.push(...articles, ...meetings, ...notifications);
-const sortedUpdates = updates
+updates.value.push(
+  ...articles,
+  ...referencedMeetings.value.general,
+  ...referencedNotifications.value.general
+);
+const sortedUpdates = updates.value
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 4);
 
@@ -140,7 +147,10 @@ definePageMeta({
         component-type="portal"
         :components="referencedPortals"
       />
-      <ContentobjectRow component-type="nbsap" :components="referencedNbsaps" />
+      <ContentobjectRow
+        component-type="nbsap"
+        :components="referencedNbsaps.general"
+      />
     </ClientOnly>
   </article>
 </template>

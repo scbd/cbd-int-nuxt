@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import type { componentSanitized, searchParams } from "~/types/components";
+import type { componentGaiaType, searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
-const { getMeetings, getNotifications, getStatements } = getComponents();
+const { getGaiaComponents } = getComponents();
 const route = useRoute();
 const languageSettings = useLanguageStore();
 const { t } = useI18n();
 
 const props = defineProps<{
-  searchParams?: searchParams[];
-  componentType:
-    | "article"
-    | "meeting"
-    | "notification"
-    | "statement"
-    | "updates";
+  searchParams: searchParams;
+  componentTypes: componentGaiaType;
 }>();
 
 const inputFilterTitle = ref<string>();
@@ -36,140 +31,77 @@ const query: {
 const displayQuery = ref(query);
 
 if (props.searchParams) {
-  for (const searchParams of props.searchParams) {
-    if (searchParams.q.includes("recipient_ss")) {
-      displayQuery.value.recipient = searchParams.q.substring(
-        searchParams.q.indexOf("*") + 1,
-        searchParams.q.lastIndexOf("*")
-      );
-    }
-    if (
-      searchParams.q.includes(
-        `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
-      )
-    ) {
-      displayQuery.value.theme = searchParams.q.substring(
-        searchParams.q.indexOf('("') + 2,
-        searchParams.q.lastIndexOf('")')
-      );
-    }
+  if (props.searchParams.q.includes("recipient_ss")) {
+    displayQuery.value.recipient = props.searchParams.q.substring(
+      props.searchParams.q.indexOf("*") + 1,
+      props.searchParams.q.lastIndexOf("*")
+    );
+  }
+  if (
+    props.searchParams.q.includes(
+      `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
+    )
+  ) {
+    displayQuery.value.theme = props.searchParams.q.substring(
+      props.searchParams.q.indexOf('("') + 2,
+      props.searchParams.q.lastIndexOf('")')
+    );
   }
 }
 
+const params: searchParams = props.searchParams;
+const componentTypes: componentGaiaType = props.componentTypes;
+
 const searchHandler = async () => {
-  // let paramQuery = `schema_s:${props.componentType}`;
-  let paramQuery = "";
-  let paramSort: string[] = [];
+  let paramQuery: string[] = [];
+  let paramSort: {} = {};
 
   displayQuery.value.recipient = "";
 
   if (selectFilterYear.value > 0) {
-    paramQuery = `${paramQuery} AND date_s:(${selectFilterYear.value}*)`;
+    paramQuery.push(`date_s:(${selectFilterYear.value}*)`);
 
     displayQuery.value.year = selectFilterYear.value;
   }
 
   if (inputFilterTitle.value) {
     const titles: string[] = inputFilterTitle.value.split(" ");
-    paramQuery = `${paramQuery} AND title_${languageSettings.active_language.toUpperCase()}_s:(`;
+    const titlesString = titles.map((title) => `*${title}*`).join(" AND ");
 
-    for await (const title of titles) {
-      if (title !== titles[titles.length - 1]) {
-        paramQuery = `${paramQuery}*${title}* AND `;
-      } else {
-        paramQuery = `${paramQuery}*${title}*`;
-      }
-    }
+    paramQuery.push(
+      `title_${languageSettings.active_language.toUpperCase()}_s:(${titlesString})`
+    );
 
-    paramQuery = `${paramQuery})`;
     displayQuery.value.title = inputFilterTitle.value;
   }
 
   if (inputFilterThemes.value) {
     const themes: string[] = inputFilterThemes.value.split(" ");
-    paramQuery = `${paramQuery} AND themes_${languageSettings.active_language.toUpperCase()}_ss:(`;
+    const themesString = themes.map((theme) => `*${theme}*`).join(" AND ");
 
-    for (const theme of themes) {
-      if (theme !== themes[themes.length - 1]) {
-        paramQuery = `${paramQuery}*${theme}* AND `;
-      } else {
-        paramQuery = `${paramQuery}*${theme}*`;
-      }
-    }
+    paramQuery.push(
+      `themes_${languageSettings.active_language.toUpperCase()}_ss:(${themesString})`
+    );
 
-    paramQuery = `${paramQuery})`;
-    displayQuery.value.title = inputFilterThemes.value;
+    displayQuery.value.theme = inputFilterThemes.value;
   }
 
   if (inputFilterRecipients.value) {
     const recipients: string[] = inputFilterRecipients.value.split(" ");
-    paramQuery = `${paramQuery} AND recipient_${languageSettings.active_language.toUpperCase()}_ss:(`;
+    const recipientsString = recipients
+      .map((recipient) => `*${recipient}*`)
+      .join(" AND ");
 
-    for (const recipient of recipients) {
-      if (recipient !== recipients[recipients.length - 1]) {
-        paramQuery = `${paramQuery}*${recipient}* AND `;
-      } else {
-        paramQuery = `${paramQuery}*${recipient}*`;
-      }
-    }
+    paramQuery.push(
+      `recipient_${languageSettings.active_language.toUpperCase()}_ss:(${recipientsString})`
+    );
 
-    paramQuery = `${paramQuery})`;
-    displayQuery.value.title = inputFilterRecipients.value;
+    displayQuery.value.recipient = inputFilterRecipients.value;
   }
 
-  // if (inputFilterReference.value) {
-  //   const references: string[] = inputFilterReference.value.split(" ");
-  //   paramQuery = `${paramQuery} AND reference_s:(`;
-  //   for await (const reference of references) {
-  //     if (reference !== references[references.length - 1]) {
-  //       paramQuery = `${paramQuery}*${reference}* AND `;
-  //     } else {
-  //       paramQuery = `${paramQuery}*${reference}*`;
-  //     }
-  //   }
-  //   paramQuery = `${paramQuery})`;
-  // }
+  params.q = paramQuery.join(" AND ");
 
-  if (props.searchParams) {
-    for await (const searchParams of props.searchParams) {
-      // if (selectSortName.value) {
-      //   paramSort.push(
-      //     `title_${languageSettings.active_language.toUpperCase()}_s ${selectSortDate.value}`
-      //   );
-      // }
-
-      if (searchParams.q.includes("schema_s:meeting")) {
-        if (selectSortDate.value) {
-          paramSort.push(`abs(ms(startDate_dt,NOW)) ${selectSortDate.value}`);
-        } else {
-          paramSort.push(`abs(ms(startDate_dt,NOW)) asc`);
-        }
-
-        searchParams.q = `schema_s:meeting${paramQuery}`;
-        searchParams.sort = paramSort;
-
-        await getMeetings(searchParams);
-      } else if (searchParams.q.includes("schema_s:notification")) {
-        if (selectSortDate.value) {
-          paramSort?.push(`date_s ${selectSortDate.value}`);
-        }
-
-        searchParams.q = `schema_s:notification${paramQuery}`;
-        searchParams.sort = paramSort;
-
-        await getNotifications(searchParams);
-      } else if (searchParams.q.includes("schema_s:statement")) {
-        if (selectSortDate.value) {
-          paramSort?.push(`date_s ${selectSortDate.value}`);
-        }
-
-        searchParams.q = `schema_s:statement${paramQuery}`;
-        searchParams.sort = paramSort;
-
-        await getStatements(searchParams);
-      }
-    }
-  }
+  getGaiaComponents(params, componentTypes);
 };
 </script>
 <template>
@@ -201,7 +133,6 @@ const searchHandler = async () => {
         />
       </label>
 
-      <!-- Filter by Theme and Recipient -->
       <label for="fsThemes">
         {{ t("components.statements.themes") }}
         <input
@@ -240,30 +171,6 @@ const searchHandler = async () => {
           </select>
         </div>
       </div>
-
-      <!-- <div class="form_section-options column">
-        <div class="form_section-header">Sort</div>
-        <div class="form_section-options">
-          <select
-            v-model="selectSortName"
-            id="sortName"
-            name="sortName"
-            class="form-select"
-          >
-            <option value="asc" selected>Name ASC</option>
-            <option value="desc">Name DSC</option>
-          </select>
-          <select
-            v-model="selectSortDate"
-            id="sortDate"
-            name="sortDate"
-            class="form-select"
-          >
-            <option value="asc" selected>Date ASC</option>
-            <option value="desc" selec>Date DSC</option>
-          </select>
-        </div>
-      </div> -->
 
       <input
         class="btn cbd-btn-primary"
