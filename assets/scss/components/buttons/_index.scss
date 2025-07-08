@@ -229,6 +229,20 @@ $bd-secondary-active: color.scale($bd-secondary, $lightness: -30%);
   }
 }
 
+.results-pagination {
+  .search-results-control {
+    --bs-form-select-bg-img: url(/images/icons/icon_nav-arrow.svg);
+    background: var(--bs-form-select-bg-img) no-repeat center;
+
+    &.prev-page {
+      transform: rotate(90deg);
+    }
+    &.next-page {
+      transform: rotate(-90deg);
+    }
+  }
+}
+
 .aside-collapse-controls {
   display: flex;
   justify-content: flex-end;

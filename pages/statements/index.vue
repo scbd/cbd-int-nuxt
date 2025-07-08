@@ -57,10 +57,6 @@ definePageMeta({
             :component="statement"
           />
         </div>
-        <FormPagination
-          :component-types="componentTypes"
-          :component-search="statementsParams"
-        />
       </section>
     </ClientOnly>
   </article>

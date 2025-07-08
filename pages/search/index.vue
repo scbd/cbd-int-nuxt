@@ -80,10 +80,6 @@ definePageMeta({
             :component="update"
           />
         </div>
-        <FormPagination
-          :component-types="componentTypes"
-          :component-search="searchParams"
-        />
       </section>
     </ClientOnly>
   </article>

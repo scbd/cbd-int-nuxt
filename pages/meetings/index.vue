@@ -65,10 +65,6 @@ definePageMeta({
             :component="meeting"
           />
         </div>
-        <FormPagination
-          :component-types="componentTypes"
-          :component-search="meetingsParams"
-        />
       </section>
     </ClientOnly>
   </article>

@@ -65,10 +65,6 @@ definePageMeta({
             :component="notification"
           />
         </div>
-        <FormPagination
-          :component-types="componentTypes"
-          :component-search="notificationsParams"
-        />
       </section>
     </ClientOnly>
   </article>
