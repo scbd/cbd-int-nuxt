@@ -13,6 +13,9 @@
       "settings": "Configuraciones",
       "settings_icon": "Modifique la configuración de su sitio web del Convenio sobre la Diversidad Biológica"
     },
+    "megamenu": {
+      "sections": "Secciones"
+    },
     "social_media": {
       "follow": "Síganos en las redes sociales"
     },
