@@ -13,6 +13,9 @@
       "settings": "Paramètres",
       "settings_icon": "Modifier les paramètres de votre site web sur la Convention sur la Diversité Biologique"
     },
+    "megamenu": {
+      "sections": "Sections"
+    },
     "social_media": {
       "follow": "Suivez-nous sur les médias sociaux"
     },

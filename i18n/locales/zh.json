@@ -16,6 +16,9 @@
       "settings": "设置",
       "settings_icon": "修改《生物多样性公约》网站设置"
     },
+    "megamenu": {
+      "sections": "章节"
+    },
     "social_media": {
       "follow": "在社交媒体上关注我们"
     },
