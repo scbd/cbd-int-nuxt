@@ -17,8 +17,8 @@ const inputFilterReference = ref<string>();
 const inputFilterThemes = ref<string>();
 const inputFilterRecipients = ref<string>();
 const selectFilterYear = ref<number>(0);
-const selectSortName = ref<string>("asc");
-const selectSortDate = ref<string>();
+const selectSortName = ref<"asc" | "desc">("desc");
+const selectSortDate = ref<"asc" | "desc">("desc");
 
 const query: {
   title?: string;
@@ -54,7 +54,12 @@ const componentTypes: componentGaiaType = props.componentTypes;
 
 const searchHandler = async () => {
   let paramQuery: string[] = [];
-  let paramSort: {} = {};
+  type propSort = {
+    sort: {
+      [field_name: string]: "asc" | "desc";
+    };
+  };
+  const paramSort: propSort = { sort: {} };
 
   displayQuery.value.recipient = "";
 
@@ -66,40 +71,62 @@ const searchHandler = async () => {
 
   if (inputFilterTitle.value) {
     const titles: string[] = inputFilterTitle.value.split(" ");
-    const titlesString = titles.map((title) => `*${title}*`).join(" AND ");
+    const titlesString = titles
+      .map(
+        (title) =>
+          `*${title.replaceAll(/[^a-zA-Z0-9 ]/gi, (match) => `\\${match}`)}*`
+      )
+      .join(" AND ");
 
     paramQuery.push(
       `title_${languageSettings.active_language.toUpperCase()}_s:(${titlesString})`
     );
-
-    displayQuery.value.title = inputFilterTitle.value;
   }
 
   if (inputFilterThemes.value) {
     const themes: string[] = inputFilterThemes.value.split(" ");
-    const themesString = themes.map((theme) => `*${theme}*`).join(" AND ");
+    const themesString = themes
+      .map(
+        (theme) =>
+          `*${theme.replaceAll(/[^a-zA-Z0-9 ]/gi, (match) => `\\${match}`)}*`
+      )
+      .join(" AND ");
 
     paramQuery.push(
       `themes_${languageSettings.active_language.toUpperCase()}_ss:(${themesString})`
     );
-
-    displayQuery.value.theme = inputFilterThemes.value;
   }
 
   if (inputFilterRecipients.value) {
     const recipients: string[] = inputFilterRecipients.value.split(" ");
     const recipientsString = recipients
-      .map((recipient) => `*${recipient}*`)
+      .map(
+        (recipient) =>
+          `*${recipient.replaceAll(/[^a-zA-Z0-9 ]/gi, (match) => `\\${match}`)}*`
+      )
       .join(" AND ");
 
     paramQuery.push(
       `recipient_${languageSettings.active_language.toUpperCase()}_ss:(${recipientsString})`
     );
-
-    displayQuery.value.recipient = inputFilterRecipients.value;
   }
 
+  if (selectSortDate.value) {
+    paramSort.sort["createdDate_dt"] = selectSortDate.value;
+  }
+
+  if (selectSortName.value) {
+    paramSort.sort[
+      `title_${languageSettings.active_language.slice(0, 2).toUpperCase()}_s`
+    ] = selectSortName.value;
+  }
+
+  displayQuery.value.title = inputFilterTitle.value;
+  displayQuery.value.theme = inputFilterThemes.value;
+  displayQuery.value.recipient = inputFilterRecipients.value;
+
   params.q = paramQuery.join(" AND ");
+  params.sort = paramSort.sort;
 
   getGaiaComponents(params, componentTypes);
 };
@@ -168,6 +195,30 @@ const searchHandler = async () => {
             >
               {{ year }}
             </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form_section-options column">
+        <div class="form_section-header">Sort</div>
+        <div class="form_section-options">
+          <select
+            v-model="selectSortName"
+            id="sortName"
+            name="sortName"
+            class="form-select"
+          >
+            <option value="asc" selected>Name ASC</option>
+            <option value="desc">Name DSC</option>
+          </select>
+          <select
+            v-model="selectSortDate"
+            id="sortDate"
+            name="sortDate"
+            class="form-select"
+          >
+            <option value="asc">Date ASC</option>
+            <option value="desc" selected>Date DSC</option>
           </select>
         </div>
       </div>
