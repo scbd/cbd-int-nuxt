@@ -15,7 +15,7 @@ const { t } = useI18n();
 
 const { getGaiaComponents } = getComponents();
 
-const searchParams: searchParams = {
+const componentSearch: searchParams = {
   q: "",
   fl: [
     "schema_s",
@@ -50,7 +50,7 @@ const componentTypes: componentGaiaType = [
   "notification",
   "statement",
 ];
-await getGaiaComponents(searchParams, componentTypes);
+// await getGaiaComponents(componentSearch, componentTypes);
 
 const updates = ref<componentSanitized[]>([]);
 
@@ -61,8 +61,12 @@ definePageMeta({
 <template>
   <article class="cus-article container-xxl d-flex flex-column">
     <section>
+      <h1>{{ t("forms.search") }}</h1>
+      <p>{{ t("forms.search_criteria") }}</p>
+    </section>
+    <section>
       <FormFilterAndSort
-        :search-params="searchParams"
+        :search-params="componentSearch"
         :component-types="componentTypes"
       />
     </section>
@@ -70,7 +74,7 @@ definePageMeta({
       <section class="search-results">
         <FormPagination
           :component-types="componentTypes"
-          :component-search="searchParams"
+          :component-search="componentSearch"
         />
         <div class="search-results-items">
           <ContentobjectSerpBlock
@@ -80,6 +84,10 @@ definePageMeta({
             :component="update"
           />
         </div>
+        <FormPagination
+          :component-types="componentTypes"
+          :component-search="componentSearch"
+        />
       </section>
     </ClientOnly>
   </article>

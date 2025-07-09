@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const searchResults = ref({
   found: 0,
-  start: 0,
+  start: props.componentSearch.start ?? 0,
   pageCurrent: 1,
   pageTotal: 1,
   steps: 20,
@@ -95,8 +95,54 @@ const pageHandler = async (event: Event, select = false) => {
     );
   }
 
-  getGaiaComponents(searchResults.value.search, props.componentTypes);
+  await getGaiaComponents(searchResults.value.search, props.componentTypes);
 };
+
+watch(
+  [
+    referencedComponents.value,
+    referencedMeetings.value,
+    referencedNotifications.value,
+    referencedStatements.value,
+  ],
+  () => {
+    if (props.componentTypes.length > 1) {
+      searchResults.value.found = referencedComponents.value.numFound;
+      searchResults.value.pageCurrent =
+        Math.floor(
+          referencedComponents.value.start / searchResults.value.steps
+        ) + 1;
+    } else {
+      if (props.componentTypes[0] === "meeting") {
+        searchResults.value.found = referencedMeetings.value.numFound;
+        searchResults.value.pageCurrent =
+          Math.floor(
+            referencedMeetings.value.start / searchResults.value.steps
+          ) + 1;
+      } else if (props.componentTypes[0] === "notification") {
+        searchResults.value.found = referencedNotifications.value.numFound;
+        searchResults.value.pageCurrent =
+          Math.floor(
+            referencedNotifications.value.start / searchResults.value.steps
+          ) + 1;
+      } else if (props.componentTypes[0] === "statement") {
+        searchResults.value.found = referencedStatements.value.numFound;
+        searchResults.value.pageCurrent =
+          Math.floor(
+            referencedStatements.value.start / searchResults.value.steps
+          ) + 1;
+      }
+    }
+
+    searchResults.value.pageTotal = Math.ceil(
+      searchResults.value.found / searchResults.value.steps
+    );
+
+    if (searchResults.value.pageCurrent > searchResults.value.pageTotal) {
+      searchResults.value.pageCurrent = 1;
+    }
+  }
+);
 </script>
 <template>
   <div class="results-info-wrapper">

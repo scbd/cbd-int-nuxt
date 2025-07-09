@@ -131,7 +131,7 @@ definePageMeta({
               <NuxtLink
                 v-for="recipient of notification.recipient"
                 @click="
-                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${recipient}*)`
+                  toNotificationsParams.q = `recipient_ss:(*${recipient}*)`
                 "
                 :to="{
                   name: `notifications`,
@@ -153,7 +153,7 @@ definePageMeta({
                   languageSettings.active_language
                 ]"
                 @click="
-                  toNotificationsParams.q = `${toNotificationsParams.q} AND themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(&quot;${subject}&quot;)`
+                  toNotificationsParams.q = `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(&quot;${subject}&quot;)`
                 "
                 :to="{ name: `notifications` }"
                 class="badge"

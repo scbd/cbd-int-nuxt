@@ -8,7 +8,7 @@ const { t } = useI18n();
 const { getGaiaComponents } = getComponents();
 
 const notificationsParams: searchParams = {
-  q: "",
+  q: (route.meta.notificationQuery as string) ?? "",
   fl: [
     "schema_s",
     "symbol_s",
@@ -65,6 +65,10 @@ definePageMeta({
             :component="notification"
           />
         </div>
+        <FormPagination
+          :component-types="componentTypes"
+          :component-search="notificationsParams"
+        />
       </section>
     </ClientOnly>
   </article>

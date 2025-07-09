@@ -9,7 +9,7 @@ const { t } = useI18n();
 const { getGaiaComponents } = getComponents();
 
 const statementsParams: searchParams = {
-  q: "",
+  q: route.meta.statementQuery as string,
   fl: [
     "schema_s",
     "symbol_s",
@@ -57,6 +57,10 @@ definePageMeta({
             :component="statement"
           />
         </div>
+        <FormPagination
+          :component-types="componentTypes"
+          :component-search="statementsParams"
+        />
       </section>
     </ClientOnly>
   </article>

@@ -28,7 +28,7 @@ await getGaiaComponents(statementsParams, ["statement"]);
 const fetchedStatement = referencedStatements.value.general[0];
 
 const toStatementsParams: searchParams = {
-  q: `schema_s:statement`,
+  q: "",
   fl: [
     "schema_s",
     "symbol_s",
@@ -94,7 +94,7 @@ definePageMeta({
                   languageSettings.active_language
                 ]"
                 @click="
-                  toStatementsParams.q = `${toStatementsParams.q} AND themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(*${theme}*)`
+                  toStatementsParams.q = `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(*${theme}*)`
                 "
                 :to="{
                   name: 'statements',
