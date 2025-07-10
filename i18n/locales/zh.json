@@ -1,10 +1,10 @@
-{ 
-    "page": {
-        "title": "《生物多样性公约》",
-        "description": "生物多样性公约》（CBD）是第一份涵盖生物多样性所有方面的全球性协定：保护生物多样性、可持续利用生物多样性的组成部分以及公平公正地分享利用遗传资源所产生的惠益。",
-        "gbf": {
-            "targets_submitted": "向秘书处提交的国家目标"
-        }
+{
+  "page": {
+    "title": "《生物多样性公约》",
+    "description": "生物多样性公约》（CBD）是第一份涵盖生物多样性所有方面的全球性协定：保护生物多样性、可持续利用生物多样性的组成部分以及公平公正地分享利用遗传资源所产生的惠益。",
+    "gbf": {
+      "targets_submitted": "向秘书处提交的国家目标"
+    }
   },
   "navigation": {
     "options_menu": {
@@ -108,12 +108,17 @@
   },
 
   "content_pages": {
-        "gbf": {
-            "targets_submitted": "向秘书处提交的国家目标"
-        }
+    "gbf": {
+      "targets_submitted": "向秘书处提交的国家目标"
+    }
   },
 
   "forms": {
+    "sort": {
+      "sort": "种类",
+      "by_date": "日期",
+      "by_name": "姓名"
+    },
     "search_criteria": "搜索标准",
     "filter_and_sort": "筛选和排序",
     "title_contains": "标题包含",

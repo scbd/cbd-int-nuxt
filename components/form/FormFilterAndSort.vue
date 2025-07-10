@@ -200,7 +200,7 @@ const searchHandler = async () => {
       </div>
 
       <div class="form_section-options column">
-        <div class="form_section-header">Sort</div>
+        <div class="form_section-header">{{ t("forms.sort.sort") }}</div>
         <div class="form_section-options">
           <select
             v-model="selectSortName"
@@ -208,8 +208,10 @@ const searchHandler = async () => {
             name="sortName"
             class="form-select"
           >
-            <option value="asc" selected>Name ASC</option>
-            <option value="desc">Name DSC</option>
+            <option value="asc" selected>
+              {{ t("forms.sort.by_name") }} &uarr;
+            </option>
+            <option value="desc">{{ t("forms.sort.by_name") }} &darr;</option>
           </select>
           <select
             v-model="selectSortDate"
@@ -217,8 +219,10 @@ const searchHandler = async () => {
             name="sortDate"
             class="form-select"
           >
-            <option value="asc">Date ASC</option>
-            <option value="desc" selected>Date DSC</option>
+            <option value="asc" selected>
+              {{ t("forms.sort.by_date") }} &uarr;
+            </option>
+            <option value="desc">{{ t("forms.sort.by_date") }} &darr;</option>
           </select>
         </div>
       </div>

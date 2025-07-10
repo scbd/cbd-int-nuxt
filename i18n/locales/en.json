@@ -112,6 +112,11 @@
   },
 
   "forms": {
+    "sort": {
+      "sort": "Sort",
+      "by_date": "Date",
+      "by_name": "Name"
+    },
     "search_criteria": "Search Criteria",
     "filter_and_sort": "Filter and Sort",
     "title_contains": "Title Contains",
