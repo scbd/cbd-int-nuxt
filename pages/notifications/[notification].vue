@@ -7,7 +7,8 @@ import type {
 
 import getComponents from "~/composables/componentApi";
 
-const { getNotifications } = getComponents();
+const { getGaiaComponents } = getComponents();
+const config = useRuntimeConfig();
 const route = useRoute();
 const languageSettings = useLanguageStore();
 const { t } = useI18n();
@@ -17,8 +18,9 @@ const props = defineProps<{
 }>();
 
 const notificationsParams: searchParams = {
-  q: `schema_s:notification AND symbol_s:${route.params.notification}`,
+  q: `symbol_s:${route.params.notification}`,
   fl: [
+    "schema_s",
     "symbol_s",
     "date_s",
     "actionDate_s",
@@ -32,14 +34,16 @@ const notificationsParams: searchParams = {
     "fulltext_??_s",
     "files_ss",
   ],
-  sort: ["date_s desc"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 1,
 };
 
-await getNotifications(notificationsParams);
+await getGaiaComponents(notificationsParams, ["notification"]);
 
 const toNotificationsParams: searchParams = {
-  q: `schema_s:notification`,
+  q: "",
   fl: [
     "symbol_s",
     "date_s",
@@ -54,7 +58,9 @@ const toNotificationsParams: searchParams = {
     "fulltext_??_s",
     "files_ss",
   ],
-  sort: ["date_s desc"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 1,
 };
 
@@ -125,7 +131,7 @@ definePageMeta({
               <NuxtLink
                 v-for="recipient of notification.recipient"
                 @click="
-                  toNotificationsParams.q = `${toNotificationsParams.q} AND recipient_ss:(*${recipient}*)`
+                  toNotificationsParams.q = `recipient_ss:(*${recipient}*)`
                 "
                 :to="{
                   name: `notifications`,
@@ -142,7 +148,18 @@ definePageMeta({
               <span class="fw-bold"
                 >{{ t("components.notifications.subjects") }}:
               </span>
-              {{ `${notification.themes?.[languageSettings.active_language]}` }}
+              <NuxtLink
+                v-for="subject in notification.themes?.[
+                  languageSettings.active_language
+                ]"
+                @click="
+                  toNotificationsParams.q = `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(&quot;${subject}&quot;)`
+                "
+                :to="{ name: `notifications` }"
+                class="badge"
+              >
+                {{ subject }}
+              </NuxtLink>
             </div>
           </div>
           <template v-if="notification.files?.length">
@@ -155,7 +172,7 @@ definePageMeta({
                   v-for="file in notification.files"
                   class="btn"
                   target="_blank"
-                  :to="file.url"
+                  :to="`${config.public.FRONTEND_URL}${file.url}`"
                 >
                   {{
                     new Intl.DisplayNames(languageSettings.active_language, {
@@ -169,7 +186,7 @@ definePageMeta({
                   />
                   <img
                     v-show="file.type.includes('doc')"
-                    src="/images/icons/icon_file-pdf.svg"
+                    src="/images/icons/icon_file-doc.svg"
                     :alt="t('components.notifications.download_doc')"
                   />
                 </NuxtLink>

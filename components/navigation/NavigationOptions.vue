@@ -7,7 +7,7 @@ const { t } = useI18n();
   <div class="cus-options container-fluid justify-content-end">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <NuxtLink class="nav-link" to="#" role="button">
+        <NuxtLink class="nav-link" :to="{ name: 'search' }" role="button">
           <NuxtImg
             src="/images/icons/icon_nav-search_outline.svg"
             :alt="t('navigation.options_menu.search_icon')"

@@ -14,6 +14,9 @@
       "settings": "Settings",
       "settings_icon": "Modify your Convention on Biological Diversity website settings"
     },
+    "megamenu": {
+      "sections": "Sections"
+    },
     "social_media": {
       "follow": "Follow us on social media"
     },
@@ -109,6 +112,11 @@
   },
 
   "forms": {
+    "sort": {
+      "sort": "Sort",
+      "by_date": "Date",
+      "by_name": "Name"
+    },
     "search_criteria": "Search Criteria",
     "filter_and_sort": "Filter and Sort",
     "title_contains": "Title Contains",
@@ -117,6 +125,8 @@
     "search_terms": "Search Terms",
     "files": "Files",
     "year": "Year",
-    "year_any": "Any year"
+    "year_any": "Any year",
+    "results": "Results",
+    "of": "of"
   }
 }

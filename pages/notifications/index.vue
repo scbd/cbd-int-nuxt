@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import type { searchParams } from "~/types/components";
+import type { componentGaiaType, searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
 const route = useRoute();
 const { t } = useI18n();
 
-const { getNotifications } = getComponents();
+const { getGaiaComponents } = getComponents();
 
 const notificationsParams: searchParams = {
-  q: (route.meta.notificationQuery as string) ?? "schema_s:notification",
+  q: (route.meta.notificationQuery as string) ?? "",
   fl: [
+    "schema_s",
     "symbol_s",
     "date_s",
     "actionDate_s",
@@ -23,11 +24,14 @@ const notificationsParams: searchParams = {
     "fulltext_??_s",
     "files_ss",
   ],
-  sort: ["date_s desc"],
+  sort: {
+    date_s: "desc",
+  },
   rows: 20,
 };
 
-await getNotifications(notificationsParams);
+const componentTypes: componentGaiaType = ["notification"];
+await getGaiaComponents(notificationsParams, componentTypes);
 
 definePageMeta({
   layout: "serp",
@@ -41,18 +45,30 @@ definePageMeta({
       <p>{{ t("forms.search_criteria") }}</p>
     </section>
     <section>
-      <FormFilterAndSort :search-params="notificationsParams" />
+      <section>
+        <FormFilterAndSort
+          :search-params="notificationsParams"
+          :component-types="componentTypes"
+        />
+      </section>
     </section>
 
     <ClientOnly>
       <section class="search-results">
-        <!-- pagination -->
+        <FormPagination
+          :component-types="componentTypes"
+          :component-search="notificationsParams"
+        />
         <div class="search-results-items">
           <ContentobjectSerpBlock
             v-for="notification in referencedNotifications.general"
             :component="notification"
           />
         </div>
+        <FormPagination
+          :component-types="componentTypes"
+          :component-search="notificationsParams"
+        />
       </section>
     </ClientOnly>
   </article>

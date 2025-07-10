@@ -1,31 +1,45 @@
 <script setup lang="ts">
-import type {
-  availableLanguages,
-  componentSanitized,
-  searchParams,
-} from "~/types/components";
+import type { availableLanguages, searchParams } from "~/types/components";
 
 import getComponents from "~/composables/componentApi";
 
-const { getStatements } = getComponents();
+const { getGaiaComponents } = getComponents();
 const route = useRoute();
 const languageSettings = useLanguageStore();
 const { t } = useI18n();
 
 const statementsParams: searchParams = {
-  q: `schema_s:statement AND symbol_s:${route.params.statement}`,
-  fl: ["symbol_s", "date_s", "url_ss", "title_??_s", "themes_??_ss"],
-  sort: ["date_s desc"],
+  q: `symbol_s:${route.params.statement}`,
+  fl: [
+    "schema_s",
+    "symbol_s",
+    "date_s",
+    "url_ss",
+    "title_??_s",
+    "themes_??_ss",
+  ],
+  sort: {
+    date_s: "desc",
+  },
   rows: 1,
 };
 
-await getStatements(statementsParams);
+await getGaiaComponents(statementsParams, ["statement"]);
 const fetchedStatement = referencedStatements.value.general[0];
 
 const toStatementsParams: searchParams = {
-  q: `schema_s:statement`,
-  fl: ["symbol_s", "date_s", "url_ss", "title_??_s", "themes_??_ss"],
-  sort: ["date_s desc"],
+  q: "",
+  fl: [
+    "schema_s",
+    "symbol_s",
+    "date_s",
+    "url_ss",
+    "title_??_s",
+    "themes_??_ss",
+  ],
+  sort: {
+    date_s: "desc",
+  },
   rows: 1,
 };
 
@@ -80,7 +94,7 @@ definePageMeta({
                   languageSettings.active_language
                 ]"
                 @click="
-                  toStatementsParams.q = `${toStatementsParams.q} AND themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(*${theme}*)`
+                  toStatementsParams.q = `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss:(*${theme}*)`
                 "
                 :to="{
                   name: 'statements',

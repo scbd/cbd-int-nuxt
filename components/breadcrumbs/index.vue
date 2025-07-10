@@ -34,7 +34,7 @@ const fetchedComponents: {
   meetings: [referencedMeetings.value.general[0]],
   notifications: [referencedNotifications.value.general[0]],
   statements: [referencedStatements.value.general[0]],
-  nbsaps: [referencedNbsaps.value[0]],
+  nbsaps: [referencedNbsaps.value.general[0]],
   portals: [referencedPortals.value[0]],
 };
 
@@ -43,13 +43,13 @@ onMounted(() => {
   fetchedComponents.meetings = [referencedMeetings.value.general[0]];
   fetchedComponents.notifications = [referencedNotifications.value.general[0]];
   fetchedComponents.statements = [referencedStatements.value.general[0]];
-  fetchedComponents.nbsaps = [referencedNbsaps.value[0]];
+  fetchedComponents.nbsaps = [referencedNbsaps.value.general[0]];
   fetchedComponents.portals = [referencedPortals.value[0]];
 });
 
 watch(referencedStatements, () => {
   fetchedComponents.articles = [referencedArticles.value.general[0]];
-  fetchedComponents.nbsaps = [referencedNbsaps.value[0]];
+  fetchedComponents.nbsaps = [referencedNbsaps.value.general[0]];
   fetchedComponents.portals = [referencedPortals.value[0]];
 });
 </script>

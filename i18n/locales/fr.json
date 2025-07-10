@@ -1,7 +1,7 @@
-{ 
-    "page": {
-        "title": "Convention sur la Diversité Biologique",
-        "description": "La Convention sur la diversité biologique (CDB) est le premier accord mondial à couvrir tous les aspects de la diversité biologique : la conservation de la diversité biologique, l'utilisation durable de ses éléments et le partage juste et équitable des avantages découlant de l'utilisation des ressources génétiques."
+{
+  "page": {
+    "title": "Convention sur la Diversité Biologique",
+    "description": "La Convention sur la diversité biologique (CDB) est le premier accord mondial à couvrir tous les aspects de la diversité biologique : la conservation de la diversité biologique, l'utilisation durable de ses éléments et le partage juste et équitable des avantages découlant de l'utilisation des ressources génétiques."
   },
   "navigation": {
     "options_menu": {
@@ -12,6 +12,9 @@
       "login_icon": "Connectez-vous à votre compte de la Convention sur la Diversité Biologique",
       "settings": "Paramètres",
       "settings_icon": "Modifier les paramètres de votre site web sur la Convention sur la Diversité Biologique"
+    },
+    "megamenu": {
+      "sections": "Sections"
     },
     "social_media": {
       "follow": "Suivez-nous sur les médias sociaux"
@@ -79,7 +82,11 @@
       "name_plural": "déclarations",
       "recent": "Déclarations récentes",
       "more": "Plus de déclarations",
-      "view": "Voir la déclaration"
+      "view": "Voir la déclaration",
+      "themes": "Thèmes",
+      "download": "Télécharger la déclaration dans les langues disponibles",
+      "download_pdf": "Télécharger cette déclaration au format PDF.",
+      "download_doc": "Télécharger cette déclaration au format DOC."
     },
     "portals": {
       "name": "portail",
@@ -98,12 +105,17 @@
   },
 
   "content_pages": {
-        "gbf": {
-            "targets_submitted": "Objectifs nationaux soumis au Secrétariat"
-        }
+    "gbf": {
+      "targets_submitted": "Objectifs nationaux soumis au Secrétariat"
+    }
   },
 
   "forms": {
+    "sort": {
+      "sort": "Sélectionnez",
+      "by_date": "Date",
+      "by_name": "Nom"
+    },
     "search_criteria": "Critères de Recherche",
     "filter_and_sort": "Filtrer et Trier",
     "title_contains": "Titre Contient",
@@ -112,6 +124,8 @@
     "search_terms": "Termes de Recherche",
     "files": "Dossiers",
     "year": "Année",
-    "year_any": "Chaque année"
+    "year_any": "Chaque année",
+    "results": "Résultats",
+    "of": "de"
   }
 }

@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import type { searchParams } from "~/types/components";
+import type { componentGaiaType, searchParams } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
-const { getNotifications, getStatements } = getComponents();
+const { getGaiaComponents } = getComponents();
 const route = useRoute();
 const languageSettings = useLanguageStore();
 const { t } = useI18n();
 
 const props = defineProps<{
   searchParams: searchParams;
-  componentType?: string;
+  componentTypes: componentGaiaType;
 }>();
 
 const inputFilterTitle = ref<string>();
 const inputFilterReference = ref<string>();
+const inputFilterThemes = ref<string>();
+const inputFilterRecipients = ref<string>();
 const selectFilterYear = ref<number>(0);
-const selectSortName = ref<string>("asc");
-const selectSortDate = ref<string>("desc");
+const selectSortName = ref<"asc" | "desc">("desc");
+const selectSortDate = ref<"asc" | "desc">("desc");
 
 const query: {
   title?: string;
@@ -28,87 +30,105 @@ const query: {
 };
 const displayQuery = ref(query);
 
-if (props.searchParams.q.includes("recipient_ss")) {
-  displayQuery.value.recipient = props.searchParams.q.substring(
-    props.searchParams.q.indexOf("*") + 1,
-    props.searchParams.q.lastIndexOf("*")
-  );
+if (props.searchParams) {
+  if (props.searchParams.q.includes("recipient_ss")) {
+    displayQuery.value.recipient = props.searchParams.q.substring(
+      props.searchParams.q.indexOf("*") + 1,
+      props.searchParams.q.lastIndexOf("*")
+    );
+  }
+  if (
+    props.searchParams.q.includes(
+      `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
+    )
+  ) {
+    displayQuery.value.theme = props.searchParams.q.substring(
+      props.searchParams.q.indexOf('("') + 2,
+      props.searchParams.q.lastIndexOf('")')
+    );
+  }
 }
 
-if (
-  props.searchParams.q.includes(
-    `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
-  )
-) {
-  displayQuery.value.theme = props.searchParams.q.substring(
-    props.searchParams.q.indexOf("*") + 1,
-    props.searchParams.q.lastIndexOf("*")
-  );
-}
+const params: searchParams = props.searchParams;
+const componentTypes: componentGaiaType = props.componentTypes;
 
 const searchHandler = async () => {
-  let paramQuery = `schema_s:${props.componentType ?? "notification"}`;
-  let paramSort = [];
+  let paramQuery: string[] = [];
+  type propSort = {
+    sort: {
+      [field_name: string]: "asc" | "desc";
+    };
+  };
+  const paramSort: propSort = { sort: {} };
 
   displayQuery.value.recipient = "";
 
   if (selectFilterYear.value > 0) {
-    paramQuery = `${paramQuery} AND date_s:(${selectFilterYear.value}*)`;
+    paramQuery.push(`date_s:(${selectFilterYear.value}*)`);
 
     displayQuery.value.year = selectFilterYear.value;
   }
 
   if (inputFilterTitle.value) {
     const titles: string[] = inputFilterTitle.value.split(" ");
-    paramQuery = `${paramQuery} AND title_${languageSettings.active_language.toUpperCase()}_s:(`;
+    const titlesString = titles
+      .map(
+        (title) =>
+          `*${title.replaceAll(/[^a-zA-Z0-9 ]/gi, (match) => `\\${match}`)}*`
+      )
+      .join(" AND ");
 
-    for await (const title of titles) {
-      if (title !== titles[titles.length - 1]) {
-        paramQuery = `${paramQuery}*${title}* AND `;
-      } else {
-        paramQuery = `${paramQuery}*${title}*`;
-      }
-    }
-    paramQuery = `${paramQuery})`;
-
-    displayQuery.value.title = inputFilterTitle.value;
-  }
-  if (inputFilterReference.value) {
-    const references: string[] = inputFilterReference.value.split(" ");
-    paramQuery = `${paramQuery} AND reference_s:(`;
-    for await (const reference of references) {
-      if (reference !== references[references.length - 1]) {
-        paramQuery = `${paramQuery}*${reference}* AND `;
-      } else {
-        paramQuery = `${paramQuery}*${reference}*`;
-      }
-    }
-    paramQuery = `${paramQuery})`;
-  }
-  const params: searchParams = {
-    q: paramQuery,
-    fl: props.searchParams.fl,
-    rows: props.searchParams.rows,
-  };
-
-  if (selectSortDate.value) {
-    paramSort?.push(`date_s ${selectSortDate.value}`);
-  }
-
-  if (selectSortName.value) {
-    paramSort?.push(
-      `title_${languageSettings.active_language.toUpperCase()}_s ${selectSortDate.value}`
+    paramQuery.push(
+      `title_${languageSettings.active_language.toUpperCase()}_s:(${titlesString})`
     );
   }
 
-  params.q = paramQuery;
-  params.sort = paramSort;
+  if (inputFilterThemes.value) {
+    const themes: string[] = inputFilterThemes.value.split(" ");
+    const themesString = themes
+      .map(
+        (theme) =>
+          `*${theme.replaceAll(/[^a-zA-Z0-9 ]/gi, (match) => `\\${match}`)}*`
+      )
+      .join(" AND ");
 
-  if (props.componentType === "statement") {
-    await getStatements(params);
-  } else {
-    await getNotifications(params);
+    paramQuery.push(
+      `themes_${languageSettings.active_language.toUpperCase()}_ss:(${themesString})`
+    );
   }
+
+  if (inputFilterRecipients.value) {
+    const recipients: string[] = inputFilterRecipients.value.split(" ");
+    const recipientsString = recipients
+      .map(
+        (recipient) =>
+          `*${recipient.replaceAll(/[^a-zA-Z0-9 ]/gi, (match) => `\\${match}`)}*`
+      )
+      .join(" AND ");
+
+    paramQuery.push(
+      `recipient_${languageSettings.active_language.toUpperCase()}_ss:(${recipientsString})`
+    );
+  }
+
+  if (selectSortDate.value) {
+    paramSort.sort["createdDate_dt"] = selectSortDate.value;
+  }
+
+  if (selectSortName.value) {
+    paramSort.sort[
+      `title_${languageSettings.active_language.slice(0, 2).toUpperCase()}_s`
+    ] = selectSortName.value;
+  }
+
+  displayQuery.value.title = inputFilterTitle.value;
+  displayQuery.value.theme = inputFilterThemes.value;
+  displayQuery.value.recipient = inputFilterRecipients.value;
+
+  params.q = paramQuery.join(" AND ");
+  params.sort = paramSort.sort;
+
+  getGaiaComponents(params, componentTypes);
 };
 </script>
 <template>
@@ -139,15 +159,26 @@ const searchHandler = async () => {
           class="form-control"
         />
       </label>
-      <!-- <label for="fsReference">
-        Reference
+
+      <label for="fsThemes">
+        {{ t("components.statements.themes") }}
         <input
-          v-model="inputFilterReference"
-          id="fsReference"
+          v-model="inputFilterThemes"
           type="text"
+          name="fsThemes"
+          id="fsThemes"
           class="form-control"
-        />
-      </label> -->
+      /></label>
+
+      <label for="fsRecipients">
+        {{ t("components.notifications.recipients") }}
+        <input
+          v-model="inputFilterRecipients"
+          type="text"
+          name="fsRecipients"
+          id="fsRecipients"
+          class="form-control"
+      /></label>
 
       <div class="filter-row row">
         <div class="form_section-header">{{ t("forms.filter") }}</div>
@@ -168,50 +199,34 @@ const searchHandler = async () => {
         </div>
       </div>
 
-      <!-- <div class="filter-row row">
-        <div class="form_section-options column">
-          <label class="form_section-header" for="fsLanguage">Language</label>
-          <select name="fsLanguage" id="fsLanguage" class="form-select">
-            <ClientOnly>
-              <option
-                v-for="language in languages"
-                :value="language.langCode"
-                :selected="
-                  language.langCode === activeLanguage!.active_language
-                    ? true
-                    : false
-                "
-              >
-                {{ language.label }}
-              </option>
-            </ClientOnly>
+      <div class="form_section-options column">
+        <div class="form_section-header">{{ t("forms.sort.sort") }}</div>
+        <div class="form_section-options">
+          <select
+            v-model="selectSortName"
+            id="sortName"
+            name="sortName"
+            class="form-select"
+          >
+            <option value="asc" selected>
+              {{ t("forms.sort.by_name") }} &uarr;
+            </option>
+            <option value="desc">{{ t("forms.sort.by_name") }} &darr;</option>
+          </select>
+          <select
+            v-model="selectSortDate"
+            id="sortDate"
+            name="sortDate"
+            class="form-select"
+          >
+            <option value="asc" selected>
+              {{ t("forms.sort.by_date") }} &uarr;
+            </option>
+            <option value="desc">{{ t("forms.sort.by_date") }} &darr;</option>
           </select>
         </div>
+      </div>
 
-        <div class="form_section-options column">
-          <div class="form_section-header">Sort</div>
-          <div class="form_section-options">
-            <select
-              v-model="selectSortName"
-              id="sortName"
-              name="sortName"
-              class="form-select"
-            >
-              <option value="asc" selected>Name ASC</option>
-              <option value="desc">Name DSC</option>
-            </select>
-            <select
-              v-model="selectSortDate"
-              id="sortDate"
-              name="sortDate"
-              class="form-select"
-            >
-              <option value="asc" selected>Date ASC</option>
-              <option value="desc" selec>Date DSC</option>
-            </select>
-          </div>
-        </div>
-      </div> -->
       <input
         class="btn cbd-btn-primary"
         type="submit"
@@ -219,7 +234,17 @@ const searchHandler = async () => {
         @click="searchHandler()"
       />
     </form>
-    <div class="search-terms">
+
+    <div
+      class="search-terms"
+      v-if="
+        referencedComponents.searchResults.length +
+          referencedMeetings.general.length +
+          referencedNotifications.general.length +
+          referencedStatements.general.length >
+        0
+      "
+    >
       <span class="fw-bold">{{ t("forms.search_terms") }}:</span>
       <span v-show="displayQuery.title" class="badge bg-secondary">
         {{ t("forms.title_contains") }} - {{ displayQuery.title }}</span

@@ -4,8 +4,7 @@ import getComponents from "~/composables/componentApi";
 import type { availableLanguages, searchParams } from "~/types/components";
 import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
 
-const { getArticles, getMeetings, getNotifications, getStatements } =
-  getComponents();
+const { getArticles, getGaiaComponents } = getComponents();
 
 const languageSettings = useLanguageStore();
 
@@ -20,51 +19,57 @@ const componentObject = {
 
 if (componentObject.component?.includes("News")) {
   try {
-    const search_params: drupalEntitySearchParams = {
+    const searchParams: drupalEntitySearchParams = {
       entity: "article",
       sort: ["-changed"],
       limit: 4,
     };
-    await getArticles(search_params, true);
+    await getArticles(searchParams, true);
   } catch (error) {
     console.error(error);
   }
   componentObject.type = "article";
 } else if (componentObject.component?.includes("Meetings")) {
   try {
-    const search_params: searchParams = {
-      q: "schema_s:meeting",
-      fl: ["startDate_dt", "endDate_dt", "title_*_s", "url_ss"],
-      sort: ["abs(ms(startDate_dt,NOW)) asc"],
+    const searchParams: searchParams = {
+      q: "",
+      fl: ["schema_s", "startDate_dt", "endDate_dt", "title_??_s", "url_ss"],
+      sort: {
+        "abs(ms(startDate_dt,NOW))": "asc",
+      },
       rows: 4,
     };
-    await getMeetings(search_params, true);
+    await getGaiaComponents(searchParams, ["meeting"], true);
   } catch (error) {
     console.error(error);
   }
   componentObject.type = "meeting";
 } else if (componentObject.component?.includes("Notifications")) {
   try {
-    const search_params: searchParams = {
-      q: "schema_s:notification",
-      fl: ["title_*_s", "symbol_s", "date_s", "url_ss"],
-      sort: ["date_s desc"],
+    const searchParams: searchParams = {
+      q: "",
+      fl: ["schema_s", "title_*_s", "symbol_s", "date_s", "url_ss"],
+      sort: {
+        date_s: "desc",
+      },
       rows: 4,
     };
-    await getNotifications(search_params, true);
+    await getGaiaComponents(searchParams, ["notification"], true);
   } catch (error) {
     console.error(error);
   }
   componentObject.type = "notification";
 } else if (componentObject.component?.includes("Statements")) {
   try {
-    const search_params: searchParams = {
-      q: "schema_s:statement",
-      fl: ["symbol_s", "date_s", "url_ss", "title_??_s"],
-      sort: ["date_s desc"],
+    const searchParams: searchParams = {
+      q: "",
+      fl: ["schema_s", "symbol_s", "date_s", "url_ss", "title_??_s"],
+      sort: {
+        date_s: "desc",
+      },
       rows: 4,
     };
-    await getStatements(search_params, true);
+    await getGaiaComponents(searchParams, ["statement"], true);
   } catch (error) {
     console.log(error);
   }

@@ -1,7 +1,7 @@
-{ 
-    "page": {
-        "title": "Convenio sobre la Diversidad Biológica",
-        "description": "El Convenio sobre la Diversidad Biológica (CDB) es el primer acuerdo mundial que abarca todos los aspectos de la diversidad biológica: la conservación de la diversidad biológica, la utilización sostenible de sus componentes y el reparto justo y equitativo de los beneficios derivados de la utilización de los recursos genéticos."
+{
+  "page": {
+    "title": "Convenio sobre la Diversidad Biológica",
+    "description": "El Convenio sobre la Diversidad Biológica (CDB) es el primer acuerdo mundial que abarca todos los aspectos de la diversidad biológica: la conservación de la diversidad biológica, la utilización sostenible de sus componentes y el reparto justo y equitativo de los beneficios derivados de la utilización de los recursos genéticos."
   },
   "navigation": {
     "options_menu": {
@@ -12,6 +12,9 @@
       "login_icon": "Acceda a su cuenta del Convenio sobre la Diversidad Biológica",
       "settings": "Configuraciones",
       "settings_icon": "Modifique la configuración de su sitio web del Convenio sobre la Diversidad Biológica"
+    },
+    "megamenu": {
+      "sections": "Secciones"
     },
     "social_media": {
       "follow": "Síganos en las redes sociales"
@@ -79,7 +82,11 @@
       "name_plural": "declaraciones",
       "recent": "Declaraciones recientes",
       "more": "Más declaraciones",
-      "view": "Ver la declaración"
+      "view": "Ver la declaración",
+      "themes": "Temas",
+      "download": "Descargar la declaración en los idiomas disponibles",
+      "download_pdf": "Descargue esta declaración en formato PDF.",
+      "download_doc": "Descargue esta declaración en formato DOC."
     },
     "portals": {
       "name": "portal",
@@ -98,12 +105,17 @@
   },
 
   "content_pages": {
-        "gbf": {
-            "targets_submitted": "Objetivos nacionales enviados a la Secretaría"
-        }
+    "gbf": {
+      "targets_submitted": "Objetivos nacionales enviados a la Secretaría"
+    }
   },
 
   "forms": {
+    "sort": {
+      "sort": "Classificar",
+      "by_date": "Fecha",
+      "by_name": "Nombre"
+    },
     "search_criteria": "Criterios de Búsqueda",
     "filter_and_sort": "Filtrar y Clasificar",
     "title_contains": "Título Contiene",
@@ -112,6 +124,8 @@
     "search_terms": "Términos de la Búsqueda",
     "files": "Ficheros",
     "year": "Año",
-    "year_any": "Cualquier año"
+    "year_any": "Cualquier año",
+    "results": "Resultados",
+    "of": "de"
   }
 }

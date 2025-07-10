@@ -95,6 +95,86 @@ const objectLocation = (
       :class="[{ 'error-loader': articlesStatus.status === 'error' }]"
     />
   </template>
+  <template v-if="component.type === 'meeting'">
+    <div
+      v-if="meetingsStatus.status === 'OK'"
+      class="search-item content-object"
+      :class="`object-type-${component.type}`"
+    >
+      <div class="content-image-wrapper">
+        <img
+          :src="handlerImage(component)"
+          @error="handlerMissingImage"
+          alt=""
+          class="content-image"
+        />
+      </div>
+
+      <div class="content-information-wrapper">
+        <div class="information">
+          <div class="date">
+            {{
+              Intl.DateTimeFormat(
+                languageSettings.active_language.slice(0, 2),
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              ).format(component.date)
+            }}
+            <template v-if="component.date_end">
+              &nbsp;&ndash;&nbsp;
+              {{
+                Intl.DateTimeFormat(
+                  languageSettings.active_language.slice(0, 2),
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                ).format(component.date_end)
+              }}
+            </template>
+          </div>
+
+          <NuxtLink class="title" :to="component.url">
+            {{
+              (component.title as availableLanguages)[
+                languageSettings.active_language.slice(0, 2)
+              ]
+            }}
+          </NuxtLink>
+
+          <div
+            v-show="component.event_city || component.event_country"
+            class="location"
+          >
+            {{
+              objectLocation(
+                languageSettings.active_language,
+                (component.event_city as availableLanguages)[
+                  languageSettings.active_language.slice(0, 2)
+                ],
+                (component.event_country as availableLanguages)[
+                  languageSettings.active_language.slice(0, 2)
+                ]
+              )
+            }}
+          </div>
+        </div>
+        <div class="read-on-wrapper">
+          <NuxtLink :to="component.url" class="btn cbd-btn-more-content">{{
+            t("components.meetings.view")
+          }}</NuxtLink>
+        </div>
+      </div>
+    </div>
+    <Loader
+      v-else
+      :class="[{ 'error-loader': meetingsStatus.status === 'error' }]"
+    />
+  </template>
   <template v-if="component.type === 'notification'">
     <div
       v-if="notificationsStatus.status === 'OK'"
@@ -156,10 +236,17 @@ const objectLocation = (
               ).format(component.date_action)
             }}
           </div>
-          <div v-show="component.themes" class="subjects">
+          <div
+            v-if="
+              component.themes?.[languageSettings.active_language.slice(0, 2)]
+            "
+            class="subjects"
+          >
             {{ t("components.notifications.subjects") }}:
             {{
-              component.themes?.[languageSettings.active_language.slice(0, 2)]
+              component.themes[
+                languageSettings.active_language.slice(0, 2)
+              ].join(", ")
             }}
           </div>
           <div class="description">
@@ -181,7 +268,7 @@ const objectLocation = (
                 "
                 class="btn"
                 target="_blank"
-                :to="file.url"
+                :to="`${config.public.FRONTEND_URL}${file.url}`"
               >
                 <img
                   v-show="file.type.includes('pdf')"

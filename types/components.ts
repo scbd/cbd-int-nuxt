@@ -1,5 +1,4 @@
 export interface componentRequest {
-  numFound?: number;
   start?: number;
   data?:
     | componentArticleRaw
@@ -7,11 +6,32 @@ export interface componentRequest {
     | componentGbfTargetRaw
     | componentGbfTargetRaw[]
     | componentPortalRaw[];
-  docs?: [];
 }
 
+export interface componentGaiaRequest {
+  numFound: number;
+  start: 0;
+  docs:
+    | componentMeetingRaw[]
+    | componentNotificationRaw[]
+    | componentStatementRaw[]
+    | componentNbsapRaw[];
+}
+
+export type componentType = componentGaiaType | componentDrupalType;
+
+export type componentGaiaType = (
+  | "meeting"
+  | "notification"
+  | "statement"
+  | "nbsap"
+)[];
+
+export type componentDrupalType = ("article" | "gbf-target" | "portal")[];
+
 export interface availableLanguages {
-  [ar: string]: string;
+  [language: string]: string;
+  ar: string;
   en: string;
   es: string;
   fr: string;
@@ -19,11 +39,26 @@ export interface availableLanguages {
   zh: string;
 }
 
+export interface availableLanguagesArray {
+  [language: string]: string[];
+  ar: string[];
+  en: string[];
+  es: string[];
+  fr: string[];
+  ru: string[];
+  zh: string[];
+}
+
 export interface searchParams {
   q: string;
   rows: string | number;
   fl?: string | string[];
-  sort?: string[];
+  sort?:
+    | string
+    | {
+        [field_name: string]: "asc" | "desc";
+      };
+  start?: number;
   status?: string;
 }
 
@@ -61,6 +96,7 @@ interface componentArticle extends componentBase {
 interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
+  themes?: availableLanguagesArray;
   date_end?: Date;
   event_city?: availableLanguages;
   event_country?: availableLanguages;
@@ -73,14 +109,7 @@ interface componentNotification extends componentBase {
   sender?: string;
   reference?: string;
   recipient?: string[];
-  themes?: {
-    [ar: string]: string[];
-    en: string[];
-    es: string[];
-    fr: string[];
-    ru: string[];
-    zh: string[];
-  };
+  themes?: availableLanguagesArray;
   fulltext?: availableLanguages;
   files?: {
     type: string;
@@ -98,14 +127,7 @@ interface componentGbfTarget extends componentBase {
 }
 
 interface componentStatement extends componentBase {
-  themes?: {
-    [ar: string]: string[];
-    en: string[];
-    es: string[];
-    fr: string[];
-    ru: string[];
-    zh: string[];
-  };
+  themes?: availableLanguagesArray;
 }
 
 interface componentPortal extends componentBase {
@@ -180,7 +202,41 @@ export interface componentArticlePath {
   };
 }
 
+export interface componentMeetingRaw {
+  schema_s: string;
+  status_s: string;
+  symbol_s: string;
+  title_AR_s: string;
+  title_EN_s: string;
+  title_ES_s: string;
+  title_FR_s: string;
+  title_RU_s: string;
+  title_ZH_s: string;
+  url_ss: string;
+  themes_AR_ss: string[];
+  themes_EN_ss: string[];
+  themes_ES_ss: string[];
+  themes_FR_ss: string[];
+  themes_RU_ss: string[];
+  themes_ZH_ss: string[];
+  startDate_dt: Date;
+  endDate_dt: Date;
+  eventCity_AR_s: string;
+  eventCity_EN_s: string;
+  eventCity_ES_s: string;
+  eventCity_FR_s: string;
+  eventCity_RU_s: string;
+  eventCity_ZH_s: string;
+  eventCountry_AR_s: string;
+  eventCountry_EN_s: string;
+  eventCountry_ES_s: string;
+  eventCountry_FR_s: string;
+  eventCountry_RU_s: string;
+  eventCountry_ZH_s: string;
+}
+
 export interface componentNotificationRaw {
+  schema_s: string;
   symbol_s: string;
   date_s: string;
   actionDate_s?: string;
@@ -210,32 +266,6 @@ export interface componentNotificationRaw {
   files_ss?: string[];
 }
 
-export interface componentMeetingRaw {
-  status_s: string;
-  symbol_s: string;
-  title_AR_s: string;
-  title_EN_s: string;
-  title_ES_s: string;
-  title_FR_s: string;
-  title_RU_s: string;
-  title_ZH_s: string;
-  url_ss: string;
-  startDate_dt: Date;
-  endDate_dt: Date;
-  eventCity_AR_s: string;
-  eventCity_EN_s: string;
-  eventCity_ES_s: string;
-  eventCity_FR_s: string;
-  eventCity_RU_s: string;
-  eventCity_ZH_s: string;
-  eventCountry_AR_s: string;
-  eventCountry_EN_s: string;
-  eventCountry_ES_s: string;
-  eventCountry_FR_s: string;
-  eventCountry_RU_s: string;
-  eventCountry_ZH_s: string;
-}
-
 export interface componentGbfTargetRaw {
   identifier: string;
   name: string;
@@ -246,6 +276,7 @@ export interface componentGbfTargetRaw {
 }
 
 export interface componentStatementRaw {
+  schema_s: string;
   symbol_s: string;
   date_s: string;
   title_AR_s: string;
@@ -282,6 +313,7 @@ export interface componentPortalRaw {
 }
 
 export interface componentNbsapRaw {
+  schema_s: string;
   title_AR_s: string;
   title_EN_s: string;
   title_ES_s: string;
