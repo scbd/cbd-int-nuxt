@@ -231,7 +231,16 @@ const searchHandler = async () => {
       />
     </form>
 
-    <div class="search-terms">
+    <div
+      class="search-terms"
+      v-if="
+        referencedComponents.searchResults.length +
+          referencedMeetings.general.length +
+          referencedNotifications.general.length +
+          referencedStatements.general.length >
+        0
+      "
+    >
       <span class="fw-bold">{{ t("forms.search_terms") }}:</span>
       <span v-show="displayQuery.title" class="badge bg-secondary">
         {{ t("forms.title_contains") }} - {{ displayQuery.title }}</span

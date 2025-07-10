@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
-import type {
-  componentGaiaType,
-  componentSanitized,
-  searchParams,
-} from "~/types/components";
+import type { componentGaiaType, searchParams } from "~/types/components";
 import getComponents, {
   referencedComponents,
 } from "~/composables/componentApi";
@@ -52,10 +48,9 @@ const componentTypes: componentGaiaType = [
 ];
 // await getGaiaComponents(componentSearch, componentTypes);
 
-const updates = ref<componentSanitized[]>([]);
-
 definePageMeta({
   layout: "serp",
+  middleware: ["serp-middleware"],
 });
 </script>
 <template>
