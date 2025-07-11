@@ -21,7 +21,15 @@ const props = defineProps<{
         </NuxtLink>
       </li>
 
-      <div v-if="parent.children.length > 0" class="level-2-items">
+      <div
+        v-if="parent.children.length > 0"
+        :style="
+          parent.children.length < 5
+            ? `--level2-column-count: ${parent.children.length}`
+            : ''
+        "
+        class="level-2-items"
+      >
         <NavigationMegamenuLevel2 :parent="parent" />
       </div>
     </ul>

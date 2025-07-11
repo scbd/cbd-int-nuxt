@@ -91,12 +91,12 @@
     }
 
     .level-2-items {
-      display: flex;
+      --level2-column-count: 5;
+      display: grid;
       gap: 2rem;
-      flex-wrap: wrap;
+      grid-template-columns: repeat(var(--level2-column-count), 1fr);
 
       .level-2-item {
-        // flex: 0 2 max(calc(20% - 1.6rem), 12rem);
         display: flex;
         flex-flow: column;
         row-gap: 0.5rem;
@@ -115,8 +115,6 @@
           max-height: 18rem;
           flex: 1 1 100%;
           display: block;
-          // column-width: calc(20vw - 1rem);
-          column-width: max(calc(20vw - 1rem), 10rem);
           column-gap: 2rem;
           .nav-item {
             margin-bottom: 0.75rem;
@@ -137,14 +135,9 @@
       }
 
       .level-3-items-multi-col {
+        grid-column: span var(--level3-column-count);
         .level-3-items {
-          column-count: var(--column-count);
-          &::after {
-            content: attr(data-columns);
-            width: 50px;
-            height: 50px;
-            background-color: tomato;
-          }
+          column-count: var(--level3-column-count);
         }
       }
     }
@@ -184,6 +177,23 @@ html:dir(rtl) {
             .nav-item {
               width: auto;
             }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .cus-mega-menu {
+    .mega-menu-drawer {
+      .level-2-items {
+        display: flex;
+        flex-direction: column;
+        .level-3-items-multi-col {
+          grid-column: unset;
+          .level-3-items {
+            column-count: 1;
           }
         }
       }
