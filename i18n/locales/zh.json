@@ -32,6 +32,9 @@
   },
 
   "components": {
+    "breadcrumbs": {
+      "home": "首页"
+    },
     "updates": {
       "name": "更新",
       "name_plural": "更新",

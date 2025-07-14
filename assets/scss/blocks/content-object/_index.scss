@@ -125,6 +125,20 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    * {
+      font-size: 1rem !important;
+    }
+    h1,
+    h2,
+    h3,
+    img,
+    figure,
+    iframe {
+      display: none !important;
+    }
+    p:not(:first-of-type) {
+      display: none;
+    }
   }
 
   .content-link {

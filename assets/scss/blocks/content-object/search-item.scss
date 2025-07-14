@@ -71,7 +71,9 @@
     }
     .description {
       order: 9;
-      img {
+      img,
+      figure,
+      iframe {
         display: none !important;
       }
       * {

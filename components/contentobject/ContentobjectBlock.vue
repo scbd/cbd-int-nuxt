@@ -87,9 +87,7 @@ if (props.component.type === "GBF Target") {
         </div>
       </div>
       <div class="title">{{ component.title }}</div>
-      <div class="description">
-        {{ component.content ?? "Description Placeholder" }}
-      </div>
+      <div class="description" v-html="component.content"></div>
       <div class="read-on-wrapper">
         <NuxtLink :to="component.url" class="read-on">{{
           t("components.articles.view")

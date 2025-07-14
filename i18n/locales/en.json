@@ -30,6 +30,9 @@
   },
 
   "components": {
+    "breadcrumbs": {
+      "home": "Home"
+    },
     "updates": {
       "name": "update",
       "name_plural": "updates",

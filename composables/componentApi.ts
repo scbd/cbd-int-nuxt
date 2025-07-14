@@ -360,6 +360,7 @@ export default function getComponents() {
 
     const params = Object.entries({
       "page[limit]": searchParameters.limit.toString(),
+      "filter[status][value]": 1,
       sort: `${searchParameters.sort ? searchParameters.sort : "-created"}`,
     })
       .map(
@@ -408,6 +409,7 @@ export default function getComponents() {
             type: "article",
             title: rawData.attributes.title,
             url: rawData.attributes.path.alias,
+            langcode: rawData.attributes.langcode,
             image_cover: {
               url: rawData.relationships.field_image.links.related.href,
               mime_type: "",
