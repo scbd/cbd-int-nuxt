@@ -12,27 +12,23 @@ const props = defineProps<{
   componentTypes: componentGaiaType;
 }>();
 
-const inputFilterTitle = ref<string>();
-const inputFilterReference = ref<string>();
-const inputFilterThemes = ref<string>();
-const inputFilterRecipients = ref<string>();
-const selectFilterYear = ref<number>(0);
+type queryProps = "title" | "year" | "recipients" | "themes";
+type query = Partial<Record<queryProps, string>>;
+
 const selectSortName = ref<"asc" | "desc">("desc");
 const selectSortDate = ref<"asc" | "desc">("desc");
 
-const query: {
-  title?: string;
-  year: number;
-  recipient?: string;
-  theme?: string;
-} = {
-  year: 0,
-};
-const displayQuery = ref(query);
+const queryFilter = ref<query>({
+  year: "0",
+});
+
+const displayQuery = ref<query>({
+  year: "0",
+});
 
 if (props.searchParams) {
   if (props.searchParams.q.includes("recipient_ss")) {
-    displayQuery.value.recipient = props.searchParams.q.substring(
+    displayQuery.value.recipients = props.searchParams.q.substring(
       props.searchParams.q.indexOf("*") + 1,
       props.searchParams.q.lastIndexOf("*")
     );
@@ -42,7 +38,7 @@ if (props.searchParams) {
       `themes_${languageSettings.active_language.slice(0, 2).toUpperCase()}_ss`
     )
   ) {
-    displayQuery.value.theme = props.searchParams.q.substring(
+    displayQuery.value.themes = props.searchParams.q.substring(
       props.searchParams.q.indexOf('("') + 2,
       props.searchParams.q.lastIndexOf('")')
     );
@@ -61,16 +57,16 @@ const searchHandler = async () => {
   };
   const paramSort: propSort = { sort: {} };
 
-  displayQuery.value.recipient = "";
+  displayQuery.value.recipients = "";
 
-  if (selectFilterYear.value > 0) {
-    paramQuery.push(`date_s:(${selectFilterYear.value}*)`);
+  if (Number(queryFilter.value.year) > 0) {
+    paramQuery.push(`date_s:(${queryFilter.value.year}*)`);
 
-    displayQuery.value.year = selectFilterYear.value;
+    displayQuery.value.year = queryFilter.value.year;
   }
 
-  if (inputFilterTitle.value) {
-    const titles: string[] = inputFilterTitle.value.split(" ");
+  if (queryFilter.value.title) {
+    const titles: string[] = queryFilter.value.title.split(" ");
     const titlesString = titles
       .map(
         (title) =>
@@ -83,8 +79,8 @@ const searchHandler = async () => {
     );
   }
 
-  if (inputFilterThemes.value) {
-    const themes: string[] = inputFilterThemes.value.split(" ");
+  if (queryFilter.value.themes) {
+    const themes: string[] = queryFilter.value.themes.split(" ");
     const themesString = themes
       .map(
         (theme) =>
@@ -97,8 +93,8 @@ const searchHandler = async () => {
     );
   }
 
-  if (inputFilterRecipients.value) {
-    const recipients: string[] = inputFilterRecipients.value.split(" ");
+  if (queryFilter.value.recipients) {
+    const recipients: string[] = queryFilter.value.recipients.split(" ");
     const recipientsString = recipients
       .map(
         (recipient) =>
@@ -121,14 +117,25 @@ const searchHandler = async () => {
     ] = selectSortName.value;
   }
 
-  displayQuery.value.title = inputFilterTitle.value;
-  displayQuery.value.theme = inputFilterThemes.value;
-  displayQuery.value.recipient = inputFilterRecipients.value;
+  displayQuery.value.title = queryFilter.value.title;
+  displayQuery.value.themes = queryFilter.value.themes;
+  displayQuery.value.recipients = queryFilter.value.recipients;
 
   params.q = paramQuery.join(" AND ");
   params.sort = paramSort.sort;
 
   getGaiaComponents(params, componentTypes);
+};
+
+const clearParams = async (parameter: queryProps) => {
+  if (parameter === "year") {
+    queryFilter.value.year = "0";
+    displayQuery.value.year = "0";
+  } else {
+    queryFilter.value[parameter] = "";
+    displayQuery.value[parameter] = "";
+  }
+  searchHandler();
 };
 </script>
 <template>
@@ -153,7 +160,7 @@ const searchHandler = async () => {
       <label for="fsTitle">
         {{ t("forms.title_contains") }}
         <input
-          v-model="inputFilterTitle"
+          v-model="queryFilter.title"
           id="fsTitle"
           type="text"
           class="form-control"
@@ -163,7 +170,7 @@ const searchHandler = async () => {
       <label for="fsThemes">
         {{ t("components.statements.themes") }}
         <input
-          v-model="inputFilterThemes"
+          v-model="queryFilter.themes"
           type="text"
           name="fsThemes"
           id="fsThemes"
@@ -173,7 +180,7 @@ const searchHandler = async () => {
       <label for="fsRecipients">
         {{ t("components.notifications.recipients") }}
         <input
-          v-model="inputFilterRecipients"
+          v-model="queryFilter.recipients"
           type="text"
           name="fsRecipients"
           id="fsRecipients"
@@ -183,15 +190,15 @@ const searchHandler = async () => {
       <div class="filter-row row">
         <div class="form_section-header">{{ t("forms.filter") }}</div>
         <div class="form_section-options">
-          <select v-model="selectFilterYear" name="" id="" class="form-select">
-            <option :value="0" :selected="true">
+          <select v-model="queryFilter.year" name="" id="" class="form-select">
+            <option :value="'0'" :selected="true">
               {{ t("forms.year_any") }}
             </option>
             <option
               v-for="year of [...Array(new Date().getFullYear() + 1).keys()]
                 .slice(1991)
                 .reverse()"
-              :value="year"
+              :value="year.toString()"
             >
               {{ year }}
             </option>
@@ -247,22 +254,49 @@ const searchHandler = async () => {
     >
       <span class="fw-bold">{{ t("forms.search_terms") }}:</span>
       <span v-show="displayQuery.title" class="badge bg-secondary">
-        {{ t("forms.title_contains") }} - {{ displayQuery.title }}</span
-      >
+        {{ t("forms.title_contains") }} - {{ displayQuery.title }}
+        <button
+          class="btn-close btn-close-white ms-2"
+          type="button"
+          aria-label="Close"
+          @click="clearParams('title')"
+        ></button>
+      </span>
       <span v-show="displayQuery.year" class="badge bg-secondary">
         {{ t("forms.year") }} -
         {{
-          displayQuery.year > 0 ? displayQuery.year : t("forms.year_any")
-        }}</span
-      >
-      <span v-if="displayQuery.recipient" class="badge bg-secondary">
+          Number(displayQuery.year) > 0
+            ? displayQuery.year
+            : t("forms.year_any")
+        }}
+        <button
+          v-show="displayQuery.year !== '0'"
+          class="btn-close btn-close-white ms-2"
+          type="button"
+          aria-label="Close"
+          @click="clearParams('year')"
+        ></button>
+      </span>
+      <span v-if="displayQuery.recipients" class="badge bg-secondary">
         {{ t("components.notifications.recipients") }} -
-        {{ decodeURIComponent(displayQuery.recipient) }}
+        {{ decodeURIComponent(displayQuery.recipients) }}
+        <button
+          class="btn-close btn-close-white ms-2"
+          type="button"
+          aria-label="Close"
+          @click="clearParams('recipients')"
+        ></button>
       </span>
 
-      <span v-if="displayQuery.theme" class="badge bg-secondary">
+      <span v-if="displayQuery.themes" class="badge bg-secondary">
         {{ t("components.statements.themes") }} -
-        {{ decodeURIComponent(displayQuery.theme) }}
+        {{ decodeURIComponent(displayQuery.themes) }}
+        <button
+          class="btn-close btn-close-white ms-2"
+          type="button"
+          aria-label="Close"
+          @click="clearParams('themes')"
+        ></button>
       </span>
     </div>
   </div>
