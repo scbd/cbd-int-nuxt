@@ -5,6 +5,9 @@ import type {
 } from "~/types/components";
 import type { page } from "~/types/page";
 
+const languageSettings = useLanguageStore();
+const { t } = useI18n();
+
 const props = defineProps<{
   page?: page;
   submenuItemIndex?: {
@@ -14,51 +17,61 @@ const props = defineProps<{
   };
 }>();
 
-const languageSettings = useLanguageStore();
-
 const route = useRoute();
 const routeArray = route.fullPath
   .split("/")
   .filter((step) => step.trim() != "");
 const routePath = route.fullPath.replace(/\/+$/, "");
 
-const fetchedComponents: {
-  articles?: componentSanitized[];
+const fetchedComponents = ref<{
+  article?: componentSanitized;
   meetings?: componentSanitized[];
   notifications?: componentSanitized[];
   statements?: componentSanitized[];
   nbsaps?: componentSanitized[];
   portals?: componentSanitized[];
-} = {
-  articles: [referencedArticles.value.general[0]],
+}>({
+  article: referencedArticles.value.general[0],
   meetings: [referencedMeetings.value.general[0]],
   notifications: [referencedNotifications.value.general[0]],
   statements: [referencedStatements.value.general[0]],
   nbsaps: [referencedNbsaps.value.general[0]],
   portals: [referencedPortals.value[0]],
-};
+});
 
 onMounted(() => {
-  fetchedComponents.articles = [referencedArticles.value.general[0]];
-  fetchedComponents.meetings = [referencedMeetings.value.general[0]];
-  fetchedComponents.notifications = [referencedNotifications.value.general[0]];
-  fetchedComponents.statements = [referencedStatements.value.general[0]];
-  fetchedComponents.nbsaps = [referencedNbsaps.value.general[0]];
-  fetchedComponents.portals = [referencedPortals.value[0]];
+  fetchedComponents.value.article = referencedArticles.value.general[0];
+  fetchedComponents.value.meetings = [referencedMeetings.value.general[0]];
+  fetchedComponents.value.notifications = [
+    referencedNotifications.value.general[0],
+  ];
+  fetchedComponents.value.statements = [referencedStatements.value.general[0]];
+
+  // fetchedComponents.nbsaps = [referencedNbsaps.value.general[0]];
+  // fetchedComponents.portals = [referencedPortals.value[0]];
 });
 
-watch(referencedStatements, () => {
-  fetchedComponents.articles = [referencedArticles.value.general[0]];
-  fetchedComponents.nbsaps = [referencedNbsaps.value.general[0]];
-  fetchedComponents.portals = [referencedPortals.value[0]];
-});
+watch(
+  [languageSettings, referencedArticles.value],
+  ([changedLang, changedArticles]) => {
+    if (
+      fetchedComponents.value.article?.langcode !==
+      changedArticles.general[0].langcode
+    ) {
+      fetchedComponents.value.article = changedArticles.general[0];
+    }
+
+    // fetchedComponents.nbsaps = [referencedNbsaps.value.general[0]];
+    // fetchedComponents.portals = [referencedPortals.value[0]];
+  }
+);
 </script>
 
 <template>
   <nav class="breadcrumbs" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <NuxtLink to="/"> Home </NuxtLink>
+        <NuxtLink to="/"> {{ t("components.breadcrumbs.home") }} </NuxtLink>
       </li>
 
       <template
@@ -147,10 +160,10 @@ watch(referencedStatements, () => {
             <template
               v-if="
                 route.meta.pageType === 'componentArticle' &&
-                fetchedComponents.articles
+                fetchedComponents.article
               "
             >
-              {{ fetchedComponents.articles[0].title }}
+              {{ fetchedComponents.article.title }}
             </template>
             <template
               v-else-if="

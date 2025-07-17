@@ -41,7 +41,13 @@ export const getDrupalLanguages = async (language: string | null) => {
               weight: number;
             };
           }): drupalLanguage => ({
-            langCode: item.attributes.drupal_internal__id,
+            langCode: item.attributes.drupal_internal__id as
+              | "en"
+              | "fr"
+              | "es"
+              | "ru"
+              | "zh"
+              | "ar",
             label: item.attributes.label,
             direction: item.attributes.direction,
             weight: item.attributes.weight,
@@ -72,7 +78,7 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
 
   try {
     const response = await fetch(
-      `${config.public.DRUPAL_URL}/${langCode}/jsonapi/menu_link_content/${menu}?page[limit]=100`,
+      `${config.public.DRUPAL_URL}/${langCode}/jsonapi/menu_link_content/${menu}?filter[enabled][value]=1&page[limit]=100`,
       {
         method: "GET",
         headers: {

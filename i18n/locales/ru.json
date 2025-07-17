@@ -29,6 +29,9 @@
   },
 
   "components": {
+    "breadcrumbs": {
+      "home": "Заглавная"
+    },
     "updates": {
       "name": "обновить",
       "name_plural": "обновления",

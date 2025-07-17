@@ -42,6 +42,7 @@
 
     .date {
       order: 0;
+      align-self: flex-start;
     }
     .title {
       height: fit-content;
@@ -71,7 +72,9 @@
     }
     .description {
       order: 9;
-      img {
+      img,
+      figure,
+      iframe {
         display: none !important;
       }
       * {

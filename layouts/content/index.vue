@@ -1,7 +1,5 @@
 <script setup lang="ts">
 const route = useRoute();
-
-const fetchedArticle = [referencedArticles.value.general[0]];
 </script>
 
 <template>
@@ -13,23 +11,14 @@ const fetchedArticle = [referencedArticles.value.general[0]];
       </nav>
     </header>
     <ClientOnly>
-      <template v-if="route.meta.pageType === 'componentArticle'">
-        <Breadcrumbs />
-        <HeroContent :article="fetchedArticle" />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentMeeting'">
-        <Breadcrumbs />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentNotification'">
-        <Breadcrumbs />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentStatement'">
-        <Breadcrumbs />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentNbsap'">
-        <Breadcrumbs />
-      </template>
-      <template v-else-if="route.meta.pageType === 'componentPortal'">
+      <template
+        v-if="
+          route.meta.pageType === 'componentMeeting' ||
+          route.meta.pageType === 'componentNotification' ||
+          route.meta.pageType === 'componentStatement' ||
+          route.meta.pageType === 'componentNbsap'
+        "
+      >
         <Breadcrumbs />
       </template>
     </ClientOnly>

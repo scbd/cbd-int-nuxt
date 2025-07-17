@@ -29,6 +29,9 @@
   },
 
   "components": {
+    "breadcrumbs": {
+      "home": "الصفحة الرئيسية"
+    },
     "updates": {
       "name": "تحديث",
       "name_plural": "التحديثات",

@@ -65,12 +65,6 @@ if (props.component.type === "GBF Target") {
       class="content-object"
       :class="[component.type, 'accent-cbd']"
     >
-      <img
-        :src="component.image_cover?.url ?? '/images/content_replacement.svg'"
-        :alt="component.image_cover?.alt"
-        :title="component.image_cover?.title"
-        class="content-image"
-      />
       <div class="information">
         <div class="taxonomy">
           <div class="source">{{ "CBD" }}</div>
@@ -86,10 +80,14 @@ if (props.component.type === "GBF Target") {
           }}
         </div>
       </div>
+      <img
+        :src="component.image_cover?.url ?? '/images/content_replacement.svg'"
+        :alt="component.image_cover?.alt"
+        :title="component.image_cover?.title"
+        class="content-image"
+      />
       <div class="title">{{ component.title }}</div>
-      <div class="description">
-        {{ component.content ?? "Description Placeholder" }}
-      </div>
+      <div class="description" v-html="component.content"></div>
       <div class="read-on-wrapper">
         <NuxtLink :to="component.url" class="read-on">{{
           t("components.articles.view")

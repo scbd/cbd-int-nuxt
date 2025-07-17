@@ -80,6 +80,7 @@ interface componentBase {
 }
 
 interface componentArticle extends componentBase {
+  langcode?: string;
   image_cover?: {
     url: string;
     width: number;

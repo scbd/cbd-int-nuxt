@@ -85,26 +85,34 @@ const nbsapsParams: searchParams = {
   rows: 4,
 };
 
-const updates = ref<componentSanitized[]>([]);
+const referencedUpdates = ref<componentSanitized[]>([]);
 
-const articles = (await getArticles(articlesParams)) ?? [];
+const handleUpdates = async () => {
+  const updates: componentSanitized[] = [];
 
-await getGaiaComponents(meetingsParams, ["meeting"]);
-await getGaiaComponents(notificationsParams, ["notification"]);
-await getGaiaComponents(statementsParams, ["statement"]);
+  updates.push(
+    ...referencedArticles.value.general,
+    ...referencedMeetings.value.general,
+    ...referencedNotifications.value.general
+  );
+
+  referencedUpdates.value = updates
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, 4);
+};
+
+Promise.allSettled([
+  await getArticles(articlesParams),
+  await getGaiaComponents(meetingsParams, ["meeting"]),
+  await getGaiaComponents(notificationsParams, ["notification"]),
+  await getGaiaComponents(statementsParams, ["statement"]),
+]).then((results) => {
+  handleUpdates();
+});
 
 await getGbfTargets(gbfTargetsParams);
 await getPortals();
 await getGaiaComponents(nbsapsParams, ["nbsap"]);
-
-updates.value.push(
-  ...articles,
-  ...referencedMeetings.value.general,
-  ...referencedNotifications.value.general
-);
-const sortedUpdates = updates.value
-  .sort((a, b) => b.date.getTime() - a.date.getTime())
-  .slice(0, 4);
 
 const gbfSliceInt = Math.floor(Math.random() * 19);
 
@@ -112,6 +120,10 @@ watch(languageSettings, async () => {
   await getArticles(articlesParams);
   await getGbfTargets(gbfTargetsParams);
   await getPortals();
+});
+
+watch(referencedArticles.value, () => {
+  handleUpdates();
 });
 
 definePageMeta({
@@ -126,7 +138,10 @@ definePageMeta({
 
   <article class="cus-article container-xxl d-flex flex-column">
     <ClientOnly>
-      <ContentobjectRow component-type="update" :components="sortedUpdates" />
+      <ContentobjectRow
+        component-type="update"
+        :components="referencedUpdates"
+      />
       <ContentobjectRow
         component-type="meeting"
         :components="referencedMeetings.general"

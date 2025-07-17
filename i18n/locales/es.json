@@ -29,6 +29,9 @@
   },
 
   "components": {
+    "breadcrumbs": {
+      "home": "Portada"
+    },
     "updates": {
       "name": "actualización",
       "name_plural": "actualizaciones",

@@ -29,6 +29,9 @@
   },
 
   "components": {
+    "breadcrumbs": {
+      "home": "Acceuil"
+    },
     "updates": {
       "name": "mise à jour",
       "name_plural": "mises à jour",

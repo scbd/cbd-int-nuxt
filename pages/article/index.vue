@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { drupalEntitySearchParams } from "~/types/drupalEntityApi";
+import type { componentSanitized } from "~/types/components";
 import getComponents from "~/composables/componentApi";
 
 const route = useRoute();
 const { t } = useI18n();
+const languageSettings = useLanguageStore();
 
 const { getArticles } = getComponents();
 
@@ -13,11 +15,19 @@ const articlesParams: drupalEntitySearchParams = {
   limit: 20,
 };
 
-await getArticles(articlesParams);
+const fetchedArticle = ref<componentSanitized[]>(
+  (await getArticles(articlesParams)) as componentSanitized[]
+);
 
 definePageMeta({
   layout: "serp",
   acceptArticleData: true,
+});
+
+watch(languageSettings, async () => {
+  await getArticles(articlesParams).then((article) => {
+    fetchedArticle.value = article!;
+  });
 });
 </script>
 <template>
