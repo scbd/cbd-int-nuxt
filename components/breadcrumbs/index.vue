@@ -55,8 +55,9 @@ watch(
   [languageSettings, referencedArticles.value],
   ([changedLang, changedArticles]) => {
     if (
+      changedArticles.general.length > 0 &&
       fetchedComponents.value.article?.langcode !==
-      changedArticles.general[0].langcode
+        changedArticles.general[0].langcode
     ) {
       fetchedComponents.value.article = changedArticles.general[0];
     }

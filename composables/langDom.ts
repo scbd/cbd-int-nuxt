@@ -1,5 +1,5 @@
 import type { componentStatus } from "~/types/componentStatus";
-import type { drupalLanguage } from "~/types/drupalLanguages";
+import type { drupalLanguage, langCode } from "~/types/drupalLanguages";
 import type { fetchedMenu, fetchedMenuItem } from "~/types/drupalMenu";
 
 export const languages = ref<drupalLanguage[]>([]);
@@ -12,7 +12,7 @@ export const footerMenuStatus = ref<componentStatus>({ status: "pending" });
 export const megamenuStatus = ref<componentStatus>({ status: "pending" });
 export const submenuStatus = ref<componentStatus>({ status: "pending" });
 
-export const setActiveLanguage = async (langCode: string = "en") => {
+export const setActiveLanguage = async (langCode: langCode = "en") => {
   const languageSettings = useLanguageStore();
 
   try {
@@ -34,7 +34,7 @@ const getLanguages = async () => {
   languageStatus.value.status = "pending";
 
   try {
-    const languageData = await getDrupalLanguages(
+    const languageData: drupalLanguage[] = await getDrupalLanguages(
       languageSettings.active_language
     );
     languages.value = languageData;
