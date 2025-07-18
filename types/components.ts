@@ -55,15 +55,12 @@ export interface componentSanitized
     componentPortal,
     componentNbsap {
   type: string;
-}
-
-interface componentBase {
   url: string;
   date: Date;
   title: string | availableLanguages;
 }
 
-interface componentArticle extends componentBase {
+interface componentArticle {
   langcode?: string;
   image_cover?: {
     url: string;
@@ -78,7 +75,7 @@ interface componentArticle extends componentBase {
   content?: string;
 }
 
-interface componentMeeting extends componentBase {
+interface componentMeeting {
   symbol?: string;
   status?: string;
   themes?: availableLanguages;
@@ -87,7 +84,7 @@ interface componentMeeting extends componentBase {
   event_country?: availableLanguages;
 }
 
-interface componentNotification extends componentBase {
+interface componentNotification {
   symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
@@ -104,18 +101,18 @@ interface componentNotification extends componentBase {
   }[];
 }
 
-interface componentGbfTarget extends componentBase {
+interface componentGbfTarget {
   identifier?: string;
   title_short?: availableLanguages;
   description?: string;
   description_long?: availableLanguages;
 }
 
-interface componentStatement extends componentBase {
+interface componentStatement {
   themes?: availableLanguages;
 }
 
-interface componentPortal extends componentBase {
+interface componentPortal {
   date_edited?: Date;
   image?: {
     url: string;
@@ -128,7 +125,7 @@ interface componentPortal extends componentBase {
   };
 }
 
-interface componentNbsap extends componentBase {}
+interface componentNbsap {}
 
 export interface componentArticleRaw {
   attributes: {
