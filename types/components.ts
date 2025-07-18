@@ -1,3 +1,5 @@
+import type { langCode } from "./drupalLanguages";
+
 export interface componentRequest {
   start?: number;
   data?:
@@ -29,25 +31,7 @@ export type componentGaiaType = (
 
 export type componentDrupalType = ("article" | "gbf-target" | "portal")[];
 
-export interface availableLanguages {
-  [language: string]: string;
-  ar: string;
-  en: string;
-  es: string;
-  fr: string;
-  ru: string;
-  zh: string;
-}
-
-export interface availableLanguagesArray {
-  [language: string]: string[];
-  ar: string[];
-  en: string[];
-  es: string[];
-  fr: string[];
-  ru: string[];
-  zh: string[];
-}
+export type availableLanguages = Record<langCode, string | string[]>;
 
 export interface searchParams {
   q: string;
@@ -97,7 +81,7 @@ interface componentArticle extends componentBase {
 interface componentMeeting extends componentBase {
   symbol?: string;
   status?: string;
-  themes?: availableLanguagesArray;
+  themes?: availableLanguages;
   date_end?: Date;
   event_city?: availableLanguages;
   event_country?: availableLanguages;
@@ -110,7 +94,7 @@ interface componentNotification extends componentBase {
   sender?: string;
   reference?: string;
   recipient?: string[];
-  themes?: availableLanguagesArray;
+  themes?: availableLanguages;
   fulltext?: availableLanguages;
   files?: {
     type: string;
@@ -128,7 +112,7 @@ interface componentGbfTarget extends componentBase {
 }
 
 interface componentStatement extends componentBase {
-  themes?: availableLanguagesArray;
+  themes?: availableLanguages;
 }
 
 interface componentPortal extends componentBase {

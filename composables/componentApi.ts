@@ -14,7 +14,6 @@ import type {
   componentSanitized,
   searchParams,
   availableLanguages,
-  availableLanguagesArray,
 } from "~/types/components";
 import type {
   drupalEntityPath,
@@ -161,7 +160,7 @@ export default function getComponents() {
               es: componentRaw.title_ES_s,
               fr: componentRaw.title_FR_s,
               ru: componentRaw.title_RU_s,
-              zh: componentRaw.title_ZH_s,
+              "zh-hans": componentRaw.title_ZH_s,
             } as availableLanguages,
             themes: {
               ar: (
@@ -194,13 +193,13 @@ export default function getComponents() {
                   | componentNotificationRaw
                   | componentStatementRaw
               ).themes_RU_ss,
-              zh: (
+              "zh-hans": (
                 componentRaw as
                   | componentMeetingRaw
                   | componentNotificationRaw
                   | componentStatementRaw
               ).themes_ZH_ss,
-            } as availableLanguagesArray,
+            } as availableLanguages,
             status: (componentRaw as componentMeetingRaw).status_s,
             event_city: {
               ar: (componentRaw as componentMeetingRaw).eventCity_AR_s,
@@ -208,7 +207,7 @@ export default function getComponents() {
               es: (componentRaw as componentMeetingRaw).eventCity_ES_s,
               fr: (componentRaw as componentMeetingRaw).eventCity_FR_s,
               ru: (componentRaw as componentMeetingRaw).eventCity_RU_s,
-              zh: (componentRaw as componentMeetingRaw).eventCity_ZH_s,
+              "zh-hans": (componentRaw as componentMeetingRaw).eventCity_ZH_s,
             },
             event_country: {
               ar: (componentRaw as componentMeetingRaw).eventCountry_AR_s,
@@ -216,7 +215,8 @@ export default function getComponents() {
               es: (componentRaw as componentMeetingRaw).eventCountry_ES_s,
               fr: (componentRaw as componentMeetingRaw).eventCountry_FR_s,
               ru: (componentRaw as componentMeetingRaw).eventCountry_RU_s,
-              zh: (componentRaw as componentMeetingRaw).eventCountry_ZH_s,
+              "zh-hans": (componentRaw as componentMeetingRaw)
+                .eventCountry_ZH_s,
             },
             date_action: (componentRaw as componentNotificationRaw).actionDate_s
               ? new Date(
@@ -236,7 +236,8 @@ export default function getComponents() {
               es: (componentRaw as componentNotificationRaw).fulltext_ES_s,
               fr: (componentRaw as componentNotificationRaw).fulltext_FR_s,
               ru: (componentRaw as componentNotificationRaw).fulltext_RU_s,
-              zh: (componentRaw as componentNotificationRaw).fulltext_ZH_s,
+              "zh-hans": (componentRaw as componentNotificationRaw)
+                .fulltext_ZH_s,
             },
             files: JSON.parse(
               (componentRaw as componentNotificationRaw).files_ss?.[0] ?? "{}"

@@ -30,14 +30,10 @@ const handlerMissingImage = (event: Event) => {
   image.src = "/images/content_replacement.svg";
 };
 
-const objectLocation = (
-  language: string,
-  city: string | undefined,
-  country: string | undefined
-) => {
-  if (language === "ar") {
+const objectLocation = (city?: string, country?: string) => {
+  if (languageSettings.active_language === "ar") {
     return `${city ?? ""}${city && country ? "،" : ""} ${country ?? ""}`;
-  } else if (language === "zh-hans") {
+  } else if (languageSettings.active_language === "zh-hans") {
     return `${city ?? ""}${country ?? ""}`;
   } else {
     return `${city}${city && country ? "," : ""} ${country ?? ""}`;
@@ -114,26 +110,20 @@ const objectLocation = (
         <div class="information">
           <div class="date">
             {{
-              Intl.DateTimeFormat(
-                languageSettings.active_language.slice(0, 2),
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              ).format(component.date)
+              Intl.DateTimeFormat(languageSettings.active_language, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(component.date)
             }}
             <template v-if="component.date_end">
               &nbsp;&ndash;&nbsp;
               {{
-                Intl.DateTimeFormat(
-                  languageSettings.active_language.slice(0, 2),
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                ).format(component.date_end)
+                Intl.DateTimeFormat(languageSettings.active_language, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(component.date_end)
               }}
             </template>
           </div>
@@ -141,7 +131,7 @@ const objectLocation = (
           <NuxtLink class="title" :to="component.url">
             {{
               (component.title as availableLanguages)[
-                languageSettings.active_language.slice(0, 2)
+                languageSettings.active_language
               ]
             }}
           </NuxtLink>
@@ -152,13 +142,12 @@ const objectLocation = (
           >
             {{
               objectLocation(
-                languageSettings.active_language,
                 (component.event_city as availableLanguages)[
-                  languageSettings.active_language.slice(0, 2)
-                ],
+                  languageSettings.active_language
+                ] as string,
                 (component.event_country as availableLanguages)[
-                  languageSettings.active_language.slice(0, 2)
-                ]
+                  languageSettings.active_language
+                ] as string
               )
             }}
           </div>
@@ -194,65 +183,54 @@ const objectLocation = (
         <div class="information">
           <div class="date">
             {{
-              Intl.DateTimeFormat(
-                languageSettings.active_language.slice(0, 2),
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              ).format(component.date)
+              Intl.DateTimeFormat(languageSettings.active_language, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(component.date)
             }}
             <template v-if="component.date_end">
               &nbsp;&ndash;&nbsp;
               {{
-                Intl.DateTimeFormat(
-                  languageSettings.active_language.slice(0, 2),
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                ).format(component.date_end)
+                Intl.DateTimeFormat(languageSettings.active_language, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(component.date_end)
               }}
             </template>
           </div>
 
           <NuxtLink class="title" :to="component.url">
             {{
-              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language]}`
             }}
           </NuxtLink>
           <div v-show="component.date_action" class="action-required">
             {{ t("components.notifications.action_required") }}:
             {{
-              Intl.DateTimeFormat(
-                languageSettings.active_language.slice(0, 2),
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              ).format(component.date_action)
+              Intl.DateTimeFormat(languageSettings.active_language, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(component.date_action)
             }}
           </div>
           <div
-            v-if="
-              component.themes?.[languageSettings.active_language.slice(0, 2)]
-            "
+            v-if="component.themes?.[languageSettings.active_language]"
             class="subjects"
           >
             {{ t("components.notifications.subjects") }}:
             {{
-              component.themes[
-                languageSettings.active_language.slice(0, 2)
-              ].join(", ")
+              (
+                component.themes[languageSettings.active_language] as string[]
+              ).join(", ")
             }}
           </div>
           <div class="description">
             {{
               (component.fulltext as availableLanguages)[
-                languageSettings.active_language.slice(0, 2)
+                languageSettings.active_language
               ]
             }}
           </div>
@@ -263,9 +241,7 @@ const objectLocation = (
             <div class="files-available">
               <NuxtLink
                 v-for="file in component.files"
-                v-show="
-                  file.language === languageSettings.active_language.slice(0, 2)
-                "
+                v-show="file.language === languageSettings.active_language"
                 class="btn"
                 target="_blank"
                 :to="`${config.public.FRONTEND_URL}${file.url}`"
@@ -315,26 +291,20 @@ const objectLocation = (
         <div class="information">
           <div class="date">
             {{
-              Intl.DateTimeFormat(
-                languageSettings.active_language.slice(0, 2),
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              ).format(component.date)
+              Intl.DateTimeFormat(languageSettings.active_language, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(component.date)
             }}
             <template v-if="component.date_end">
               &nbsp;&ndash;&nbsp;
               {{
-                Intl.DateTimeFormat(
-                  languageSettings.active_language.slice(0, 2),
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                ).format(component.date_end)
+                Intl.DateTimeFormat(languageSettings.active_language, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(component.date_end)
               }}
             </template>
           </div>
@@ -347,26 +317,24 @@ const objectLocation = (
             }"
           >
             {{
-              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+              `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language]}`
             }}
           </NuxtLink>
 
           <div
-            v-if="
-              component.themes?.[languageSettings.active_language.slice(0, 2)]
-            "
+            v-if="component.themes?.[languageSettings.active_language]"
             class="subjects"
           >
             {{ t("components.statements.themes") }}:
 
             <template v-if="languageSettings.active_language === 'ar'">
-              {{ component.themes["ar"].join("، ") }}
+              {{ (component.themes["ar"] as string[]).join("، ") }}
             </template>
             <template v-else>
               {{
-                component.themes[
-                  languageSettings.active_language.slice(0, 2)
-                ].join(", ")
+                (
+                  component.themes[languageSettings.active_language] as string[]
+                ).join(", ")
               }}
             </template>
           </div>

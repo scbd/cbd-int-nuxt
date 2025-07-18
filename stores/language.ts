@@ -1,6 +1,8 @@
+import type { langCode } from "~/types/drupalLanguages";
+
 export const useLanguageStore = defineStore("languageStore", {
   state: () => {
-    const active_language = ref("en");
+    const active_language = ref<langCode>("en");
     return { active_language };
   },
   persist: {
@@ -9,7 +11,7 @@ export const useLanguageStore = defineStore("languageStore", {
     }),
   },
   actions: {
-    setActiveLanguage(langCode: string) {
+    setActiveLanguage(langCode: langCode) {
       this.active_language = langCode;
     },
   },
