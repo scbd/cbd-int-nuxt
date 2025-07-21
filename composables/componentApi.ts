@@ -423,6 +423,7 @@ export default function getComponents() {
             date: new Date(rawData.attributes.created),
             date_edited: new Date(rawData.attributes.changed),
             content: rawData.attributes.body.processed,
+            summary: rawData.attributes.body.summary,
           })
         );
 

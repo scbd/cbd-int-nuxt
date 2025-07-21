@@ -73,6 +73,7 @@ interface componentArticle {
   };
   date_edited?: Date;
   content?: string;
+  summary?: string;
 }
 
 interface componentMeeting {
@@ -142,6 +143,7 @@ export interface componentArticleRaw {
     };
     body: {
       processed: string;
+      summary: string;
     };
   };
   relationships: {

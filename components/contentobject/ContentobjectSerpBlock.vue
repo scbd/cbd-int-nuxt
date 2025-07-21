@@ -74,10 +74,7 @@ const objectLocation = (city?: string, country?: string) => {
           <NuxtLink :to="component.url" class="title">
             {{ component.title }}
           </NuxtLink>
-          <div
-            class="description"
-            v-html="contentParser(component.content)"
-          ></div>
+          <div class="description">{{ component.summary }}</div>
         </div>
         <div class="read-on-wrapper">
           <NuxtLink :to="component.url" class="btn cbd-btn-more-content">{{

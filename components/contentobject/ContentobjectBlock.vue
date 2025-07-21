@@ -88,7 +88,7 @@ if (props.component.type === "GBF Target") {
         class="content-image"
       />
       <div class="title">{{ component.title }}</div>
-      <div class="description" v-html="component.content"></div>
+      <div class="description">{{ component.summary }}</div>
       <div class="read-on-wrapper">
         <NuxtLink :to="component.url" class="read-on">{{
           t("components.articles.view")
