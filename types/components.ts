@@ -1,3 +1,5 @@
+import type { langCode } from "./drupalLanguages";
+
 export interface componentRequest {
   start?: number;
   data?:
@@ -29,25 +31,7 @@ export type componentGaiaType = (
 
 export type componentDrupalType = ("article" | "gbf-target" | "portal")[];
 
-export interface availableLanguages {
-  [language: string]: string;
-  ar: string;
-  en: string;
-  es: string;
-  fr: string;
-  ru: string;
-  zh: string;
-}
-
-export interface availableLanguagesArray {
-  [language: string]: string[];
-  ar: string[];
-  en: string[];
-  es: string[];
-  fr: string[];
-  ru: string[];
-  zh: string[];
-}
+export type availableLanguages = Record<langCode, string | string[]>;
 
 export interface searchParams {
   q: string;
@@ -71,15 +55,12 @@ export interface componentSanitized
     componentPortal,
     componentNbsap {
   type: string;
-}
-
-interface componentBase {
   url: string;
   date: Date;
   title: string | availableLanguages;
 }
 
-interface componentArticle extends componentBase {
+interface componentArticle {
   langcode?: string;
   image_cover?: {
     url: string;
@@ -92,25 +73,26 @@ interface componentArticle extends componentBase {
   };
   date_edited?: Date;
   content?: string;
+  summary?: string;
 }
 
-interface componentMeeting extends componentBase {
+interface componentMeeting {
   symbol?: string;
   status?: string;
-  themes?: availableLanguagesArray;
+  themes?: availableLanguages;
   date_end?: Date;
   event_city?: availableLanguages;
   event_country?: availableLanguages;
 }
 
-interface componentNotification extends componentBase {
+interface componentNotification {
   symbol?: string;
   date_action?: Date;
   date_deadline?: Date;
   sender?: string;
   reference?: string;
   recipient?: string[];
-  themes?: availableLanguagesArray;
+  themes?: availableLanguages;
   fulltext?: availableLanguages;
   files?: {
     type: string;
@@ -120,18 +102,18 @@ interface componentNotification extends componentBase {
   }[];
 }
 
-interface componentGbfTarget extends componentBase {
+interface componentGbfTarget {
   identifier?: string;
   title_short?: availableLanguages;
   description?: string;
   description_long?: availableLanguages;
 }
 
-interface componentStatement extends componentBase {
-  themes?: availableLanguagesArray;
+interface componentStatement {
+  themes?: availableLanguages;
 }
 
-interface componentPortal extends componentBase {
+interface componentPortal {
   date_edited?: Date;
   image?: {
     url: string;
@@ -144,7 +126,7 @@ interface componentPortal extends componentBase {
   };
 }
 
-interface componentNbsap extends componentBase {}
+interface componentNbsap {}
 
 export interface componentArticleRaw {
   attributes: {
@@ -161,6 +143,7 @@ export interface componentArticleRaw {
     };
     body: {
       processed: string;
+      summary: string;
     };
   };
   relationships: {

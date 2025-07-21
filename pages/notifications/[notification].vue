@@ -201,7 +201,7 @@ definePageMeta({
             contentParser(
               (notification.fulltext as availableLanguages)[
                 languageSettings.active_language
-              ]
+              ] as string
             )
           "
         ></div>

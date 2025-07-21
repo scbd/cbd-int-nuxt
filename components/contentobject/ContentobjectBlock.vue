@@ -3,6 +3,7 @@ import type {
   availableLanguages,
   componentSanitized,
 } from "~/types/components";
+import type { langCode } from "~/types/drupalLanguages";
 
 const props = defineProps<{
   component: componentSanitized;
@@ -30,10 +31,10 @@ const handlerMissingImage = (event: Event) => {
   image.src = "/images/content_replacement.svg";
 };
 
-const objectLocation = (language: string, city?: string, country?: string) => {
-  if (language === "ar") {
+const objectLocation = (city?: string, country?: string) => {
+  if (languageSettings.active_language === "ar") {
     return `${city ?? ""}${city && country ? "،" : ""} ${country ?? ""}`;
-  } else if (language === "zh-hans") {
+  } else if (languageSettings.active_language === "zh-hans") {
     return `${city ?? ""}${country ?? ""}`;
   } else {
     return `${city}${city && country ? "," : ""} ${country ?? ""}`;
@@ -46,7 +47,7 @@ if (props.component.type === "GBF Target") {
   const title =
     props.component.title_short?.[languageSettings.active_language] ??
     props.component.title_short!.en;
-  const titleSplit = title?.split(".");
+  const titleSplit = (title as string)?.split(".");
   const targetTitle = titleSplit?.[0].replace(/GBF-T0|GBF-T/, "Target ");
   const targetImage = titleSplit?.[0].replace("-T", "_Targets-");
 
@@ -87,7 +88,7 @@ if (props.component.type === "GBF Target") {
         class="content-image"
       />
       <div class="title">{{ component.title }}</div>
-      <div class="description" v-html="component.content"></div>
+      <div class="description">{{ component.summary }}</div>
       <div class="read-on-wrapper">
         <NuxtLink :to="component.url" class="read-on">{{
           t("components.articles.view")
@@ -108,7 +109,7 @@ if (props.component.type === "GBF Target") {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -117,7 +118,7 @@ if (props.component.type === "GBF Target") {
         <template v-if="component.date_end">
           &nbsp;&ndash;&nbsp;
           {{
-            Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+            Intl.DateTimeFormat(languageSettings.active_language, {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -135,7 +136,7 @@ if (props.component.type === "GBF Target") {
       <div class="title">
         {{
           (component.title as availableLanguages)[
-            languageSettings.active_language.slice(0, 2)
+            languageSettings.active_language
           ]
         }}
       </div>
@@ -145,13 +146,12 @@ if (props.component.type === "GBF Target") {
       >
         {{
           objectLocation(
-            languageSettings.active_language,
             (component.event_city as availableLanguages)[
-              languageSettings.active_language.slice(0, 2)
-            ],
+              languageSettings.active_language
+            ] as string,
             (component.event_country as availableLanguages)[
-              languageSettings.active_language.slice(0, 2)
-            ]
+              languageSettings.active_language
+            ] as string
           )
         }}
       </div>
@@ -175,7 +175,7 @@ if (props.component.type === "GBF Target") {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -184,7 +184,7 @@ if (props.component.type === "GBF Target") {
         <template v-if="component.date_end">
           &nbsp;&ndash;&nbsp;
           {{
-            Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+            Intl.DateTimeFormat(languageSettings.active_language, {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -201,13 +201,13 @@ if (props.component.type === "GBF Target") {
 
       <div class="title">
         {{
-          `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language.slice(0, 2)]}`
+          `${component.symbol} &ndash; ${(component.title as availableLanguages)[languageSettings.active_language]}`
         }}
       </div>
       <div v-show="component.date_action" class="action-required">
         {{ t("components.notifications.action_required") }}:
         {{
-          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -215,12 +215,12 @@ if (props.component.type === "GBF Target") {
         }}
       </div>
       <div
-        v-if="component.themes?.[languageSettings.active_language.slice(0, 2)]"
+        v-if="component.themes?.[languageSettings.active_language]"
         class="subjects"
       >
         {{ t("components.notifications.subjects") }}:
         {{
-          component.themes[languageSettings.active_language.slice(0, 2)].join(
+          (component.themes[languageSettings.active_language] as string[]).join(
             ", "
           )
         }}
@@ -228,7 +228,7 @@ if (props.component.type === "GBF Target") {
       <div class="description">
         {{
           (component.fulltext as availableLanguages)[
-            languageSettings.active_language.slice(0, 2)
+            languageSettings.active_language
           ]
         }}
       </div>
@@ -305,7 +305,7 @@ if (props.component.type === "GBF Target") {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -322,18 +322,18 @@ if (props.component.type === "GBF Target") {
       <div class="title">
         {{
           (component.title as availableLanguages)[
-            languageSettings.active_language.slice(0, 2)
+            languageSettings.active_language
           ]
         }}
       </div>
 
       <div
-        v-if="component.themes?.[languageSettings.active_language.slice(0, 2)]"
+        v-if="component.themes?.[languageSettings.active_language]"
         class="subjects"
       >
         {{ t("components.statements.themes") }}:
         {{
-          component.themes[languageSettings.active_language.slice(0, 2)].join(
+          (component.themes[languageSettings.active_language] as string[]).join(
             ", "
           )
         }}
@@ -388,7 +388,7 @@ if (props.component.type === "GBF Target") {
     >
       <div class="date">
         {{
-          Intl.DateTimeFormat(languageSettings.active_language.slice(0, 2), {
+          Intl.DateTimeFormat(languageSettings.active_language, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -398,7 +398,7 @@ if (props.component.type === "GBF Target") {
       <div class="title">
         {{
           (component.title as availableLanguages)[
-            languageSettings.active_language.slice(0, 2)
+            languageSettings.active_language
           ]
         }}
       </div>

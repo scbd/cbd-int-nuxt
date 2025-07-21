@@ -1,4 +1,4 @@
-import type { drupalLanguage } from "~/types/drupalLanguages";
+import type { drupalLanguage, langCode } from "~/types/drupalLanguages";
 import type { drupalToken } from "~/types/drupalAuth";
 import type { drupalMenu } from "~/types/drupalMenu";
 import type { userSettings } from "~/types/userSettings";
@@ -41,13 +41,7 @@ export const getDrupalLanguages = async (language: string | null) => {
               weight: number;
             };
           }): drupalLanguage => ({
-            langCode: item.attributes.drupal_internal__id as
-              | "en"
-              | "fr"
-              | "es"
-              | "ru"
-              | "zh"
-              | "ar",
+            langCode: item.attributes.drupal_internal__id as langCode,
             label: item.attributes.label,
             direction: item.attributes.direction,
             weight: item.attributes.weight,
