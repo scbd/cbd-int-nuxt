@@ -77,6 +77,7 @@ definePageMeta({
 });
 
 watch(languageSettings, async () => {
+  await getPages(params);
   if (referencedPage.value) {
     await handlerSubmenuNavigation(referencedPage.value.field_menu);
   }
