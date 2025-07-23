@@ -24,7 +24,7 @@ const displayVerticalNav = ref<boolean>(false);
 
 await getPages(params);
 if (referencedPage.value) {
-  await handlerSubmenuNavigation(referencedPage.value.field_menu);
+  await getSubmenuNavigation(referencedPage.value.field_menu);
   if (submenu.value.length > 0) {
     submenuItems.value.length = 0;
     for await (const [level2Index, level2Item] of submenu.value.entries()) {
@@ -75,7 +75,7 @@ definePageMeta({
 watch(languageSettings, async () => {
   await getPages(params);
   if (referencedPage.value) {
-    await handlerSubmenuNavigation(referencedPage.value.field_menu);
+    await getSubmenuNavigation(referencedPage.value.field_menu);
   }
 });
 

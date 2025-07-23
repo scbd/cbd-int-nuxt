@@ -6,25 +6,33 @@ const route = useRoute();
 const props = defineProps<{
   submenuItems: fetchedMenuItem[];
   submenuIndex: number;
+  protocol?: string;
 }>();
 
 const displayChildren = ref<number>(props.submenuIndex);
 const itemSelected = ref<number>(props.submenuIndex);
 </script>
 <template>
-  <div class="protocol-subnavigation accent-cbd">
+  <div
+    class="protocol-subnavigation"
+    :class="[props.protocol ? `accent-${props.protocol}` : 'accent-cbd']"
+  >
     <nav class="navbar container-xxl">
       <ClientOnly>
         <ul class="nav">
           <div class="subnav-header">
-            <!-- <li class="nav-item selected">
-                <NuxtLink
-                  :to="submenuItem.link === '<nolink>' ? '' : submenuItem.link"
-                  class="nav-link"
-                >
-                  {{ submenuItem.title }}
-                </NuxtLink>
-              </li> -->
+            <!-- <li v-if="props.protocol" class="nav-item selected">
+              <NuxtLink
+                :to="
+                  submenuItems[0].link === '<nolink>'
+                    ? ''
+                    : submenuItems[0].link
+                "
+                class="nav-link"
+              >
+                {{ "Nagoya Protocol" }}
+              </NuxtLink>
+            </li> -->
             <li class="nav-item">
               <button
                 class="btn cbd-btn-subnavigation"

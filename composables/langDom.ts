@@ -21,8 +21,8 @@ export const setActiveLanguage = async (langCode: langCode = "en") => {
     });
 
     await getLanguages();
-    await handlerHeaderNavigation();
-    await handlerFooterNavigation();
+    await getHeaderNavigation();
+    await getFooterNavigation();
   } catch (error) {
     console.error(error);
   }
@@ -46,7 +46,7 @@ const getLanguages = async () => {
   }
 };
 
-const handlerHeaderNavigation = async () => {
+const getHeaderNavigation = async () => {
   const languageSettings = useLanguageStore();
 
   megamenuStatus.value.status = "pending";
@@ -80,7 +80,7 @@ const handlerHeaderNavigation = async () => {
   }
 };
 
-export const handlerSubmenuNavigation = async (menuName: string) => {
+export const getSubmenuNavigation = async (menuName: string) => {
   const languageSettings = useLanguageStore();
 
   submenuStatus.value.status = "pending";
@@ -116,7 +116,7 @@ export const handlerSubmenuNavigation = async (menuName: string) => {
   }
 };
 
-const handlerFooterNavigation = async () => {
+const getFooterNavigation = async () => {
   const languageSettings = useLanguageStore();
 
   footerMenuStatus.value.status = "pending";

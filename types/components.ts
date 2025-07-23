@@ -83,6 +83,7 @@ interface componentMeeting {
   date_end?: Date;
   event_city?: availableLanguages;
   event_country?: availableLanguages;
+  protocol?: string[];
 }
 
 interface componentNotification {
@@ -94,6 +95,7 @@ interface componentNotification {
   recipient?: string[];
   themes?: availableLanguages;
   fulltext?: availableLanguages;
+  protocol?: string[];
   files?: {
     type: string;
     language: string;
@@ -111,6 +113,7 @@ interface componentGbfTarget {
 
 interface componentStatement {
   themes?: availableLanguages;
+  protocol?: string[];
 }
 
 interface componentPortal {
@@ -197,6 +200,7 @@ export interface componentMeetingRaw {
   title_RU_s: string;
   title_ZH_s: string;
   url_ss: string;
+  realm_ss: string[];
   themes_AR_ss: string[];
   themes_EN_ss: string[];
   themes_ES_ss: string[];
@@ -228,6 +232,7 @@ export interface componentNotificationRaw {
   sender_s: string;
   reference_s: string;
   url_ss: string;
+  realm_ss: string[];
   recipient_ss: string[];
   title_AR_s: string;
   title_EN_s: string;
@@ -276,6 +281,7 @@ export interface componentStatementRaw {
   themes_RU_ss: string[];
   themes_ZH_ss: string[];
   url_ss: string;
+  realm_ss: string[];
 }
 
 export interface componentPortalRaw {

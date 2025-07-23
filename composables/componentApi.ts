@@ -162,6 +162,12 @@ export default function getComponents() {
               ru: componentRaw.title_RU_s,
               "zh-hans": componentRaw.title_ZH_s,
             } as availableLanguages,
+            protocol: (
+              componentRaw as
+                | componentMeetingRaw
+                | componentNotificationRaw
+                | componentStatementRaw
+            ).realm_ss,
             themes: {
               ar: (
                 componentRaw as

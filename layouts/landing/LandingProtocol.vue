@@ -8,7 +8,10 @@
         <NavigationMegamenu />
       </nav>
     </header>
-    <main class="cus-main cus-landing-page d-flex flex-column" role="main">
+    <main
+      class="cus-main cus-landing-page-protocol d-flex flex-column"
+      role="main"
+    >
       <NuxtPage />
     </main>
     <Footer />
