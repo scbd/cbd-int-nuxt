@@ -11,7 +11,7 @@ const { getArticles } = getComponents();
 
 const articlesParams: drupalEntitySearchParams = {
   entity: "article",
-  sort: ["-changed"],
+  sort: ["-created"],
   limit: 20,
 };
 

@@ -10,7 +10,7 @@ const { getArticles, getGaiaComponents } = getComponents();
 
 const articlesParams: drupalEntitySearchParams = {
   entity: "article",
-  sort: ["-changed"],
+  sort: ["-created"],
   limit: 4,
 };
 

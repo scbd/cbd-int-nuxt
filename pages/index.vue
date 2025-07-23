@@ -12,7 +12,7 @@ const { getArticles, getGbfTargets, getPortals, getGaiaComponents } =
 
 const articlesParams: drupalEntitySearchParams = {
   entity: "article",
-  sort: ["-changed"],
+  sort: ["-created"],
   limit: 4,
 };
 
