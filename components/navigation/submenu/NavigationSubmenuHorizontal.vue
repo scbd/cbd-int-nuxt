@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { fetchedMenuItem } from "~/types/drupalMenu";
-
 const route = useRoute();
+const routeArray = route.fullPath
+  .split("/")
+  .filter((step) => step.trim() != "");
 
 const props = defineProps<{
-  submenuItems: fetchedMenuItem[];
   submenuIndex: number;
+  submenuStart: number;
 }>();
 
 const displayChildren = ref<number>(props.submenuIndex);
@@ -54,7 +55,7 @@ const itemSelected = ref<number>(props.submenuIndex);
               class="nav-item subnav-level-2-item"
               :class="[
                 { show: childItem == submenu[itemSelected] },
-                { 'current-page': childItem == submenuItems[0] },
+                { 'current-page': childItem == submenu[displayChildren] },
               ]"
             >
               <NuxtLink
@@ -76,7 +77,8 @@ const itemSelected = ref<number>(props.submenuIndex);
                   :class="[
                     {
                       'current-page':
-                        grandchildItem == submenuItems[0].children[index],
+                        grandchildItem ==
+                        submenu[displayChildren].children[index - submenuStart],
                     },
                   ]"
                 >
@@ -99,7 +101,12 @@ const itemSelected = ref<number>(props.submenuIndex);
             class="nav-item"
             :class="[
               {
-                'current-page': route.fullPath === childItem.link,
+                'current-page':
+                  routeArray[1 + submenuStart] ===
+                  childItem.link
+                    .split('/')
+                    .filter((step) => step.trim() != '')
+                    .pop(),
               },
             ]"
           >

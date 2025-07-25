@@ -4,7 +4,7 @@ import type { fetchedMenuItem } from "~/types/drupalMenu";
 const route = useRoute();
 
 const props = defineProps<{
-  submenuItems: fetchedMenuItem[];
+  submenuIndex: number;
 }>();
 
 const currentPath = route.path;
@@ -19,23 +19,21 @@ const handleVerticalNavigation = ref(false);
     :class="{ 'aside-collapsed': handleVerticalNavigation }"
   >
     <ul class="nav">
-      <template v-for="level2Item of submenu">
-        <template v-for="level3Item of level2Item.children">
-          <li
-            v-if="fullPath.includes(level3Item.link)"
-            class="aside-nav-header nav-item"
+      <template v-for="level3Item of submenu[props.submenuIndex].children">
+        <li
+          v-if="fullPath.includes(level3Item.link)"
+          class="aside-nav-header nav-item"
+        >
+          <NuxtLink :to="level3Item.link">{{ level3Item.title }}</NuxtLink>
+        </li>
+        <li v-for="level4Item of level3Item.children" class="nav-item">
+          <NuxtLink
+            :to="level4Item.link"
+            class="nav-link"
+            :class="fullPath.includes(level4Item.link) ? 'current-page' : ''"
+            >{{ level4Item.title }}</NuxtLink
           >
-            <NuxtLink :to="level3Item.link">{{ level3Item.title }}</NuxtLink>
-          </li>
-          <li v-for="level4Item of level3Item.children" class="nav-item">
-            <NuxtLink
-              :to="level4Item.link"
-              class="nav-link"
-              :class="fullPath.includes(level4Item.link) ? 'current-page' : ''"
-              >{{ level4Item.title }}</NuxtLink
-            >
-          </li>
-        </template>
+        </li>
       </template>
     </ul>
     <div class="aside-collapse-controls">
