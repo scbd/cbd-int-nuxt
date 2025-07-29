@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import type { pageParamaters } from "~/types/page";
+import type { pageParamaters, pagePathProp } from "~/types/page";
 import type { fetchedMenuItem } from "~/types/drupalMenu";
 import getPages from "~/composables/pageApi";
 
 const route = useRoute();
 const languageSettings = useLanguageStore();
-
-const submenuItems = ref<fetchedMenuItem[]>([]);
 
 const params: pageParamaters = {
   alias: route.path,
@@ -17,57 +15,66 @@ const routeArray = route.fullPath
   .filter((step) => step.trim() != "");
 
 const pathItems = ref<{
-  level2?: number;
-  level3?: number;
-  level4?: number;
+  [pathName: pagePathProp]: number;
 }>({});
 
 const displayChildren = ref<number>(0);
 const displayVerticalNav = ref<boolean>(false);
+const submenuStart = ref<number>(0);
 
-await getPages(params);
-if (referencedPage.value) {
-  await handlerSubmenuNavigation(referencedPage.value.field_menu);
-  if (submenu.value.length > 0) {
-    submenuItems.value.length = 0;
-    for await (const [level2Index, level2Item] of submenu.value.entries()) {
-      if (level2Item.link.includes(routeArray[routeArray.length - 1])) {
-        submenuItems.value.push(level2Item);
-        displayChildren.value = level2Index;
-        pathItems.value.level2 = level2Index;
-      } else {
-        for (const [level3Index, level3Item] of level2Item.children.entries()) {
-          if (level3Item.link.includes(routeArray[routeArray.length - 1])) {
-            submenuItems.value.push(level2Item);
-            displayChildren.value = level2Index;
-            pathItems.value.level2 = level2Index;
-            pathItems.value.level3 = level3Index;
-            if (level3Item.children.length > 0) {
-              displayVerticalNav.value = true;
-            }
-          } else {
-            for (const [
-              level4Index,
-              level4Item,
-            ] of level3Item.children.entries()) {
-              if (level4Item.link.includes(routeArray[routeArray.length - 1])) {
-                submenuItems.value.push(level2Item);
-                displayChildren.value = level2Index;
-                displayVerticalNav.value = true;
-                pathItems.value.level2 = level2Index;
-                pathItems.value.level3 = level3Index;
-                pathItems.value.level4 = level4Index;
-              }
-            }
-          }
+const handleSubmenu = async (
+  routeArray: string[],
+  level = 0,
+  items: fetchedMenuItem[]
+) => {
+  for (const [index, item] of items.entries()) {
+    const itemArray = item.link.split("/").filter((step) => step.trim() != "");
+
+    if (itemArray[itemArray.length - 1] === routeArray[level]) {
+      pathItems.value[`level${level}`] = index;
+
+      if (level === 0) {
+        displayChildren.value = index;
+      } else if (level >= 2) {
+        displayVerticalNav.value = true;
+      }
+
+      level++;
+
+      if (item.children) {
+        handleSubmenu(routeArray, level, item.children);
+      }
+    } else {
+      submenuStart.value = 1;
+      if (
+        itemArray.slice(1)[itemArray.slice(1).length - 1] ===
+        routeArray.slice(1)[level]
+      ) {
+        pathItems.value[`level${level - 1}`] = index;
+
+        if (level === 0) {
+          displayChildren.value = index;
+        } else if (level >= 2) {
+          displayVerticalNav.value = true;
+        }
+
+        level++;
+
+        if (item.children) {
+          handleSubmenu(routeArray, level, item.children);
         }
       }
     }
-
-    if (submenuItems.value.length === 0) {
-      submenuItems.value = [submenu.value[0]];
-    }
   }
+};
+
+await getPages(params);
+if (referencedPage.value) {
+  await handlerSubmenuNavigation(referencedPage.value.field_menu).then(
+    async () => {
+      await handleSubmenu(routeArray, 0, submenu.value);
+    }
+  );
 }
 
 definePageMeta({
@@ -80,23 +87,6 @@ watch(languageSettings, async () => {
     await handlerSubmenuNavigation(referencedPage.value.field_menu);
   }
 });
-
-const embedIframe = useTemplateRef("embedIframe");
-
-onMounted(() => {
-  window.addEventListener(
-    "message",
-    (event) => {
-      if (event.origin == "https://ort.cbd.int") {
-        const message: { height: number; type: string } = JSON.parse(
-          event.data
-        );
-        embedIframe.value!.style.height = `${message.height}px`;
-      }
-    },
-    false
-  );
-});
 </script>
 
 <template>
@@ -104,8 +94,8 @@ onMounted(() => {
     <ClientOnly>
       <NavigationSubmenuHorizontal
         v-if="referencedPage && route.fullPath.includes(referencedPage.url)"
-        :submenu-items="submenuItems"
         :submenu-index="displayChildren"
+        :submenu-start="submenuStart"
       />
     </ClientOnly>
 
@@ -113,7 +103,7 @@ onMounted(() => {
       <ClientOnly>
         <NavigationSubmenuVertical
           v-if="referencedPage && displayVerticalNav"
-          :submenu-items="submenuItems"
+          :submenu-index="displayChildren"
         />
       </ClientOnly>
 
@@ -129,14 +119,6 @@ onMounted(() => {
             class="rendered-content"
           ></section>
         </ClientOnly>
-        <section v-if="referencedPage?.field_menu === 'cbd-gbf'">
-          <h2>National targets submitted to the Secretariat</h2>
-          <iframe
-            ref="embedIframe"
-            class="embedIframe"
-            :src="`https://ort.cbd.int/${languageSettings.active_language}/national-targets/analyzer?embed=true&recordTypes=nationalTarget7&globalTargets=GBF-TARGET-${Number(routeArray[routeArray.length - 1]) < 10 ? '0' + routeArray[routeArray.length - 1] : routeArray[routeArray.length - 1]}`"
-          ></iframe>
-        </section>
       </article>
     </div>
   </div>

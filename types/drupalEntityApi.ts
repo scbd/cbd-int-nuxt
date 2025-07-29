@@ -5,6 +5,11 @@ export interface drupalEntityPath {
   jsonapi: {
     individual: string;
   };
+  redirect?: {
+    from: string;
+    to: string;
+    status: string;
+  }[];
 }
 
 export interface drupalEntitySearchParams {

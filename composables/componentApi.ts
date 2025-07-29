@@ -342,6 +342,19 @@ export default function getComponents() {
 
         if (response.ok) {
           const articleResponse: drupalEntityPath = await response.json();
+
+          if (articleResponse.redirect?.length) {
+            for (const redirect of articleResponse.redirect) {
+              if (
+                Number(redirect.status) === 301 &&
+                redirect.from !== redirect.to
+              ) {
+                await navigateTo(redirect.to);
+                // return;
+              }
+            }
+          }
+
           uuid = articleResponse.entity.uuid;
         } else {
           throw new Error(response.statusText, {

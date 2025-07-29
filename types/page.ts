@@ -43,3 +43,5 @@ export interface pageRaw {
     };
   };
 }
+
+export type pagePathProp = `level${number}`;

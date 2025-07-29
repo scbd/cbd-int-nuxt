@@ -72,7 +72,7 @@ export const getDrupalMenu = async (menu: string, language: string | null) => {
 
   try {
     const response = await fetch(
-      `${config.public.DRUPAL_URL}/${langCode}/jsonapi/menu_link_content/${menu}?filter[enabled][value]=1&page[limit]=100`,
+      `${config.public.DRUPAL_URL}/${langCode}/jsonapi/menu_link_content/${menu}?filter[enabled][value]=1&page[limit]=500`,
       {
         method: "GET",
         headers: {
